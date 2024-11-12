@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Entity(tableName = "user")
 public class User {
     @PrimaryKey(autoGenerate = true)
-    public int ID;
-    public int money;
-    public int goal;
-    public LocalDateTime recentUpdate;
+    public int ID;                         //기본키
+    public int money;                      //누적금액
+    public int goal;                       //목표금액
+    public LocalDateTime recentUpdate;     //최근 체크일자
 }

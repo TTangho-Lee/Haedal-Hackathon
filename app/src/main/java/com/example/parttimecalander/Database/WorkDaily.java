@@ -15,11 +15,11 @@ import java.time.LocalDate;
                 onDelete = ForeignKey.CASCADE
         )
 )
-public class WorkDaily {
+public class WorkDaily {                   //일일근무
     @PrimaryKey(autoGenerate = true)
-    public int ID;
-    public LocalDate date;
-    public String startTime;
-    public String endTime;
-    public int placeId;
+    public int ID;                         //기본키
+    public LocalDate date;                 //날짜
+    public String startTime;               //시작시간
+    public String endTime;                 //종료시간
+    public int placeId;                    //근무지 id(외래키)
 }
