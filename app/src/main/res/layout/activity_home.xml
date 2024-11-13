@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="%s님, 열심히 땀 흘려\n%d원이나 모았어요!"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:fontFamily="@font/font_main"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
@@ -51,6 +51,7 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="0dp"
+            android:layout_marginTop="3dp"
             android:src="@drawable/back"
             android:rotation="180"
             android:backgroundTint="@color/black"
@@ -161,6 +162,7 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="0dp"
+            android:layout_marginTop="3dp"
             android:src="@drawable/back"
             android:rotation="180"
             android:backgroundTint="@color/black"
@@ -195,6 +197,7 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="0dp"
+            android:layout_marginTop="3dp"
             android:src="@drawable/back"
             android:rotation="180"
             android:backgroundTint="@color/black"
@@ -228,6 +231,7 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="0dp"
+            android:layout_marginTop="3dp"
             android:src="@drawable/back"
             android:rotation="180"
             android:backgroundTint="@color/black"
