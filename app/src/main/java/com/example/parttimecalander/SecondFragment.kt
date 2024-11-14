@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.parttimecalander.databinding.FragmentSecondBinding
 import com.example.parttimecalander.home.HomeActivity
+import com.example.parttimecalander.home.workplace.WorkPlaceActivity
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -36,7 +37,7 @@ class SecondFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonSecond.setOnClickListener {
-            val intent = Intent(requireContext(), HomeActivity::class.java)
+            val intent = Intent(requireContext(), WorkPlaceActivity::class.java)
             startActivity(intent)
         }
     }

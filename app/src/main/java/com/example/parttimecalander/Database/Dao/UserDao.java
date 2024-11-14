@@ -20,6 +20,6 @@ public interface UserDao {
     void setUpdateData(User data);
     @Delete
     void setDeleteData(User data);
-    @Query("SELECT * FROM User")
+    @Query("SELECT * FROM user")
     List<User> getDataAll();
 }
