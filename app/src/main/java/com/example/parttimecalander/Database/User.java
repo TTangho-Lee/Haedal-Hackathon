@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class User {
     @PrimaryKey(autoGenerate = true)
     public int ID;                         //기본키
+    public String name;
     public int money;                      //누적금액
     public int goal;                       //목표금액
     public LocalDateTime recentUpdate;     //최근 체크일자
