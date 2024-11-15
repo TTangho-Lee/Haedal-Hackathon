@@ -5,14 +5,22 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="12dp"
     tools:context=".home.workplace.WorkPlaceRegisterActivity">
+
+    <!-- Guideline을 사용하여 지점 설정 -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_50"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/title_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:background="@color/gray"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,7 +30,7 @@
             android:layout_width="24dp"
             android:layout_height="0dp"
             android:layout_marginTop="4dp"
-            android:src="@drawable/back"
+            android:src="@drawable/arrow_back"
             android:backgroundTint="@color/black"
             app:layout_constraintTop_toTopOf="@id/title"
             app:layout_constraintBottom_toBottomOf="@id/title"
@@ -33,11 +41,76 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:text="  근무지 등록"
-            android:textSize="28sp"
-            android:fontFamily="@font/font_bold"
+            android:textSize="24sp"
+            android:fontFamily="@font/font_main"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/back"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:paddingVertical="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_box"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Guideline을 사용하여 지점 설정 -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_65"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.60" />
+
+        <!-- 요소 하나 -->
+        <!-- container, title, content 로 id각 요소 구분 -->
+        <!-- 요소 별 margin 주지 말고 배치, padding 으로 내용물 간격 조절 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_workplace_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guideline_65"
+            app:layout_constraintTop_toTopOf="parent">
+            <TextView
+                android:id="@+id/title_workplace_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="3dp"
+                android:text="근무지명"
+                android:textSize="18sp"
+                android:fontFamily="@font/font_bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+            <EditText
+                android:id="@+id/content_workplace_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="8dp"
+                android:layout_marginTop="4dp"
+                android:hint="근무지명을 입력해주세요"
+                android:textSize="14sp"
+                android:fontFamily="@font/font_main"
+                android:background="@drawable/background_editText"
+                app:layout_constraintTop_toBottomOf="@id/title_workplace_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
