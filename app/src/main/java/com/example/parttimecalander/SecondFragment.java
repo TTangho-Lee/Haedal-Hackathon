@@ -48,13 +48,23 @@ public class SecondFragment extends Fragment {
                 .build();
         placeDao=placeDatabase.workPlaceDao();
 
-        WorkPlace workPlace=new WorkPlace();
-        workPlace.placeName="GS25";
-        workPlace.isJuhyu=true;
-        workPlace.type="편의점";
-        workPlace.isExpanded=false;
-        workPlace.usualPay=10000;
-        placeDao.setInsertData(workPlace);
+        WorkPlace workPlace1=new WorkPlace();
+        workPlace1.placeName="GS25";
+        workPlace1.isJuhyu=true;
+        workPlace1.type="편의점";
+        workPlace1.isExpanded=false;
+        workPlace1.usualPay=10000;
+        workPlace1.ColorHex="#888888";
+        placeDao.setInsertData(workPlace1);
+
+        WorkPlace workPlace2=new WorkPlace();
+        workPlace2.placeName="CU";
+        workPlace2.isJuhyu=true;
+        workPlace2.type="편의점";
+        workPlace2.isExpanded=false;
+        workPlace2.usualPay=20000;
+        workPlace2.ColorHex="#444444";
+        placeDao.setInsertData(workPlace2);
 
         WorkDaily work1=new WorkDaily();
         work1.placeId=placeDao.getDataAll().get(0).ID;
@@ -69,15 +79,18 @@ public class SecondFragment extends Fragment {
         dailyDao.setInsertData(work2);
 
         WorkDaily work3=new WorkDaily();
-        work3.placeId=placeDao.getDataAll().get(0).ID;
+        work3.placeId=placeDao.getDataAll().get(1).ID;
         work3.startTime="2024-11-18 20:00:00";
         work3.endTime="2024-11-18 23:00:00";
         dailyDao.setInsertData(work3);
 
 
         binding.buttonSecond.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), SummationMonthFragment.class);
-            startActivity(intent);
+            Fragment summationMonthFragment = new SummationMonthFragment();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_main, summationMonthFragment)  // 해당 Activity 내 프래그먼트 컨테이너
+                    .addToBackStack(null)
+                    .commit();
         });
     }
 

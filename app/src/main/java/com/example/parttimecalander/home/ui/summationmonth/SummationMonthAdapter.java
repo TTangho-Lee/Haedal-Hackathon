@@ -1,5 +1,6 @@
 package com.example.parttimecalander.home.ui.summationmonth;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,10 @@ public class SummationMonthAdapter extends RecyclerView.Adapter<SummationMonthAd
 
 
     private List<RecyclerItem> items;
-    private OnItemClickListener listener;
 
     // 생성자
-    public SummationMonthAdapter(List<RecyclerItem> items, OnItemClickListener listener) {
+    public SummationMonthAdapter(List<RecyclerItem> items) {
         this.items = items;
-        this.listener = listener;
     }
 
     // ViewHolder 정의
@@ -54,13 +53,6 @@ public class SummationMonthAdapter extends RecyclerView.Adapter<SummationMonthAd
         holder.money1.setText(item.money1+"("+item.time1/3600+")");
         holder.money2.setText(item.money2+"("+item.time2/3600+")");
         holder.money3.setText(item.money1+item.money2+"("+(item.time1+item.time2)/3600+")");
-
-        // 클릭 리스너 설정 (전체 뷰에 적용)
-        holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onItemClick(item);
-            }
-        });
     }
 
     @Override
@@ -68,8 +60,4 @@ public class SummationMonthAdapter extends RecyclerView.Adapter<SummationMonthAd
         return items.size();
     }
 
-    // 클릭 리스너 인터페이스 정의
-    public interface OnItemClickListener {
-        void onItemClick(RecyclerItem item);
-    }
 }

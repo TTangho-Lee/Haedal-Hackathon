@@ -3,6 +3,7 @@ package com.example.parttimecalander.home.ui.summationmonth;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
@@ -48,7 +50,7 @@ public class SummationMonthFragment extends Fragment {
     private SummationViewModel viewModel;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public information[] array=new information[1000];
-
+    List<RecyclerItem> items=new ArrayList<>();
     public RecyclerView recyclerView;
     public static SummationMonthFragment newInstance() {
         return new SummationMonthFragment();
@@ -76,22 +78,23 @@ public class SummationMonthFragment extends Fragment {
         List<WorkDaily> workList=dailyDao.getDataAll();
 
         for(int i=0;i<placeList.size();i++){
+            array[i] = new information();
             array[i].place_id=placeList.get(i).ID;
             array[i].num_of_day=getDaysPerWeek(year,month);
-            array[i].time_per_day=new int[31];
-            for(int j=0;j<31;j++){
+            array[i].time_per_day=new int[32];
+            for(int j=0;j<32;j++){
                 array[i].time_per_day[j]=0;
             }
             for(int j=0;j<workList.size();j++){
                 if(workList.get(j).placeId==array[i].place_id){
                     array[i].time_per_day[LocalDateTime.parse(workList.get(j).startTime,formatter).getDayOfMonth()]
-                            +=(int) Duration.between(LocalDateTime.parse(workList.get(j).startTime,formatter),LocalDateTime.parse(workList.get(j).startTime,formatter)).getSeconds();
+                            +=(int) Duration.between(LocalDateTime.parse(workList.get(j).startTime,formatter),LocalDateTime.parse(workList.get(j).endTime,formatter)).getSeconds();
                 }
             }
         }
         //array배열에 각각 근무지 아이디와 각 주마다 며칠씩 있는지, 해당 근무지에서 1일~30(31)일까지 각각 몇초 일했는지 저장해놓음
 
-        List<RecyclerItem> items=new ArrayList<>();
+
         int all_time=0;                                                                //전체 시간
         double all_money=0;                                                            //전체 돈
         for(int i=0;i<placeList.size();i++){
@@ -124,15 +127,6 @@ public class SummationMonthFragment extends Fragment {
             }
             items.add(new RecyclerItem(placeName,normal_second,over_second,normal_money,over_money));
         }
-        SummationMonthAdapter adapter = new SummationMonthAdapter(items, new SummationMonthAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(RecyclerItem item) {
-                //프래그먼트 전환 코드 추가
-            }
-        }
-        );
-        recyclerView.setAdapter(adapter);
-
         viewModel = new ViewModelProvider(this).get(SummationViewModel.class);
 
         // TODO: Use the ViewModel
@@ -142,7 +136,13 @@ public class SummationMonthFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_summation_month, container, false);
+        View view= inflater.inflate(R.layout.fragment_summation_month, container, false);
+        recyclerView=view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        // 어댑터 설정을 여기에 넣습니다.
+        SummationMonthAdapter adapter = new SummationMonthAdapter(items);
+        recyclerView.setAdapter(adapter);
+        return view;
     }
     public static class information{
         int place_id;
@@ -160,8 +160,8 @@ public class SummationMonthFragment extends Fragment {
         // 주 계산을 위한 설정 (Locale에 따라 주 시작 요일이 다를 수 있음)
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
 
-        // 첫 주의 시작 날짜 (월요일 기준)
-        LocalDate startOfWeek = firstDayOfMonth.with(weekFields.dayOfWeek(), DayOfWeek.MONDAY.getValue());
+        // 시작 날짜를 월의 첫날로 설정
+        LocalDate startOfWeek = firstDayOfMonth;
 
         // 주별 날짜 수를 저장할 리스트
         List<Integer> daysInWeeks = new ArrayList<>();
@@ -185,4 +185,5 @@ public class SummationMonthFragment extends Fragment {
         // 리스트를 배열로 변환하여 반환
         return daysInWeeks.stream().mapToInt(i -> i).toArray();
     }
+
 }

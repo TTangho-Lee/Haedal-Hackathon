@@ -1,6 +1,6 @@
 package com.example.parttimecalander.home.workplace;
 
-import android.os.Build;
+
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,10 +14,7 @@ import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.R;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class WorkPlaceActivity extends AppCompatActivity {
 
