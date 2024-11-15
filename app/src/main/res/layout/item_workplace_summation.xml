@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- 근무지명 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/workplace_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+        <View
+            android:id="@+id/workplace_color"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="@drawable/background_round"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+        <TextView
+            android:id="@+id/workplace_title"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:text="A 카페"
+            android:textSize="20sp"
+            android:fontFamily="@font/font_main"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/workplace_color"/>
+
+
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/back"
+            android:rotation="90"
+            android:backgroundTint="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 근무지 상세정보 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_industry"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_white_border_10"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/workplace_container">
+
+        <!-- 업종 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_money"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/title_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="급여"
+                android:textSize="16sp"
+                android:fontFamily="@font/font_main"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/content_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="%d 원"
+                android:textSize="16sp"
+                android:fontFamily="@font/font_main"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/content_hour"/>
+
+            <TextView
+                android:id="@+id/content_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(%d 시간)"
+                android:textSize="16sp"
+                android:fontFamily="@font/font_main"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 주휴수당 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_juhyu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/container_money">
+
+            <TextView
+                android:id="@+id/title_juhyu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="주휴수당"
+                android:textSize="16sp"
+                android:fontFamily="@font/font_main"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/juhyu_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="%d 원"
+                android:textSize="16sp"
+                android:fontFamily="@font/font_main"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/middle_line"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/container_juhyu"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <!-- 주휴수당 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/middle_line">
+
+            <TextView
+                android:id="@+id/title_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="합계"
+                android:textSize="16sp"
+                android:fontFamily="@font/font_main"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/content_total_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="%d 원"
+                android:textSize="16sp"
+                android:fontFamily="@font/font_main"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/content_total_hour"/>
+
+            <TextView
+                android:id="@+id/content_total_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(%d 시간)"
+                android:textSize="16sp"
+                android:fontFamily="@font/font_main"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
