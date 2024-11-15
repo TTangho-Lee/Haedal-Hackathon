@@ -20,4 +20,5 @@ public interface WorkDailyDao {
     void setDeleteData(WorkDaily data);
     @Query("SELECT * FROM daily")
     List<WorkDaily> getDataAll();
+
 }
