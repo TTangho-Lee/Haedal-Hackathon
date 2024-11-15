@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
@@ -20,6 +22,7 @@ import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
 import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.MainActivity;
 import com.example.parttimecalander.R;
 
 import java.time.DayOfWeek;
@@ -46,6 +49,7 @@ public class SummationMonthFragment extends Fragment {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public information[] array=new information[1000];
 
+    public RecyclerView recyclerView;
     public static SummationMonthFragment newInstance() {
         return new SummationMonthFragment();
     }
@@ -87,12 +91,13 @@ public class SummationMonthFragment extends Fragment {
         }
         //array배열에 각각 근무지 아이디와 각 주마다 며칠씩 있는지, 해당 근무지에서 1일~30(31)일까지 각각 몇초 일했는지 저장해놓음
 
+        List<RecyclerItem> items=new ArrayList<>();
         int all_time=0;                                                                //전체 시간
         double all_money=0;                                                            //전체 돈
         for(int i=0;i<placeList.size();i++){
             String placeName=placeDao.getByID(array[i].place_id).placeName;            //근무지명
-            double normal_money=0;                                                     //기본수당
-            double over_money=0;                                                       //주휴수당
+            int normal_money=0;                                                     //기본수당
+            int over_money=0;                                                       //주휴수당
             int pay=placeDao.getByID(array[i].place_id).usualPay;
             int normal_second=0;
             int over_second=0;
@@ -112,16 +117,21 @@ public class SummationMonthFragment extends Fragment {
             }
             if(placeDao.getByID(array[i].place_id).isJuhyu){
                 normal_money=normal_second*pay/60/60;
-                over_money=over_second*pay*1.5/60/60;
+                over_money= (int) (over_second*pay*1.5/60/60);
             }
             else{
                 normal_money=(normal_second+over_second)*pay/60/60;
-                over_money=0;
             }
-            all_time+=(normal_second+over_second)/60/60;
-            all_money+=normal_money+over_money;
+            items.add(new RecyclerItem(placeName,normal_second,over_second,normal_money,over_money));
         }
-
+        SummationMonthAdapter adapter = new SummationMonthAdapter(items, new SummationMonthAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(RecyclerItem item) {
+                //프래그먼트 전환 코드 추가
+            }
+        }
+        );
+        recyclerView.setAdapter(adapter);
 
         viewModel = new ViewModelProvider(this).get(SummationViewModel.class);
 
