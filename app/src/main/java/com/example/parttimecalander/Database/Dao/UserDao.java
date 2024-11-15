@@ -7,7 +7,6 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.parttimecalander.Database.User;
-import com.example.parttimecalander.Database.WorkDaily;
 
 import java.util.List;
 

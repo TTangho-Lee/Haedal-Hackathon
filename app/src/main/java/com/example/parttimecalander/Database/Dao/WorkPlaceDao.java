@@ -6,7 +6,6 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.parttimecalander.Database.WorkInfo;
 import com.example.parttimecalander.Database.WorkPlace;
 
 import java.util.List;
@@ -19,6 +18,6 @@ public interface WorkPlaceDao {
     void setUpdateData(WorkPlace data);
     @Delete
     void setDeleteData(WorkPlace data);
-    @Query("SELECT * FROM WorkPlace")
+    @Query("SELECT * FROM place")
     List<WorkPlace> getDataAll();
 }

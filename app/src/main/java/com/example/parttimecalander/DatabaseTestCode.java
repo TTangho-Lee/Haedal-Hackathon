@@ -1,6 +1,5 @@
 package com.example.parttimecalander;
 
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,12 +25,12 @@ public class DatabaseTestCode extends AppCompatActivity {
         User user1 = new User();
         user1.money=10000;
         user1.goal=100000;
-        user1.recentUpdate= LocalDateTime.now();
+        user1.recentUpdate= LocalDateTime.now().toString();
         userDao.setInsertData(user1);
 
         User user2=userDao.getDataAll().get(0);
         user2.money+=1000;
-        user2.recentUpdate=LocalDateTime.now();
+        user2.recentUpdate=LocalDateTime.now().toString();
         userDao.setUpdateData(user2);
     }
 }

@@ -12,5 +12,45 @@ public class User {
     public String name;
     public int money;                      //누적금액
     public int goal;                       //목표금액
-    public LocalDateTime recentUpdate;     //최근 체크일자
+    public String recentUpdate;     //최근 체크일자
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+    public int getGoal() {
+        return goal;
+    }
+
+    public void setGoal(int goal) {
+        this.goal = goal;
+    }
+
+    public String getRecentUpdate() {
+        return recentUpdate;
+    }
+
+    public void setRecentUpdate(String recentUpdate) {
+        this.recentUpdate = recentUpdate;
+    }
 }
