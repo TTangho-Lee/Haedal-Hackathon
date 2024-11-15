@@ -131,7 +131,6 @@ public class SummationMonthFragment extends Fragment {
 
         // TODO: Use the ViewModel
     }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
