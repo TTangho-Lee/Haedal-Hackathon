@@ -39,33 +39,21 @@ public class WorkPlaceActivity extends AppCompatActivity {
 
         WorkPlaceDao workPlaceDao = database.workPlaceDao();
 
-        WorkPlace place = new WorkPlace();
-        place.setPlaceName("aaa");
-        place.setType("bbb");
-        place.setJuhyu(false);
-        place.setUsualPay(10000);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            place.setStartDate(LocalDate.now().toString());
-            place.setEndDate(LocalDate.now().toString());
-        }
-        place.setExpanded(false);
-        place.setColorHex("red");
-        Executor executor = Executors.newSingleThreadExecutor();
 
-        executor.execute(new Runnable() {
+
+
+
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                workPlaceDao.setInsertData(place);
+
                 // 데이터 조회 및 어댑터 설정을 위한 스레드 시작
-                new Thread(() -> {
-                    List<WorkPlace> places = workPlaceDao.getDataAll();
-                    // 어댑터 설정
-                    WorkPlaceAdapter adapter = new WorkPlaceAdapter(places);
-                    recyclerView.setAdapter(adapter);
-                }).start();
+                List<WorkPlace> places = workPlaceDao.getDataAll();
+                // 어댑터 설정
+                WorkPlaceAdapter adapter = new WorkPlaceAdapter(places);
+                recyclerView.setAdapter(adapter);
             }
         });
-
 
 
     }

@@ -62,13 +62,13 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.Work
             int usualPay = workPlace.getUsualPay();
 
             // titleLayout setting
-            colorView.setBackgroundColor(Color.parseColor(workPlace.getColorHex()));
+
             titleTextView.setText(workPlace.getPlaceName());
             startDateTextView.setText(workPlace.getStartDate());
             endDateTextView.setText(Objects.equals(workPlace.getEndDate(), indefiniteDate.toString()) ? "미정" : formatter.toString());
 
             // detailLayout setting
-            detailsLayout.setBackgroundColor(Color.parseColor(workPlace.getColorHex()));
+
             industryTextView.setText(workPlace.getType());
             moneyTextView.setText(decimalFormatter.format(usualPay));
             juhyuTextView.setText(workPlace.isJuhyu() ? "주휴수당 있음" : "주휴수당 없음");
