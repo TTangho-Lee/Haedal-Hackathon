@@ -1,6 +1,7 @@
 package com.example.parttimecalander.home.ui.summationmonth;
 
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,11 @@ import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.MainActivity;
 import com.example.parttimecalander.R;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
@@ -52,6 +58,7 @@ public class SummationMonthFragment extends Fragment {
     public information[] array=new information[1000];
     List<RecyclerItem> items=new ArrayList<>();
     public RecyclerView recyclerView;
+
     public static SummationMonthFragment newInstance() {
         return new SummationMonthFragment();
     }
@@ -131,7 +138,6 @@ public class SummationMonthFragment extends Fragment {
 
         // TODO: Use the ViewModel
     }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -143,6 +149,14 @@ public class SummationMonthFragment extends Fragment {
         SummationMonthAdapter adapter = new SummationMonthAdapter(items);
         recyclerView.setAdapter(adapter);
         return view;
+    }
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        PieChart pieChart = view.findViewById(R.id.pie_chart_money);
+
+
+
     }
     public static class information{
         int place_id;
@@ -186,4 +200,38 @@ public class SummationMonthFragment extends Fragment {
         return daysInWeeks.stream().mapToInt(i -> i).toArray();
     }
 
+    public void setPieChart(PieChart pieChart){
+        //TODO : 파이차트 데이터 채우기
+        //sample data, 주별 월급 항목으로 파이차트 만들 것
+        // 예시 데이터: 주별 월급 항목 (각 항목의 값은 예시값)
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(5000f, "Week 1"));
+        entries.add(new PieEntry(4000f, "Week 2"));
+        entries.add(new PieEntry(6000f, "Week 3"));
+        entries.add(new PieEntry(3000f, "Week 4"));
+
+        // 데이터 세트 설정
+        PieDataSet dataSet = new PieDataSet(entries, "Weekly Salary");
+        // 색상 설정 (각 항목에 맞는 색상)
+        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);  // 또는 직접 색상 배열 설정 가능
+
+        // PieData 설정
+        PieData pieData = new PieData(dataSet);
+
+        // PieChart에 데이터 설정
+        pieChart.setData(pieData);
+
+        // 그래프 애니메이션
+        pieChart.animateY(1000);
+
+        // 불필요한 항목 숨기기 (원형 그래프에서 텍스트나 레이블을 숨기고 싶을 경우)
+        pieChart.setUsePercentValues(true);  // 퍼센트 표시
+        pieChart.setEntryLabelColor(Color.WHITE);  // 레이블 색상
+        pieChart.setEntryLabelTextSize(12f);  // 레이블 글씨 크기
+
+        // 파이차트 설정 (예: 범례, 홀 색상 등)
+        pieChart.getLegend().setEnabled(true);  // 범례 표시
+        pieChart.setDrawHoleEnabled(true);  // 파이차트 가운데 구멍 그리기 (옵션)
+        pieChart.setHoleColor(Color.TRANSPARENT);  // 가운데 구멍 색상 투명하게 설정
+    }
 }

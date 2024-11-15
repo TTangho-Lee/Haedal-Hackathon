@@ -63,14 +63,12 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <!-- TODO : 차트 추가 -->
-    <TextView
-        android:id="@+id/time_gragh"
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pie_chart_money"
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:layout_margin="16dp"
         android:background="@color/gray"
-        android:text="월별 그래프"
-        android:gravity="center_vertical|center_horizontal"
         app:layout_constraintTop_toBottomOf="@id/time_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -85,8 +83,18 @@
         android:text="근무지별 요약"
         android:textSize="20sp"
         android:fontFamily="@font/font_bold"
-        app:layout_constraintTop_toBottomOf="@id/time_gragh"
+        app:layout_constraintTop_toBottomOf="@id/pie_chart_money"
         app:layout_constraintStart_toStartOf="@+id/recyclerView"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/workplace_summation"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toBottomOf="@id/summation_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
