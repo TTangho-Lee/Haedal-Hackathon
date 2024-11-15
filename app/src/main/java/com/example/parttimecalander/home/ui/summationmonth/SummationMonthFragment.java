@@ -44,11 +44,12 @@ public class SummationMonthFragment extends Fragment {
     private int month;
     private SummationViewModel viewModel;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public information[] array=new information[1000];
 
     public static SummationMonthFragment newInstance() {
         return new SummationMonthFragment();
     }
-    public information[] array=new information[1000];
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +87,41 @@ public class SummationMonthFragment extends Fragment {
         }
         //array배열에 각각 근무지 아이디와 각 주마다 며칠씩 있는지, 해당 근무지에서 1일~30(31)일까지 각각 몇초 일했는지 저장해놓음
 
-        
+        int all_time=0;                                                                //전체 시간
+        double all_money=0;                                                            //전체 돈
+        for(int i=0;i<placeList.size();i++){
+            String placeName=placeDao.getByID(array[i].place_id).placeName;            //근무지명
+            double normal_money=0;                                                     //기본수당
+            double over_money=0;                                                       //주휴수당
+            int pay=placeDao.getByID(array[i].place_id).usualPay;
+            int normal_second=0;
+            int over_second=0;
+            int date=1;
+            for(int j=0;j<array[i].num_of_day.length;j++){
+                int second_per_week=0;
+                for(int k=0;k<array[i].num_of_day[j];k++){
+                    second_per_week+=array[i].time_per_day[date++];
+                }
+                if(second_per_week>=54000){
+                    normal_second+=54000;
+                    over_second+=(second_per_week-54000);
+                }
+                else{
+                    normal_second+=second_per_week;
+                }
+            }
+            if(placeDao.getByID(array[i].place_id).isJuhyu){
+                normal_money=normal_second*pay/60/60;
+                over_money=over_second*pay*1.5/60/60;
+            }
+            else{
+                normal_money=(normal_second+over_second)*pay/60/60;
+                over_money=0;
+            }
+            all_time+=(normal_second+over_second)/60/60;
+            all_money+=normal_money+over_money;
+        }
+
 
         viewModel = new ViewModelProvider(this).get(SummationViewModel.class);
 

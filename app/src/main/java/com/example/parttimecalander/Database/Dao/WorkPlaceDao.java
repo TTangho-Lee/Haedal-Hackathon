@@ -20,4 +20,6 @@ public interface WorkPlaceDao {
     void setDeleteData(WorkPlace data);
     @Query("SELECT * FROM place")
     List<WorkPlace> getDataAll();
+    @Query("SELECT * FROM place WHERE place.ID==:h")
+    WorkPlace getByID(int h);
 }
