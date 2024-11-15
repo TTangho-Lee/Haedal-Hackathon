@@ -95,7 +95,7 @@ public class SummationMonthFragment extends Fragment {
         //array배열에 각각 근무지 아이디와 각 주마다 며칠씩 있는지, 해당 근무지에서 1일~30(31)일까지 각각 몇초 일했는지 저장해놓음
 
 
-        int all_time=0;                                                                //전체 시간 
+        int all_time=0;                                                                //전체 시간
         double all_money=0;                                                            //전체 돈
         for(int i=0;i<placeList.size();i++){
             String placeName=placeDao.getByID(array[i].place_id).placeName;            //근무지명
