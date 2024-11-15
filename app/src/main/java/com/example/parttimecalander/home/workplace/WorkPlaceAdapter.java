@@ -59,27 +59,27 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.Work
         public void bind(WorkPlace workPlace) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
             DecimalFormat decimalFormatter = new DecimalFormat("###,###");
-            int usualPay = workPlace.getUsualPay();
+            int usualPay = workPlace.usualPay;
 
             // titleLayout setting
 
-            titleTextView.setText(workPlace.getPlaceName());
-            startDateTextView.setText(workPlace.getStartDate());
-            endDateTextView.setText(Objects.equals(workPlace.getEndDate(), indefiniteDate.toString()) ? "미정" : formatter.toString());
+            titleTextView.setText(workPlace.placeName);
+            startDateTextView.setText(workPlace.startDate);
+            endDateTextView.setText(Objects.equals(workPlace.endDate, indefiniteDate.toString()) ? "미정" : formatter.toString());
 
             // detailLayout setting
 
-            industryTextView.setText(workPlace.getType());
+            industryTextView.setText(workPlace.type);
             moneyTextView.setText(decimalFormatter.format(usualPay));
-            juhyuTextView.setText(workPlace.isJuhyu() ? "주휴수당 있음" : "주휴수당 없음");
+            juhyuTextView.setText(workPlace.isJuhyu ? "주휴수당 있음" : "주휴수당 없음");
 
             // TODO: 리니어레이아웃에 "출근요일: 출근시간 - 퇴근시간"인 텍스트 뷰 동적으로 만들어서 표시하기
 
-            detailsLayout.setVisibility(workPlace.isExpanded() ? View.VISIBLE : View.GONE);
+            detailsLayout.setVisibility(workPlace.isExpanded ? View.VISIBLE : View.GONE);
 
             // 클릭 시 아이템 확장 및 축소
             itemView.setOnClickListener(v -> {
-                workPlace.setExpanded(!workPlace.isExpanded());
+                workPlace.isExpanded=!workPlace.isExpanded;
                 notifyItemChanged(getAdapterPosition());
             });
         }

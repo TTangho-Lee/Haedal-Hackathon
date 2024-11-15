@@ -22,4 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ParttimeCalander"
 include(":app")
- 
+include(":myapplication")

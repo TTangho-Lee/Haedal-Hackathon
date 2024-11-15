@@ -7,14 +7,25 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.room.Room;
 
+import com.example.parttimecalander.Database.Dao.WorkDailyDao;
+import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
+import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
+import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
+import com.example.parttimecalander.Database.WorkDaily;
+import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.databinding.FragmentSecondBinding;
+import com.example.parttimecalander.home.ui.summationmonth.SummationMonthFragment;
 import com.example.parttimecalander.home.workplace.WorkPlaceActivity;
 
 
 public class SecondFragment extends Fragment {
     private FragmentSecondBinding binding;
-
+    private WorkDailyDatabase dailyDatabase;
+    private WorkPlaceDatabase placeDatabase;
+    private WorkDailyDao dailyDao;
+    private WorkPlaceDao placeDao;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -26,10 +37,60 @@ public class SecondFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        dailyDatabase= Room.databaseBuilder(
+                        requireContext(), WorkDailyDatabase.class,"dailyDatabase")
+                .allowMainThreadQueries()
+                .build();
+        dailyDao=dailyDatabase.workDailyDao();
+        placeDatabase= Room.databaseBuilder(
+                        requireContext(), WorkPlaceDatabase.class,"placeDatabase")
+                .allowMainThreadQueries()
+                .build();
+        placeDao=placeDatabase.workPlaceDao();
+
+        WorkPlace workPlace1=new WorkPlace();
+        workPlace1.placeName="GS25";
+        workPlace1.isJuhyu=true;
+        workPlace1.type="편의점";
+        workPlace1.isExpanded=false;
+        workPlace1.usualPay=10000;
+        workPlace1.ColorHex="#888888";
+        placeDao.setInsertData(workPlace1);
+
+        WorkPlace workPlace2=new WorkPlace();
+        workPlace2.placeName="CU";
+        workPlace2.isJuhyu=true;
+        workPlace2.type="편의점";
+        workPlace2.isExpanded=false;
+        workPlace2.usualPay=20000;
+        workPlace2.ColorHex="#444444";
+        placeDao.setInsertData(workPlace2);
+
+        WorkDaily work1=new WorkDaily();
+        work1.placeId=placeDao.getDataAll().get(0).ID;
+        work1.startTime="2024-11-16 20:00:00";
+        work1.endTime="2024-11-16 21:00:00";
+        dailyDao.setInsertData(work1);
+
+        WorkDaily work2=new WorkDaily();
+        work2.placeId=placeDao.getDataAll().get(0).ID;
+        work2.startTime="2024-11-17 20:00:00";
+        work2.endTime="2024-11-17 22:00:00";
+        dailyDao.setInsertData(work2);
+
+        WorkDaily work3=new WorkDaily();
+        work3.placeId=placeDao.getDataAll().get(1).ID;
+        work3.startTime="2024-11-18 20:00:00";
+        work3.endTime="2024-11-18 23:00:00";
+        dailyDao.setInsertData(work3);
+
 
         binding.buttonSecond.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), WorkPlaceActivity.class);
-            startActivity(intent);
+            Fragment summationMonthFragment = new SummationMonthFragment();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_main, summationMonthFragment)  // 해당 Activity 내 프래그먼트 컨테이너
+                    .addToBackStack(null)
+                    .commit();
         });
     }
 
