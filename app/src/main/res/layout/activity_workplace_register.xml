@@ -48,6 +48,8 @@
             app:layout_constraintStart_toEndOf="@id/back"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- contents -->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content_box"
         android:layout_width="0dp"
