@@ -1,4 +1,4 @@
-package com.example.parttimecalander.timerCalander;
+package com.example.parttimecalander.calander;
 
 import android.os.Bundle;
 
@@ -9,11 +9,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.parttimecalander.R;
 
-public class TimerCalanderActivity extends AppCompatActivity {
+public class CalanderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timer_calander);
+        setContentView(R.layout.activity_calander);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

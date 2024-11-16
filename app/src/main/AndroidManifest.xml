@@ -22,7 +22,7 @@
             android:name=".home.SummationActivity"
             android:exported="false" />
         <activity
-            android:name=".timerCalander.TimerCalanderActivity"
+            android:name=".calander.CalanderActivity"
             android:exported="false" />
         <activity
             android:name=".home.HomeActivity"

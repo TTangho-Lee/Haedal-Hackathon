@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.navigation.fragment)
     implementation(libs.appcompat)
+    implementation("com.github.prolificinteractive:material-calendarview:2.0.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
