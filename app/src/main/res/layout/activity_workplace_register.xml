@@ -339,6 +339,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/register_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/background_button_black"
