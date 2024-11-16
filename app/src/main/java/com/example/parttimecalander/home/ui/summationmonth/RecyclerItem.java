@@ -1,6 +1,9 @@
 package com.example.parttimecalander.home.ui.summationmonth;
 
-public class RecyclerItem {
+import java.io.Serializable;
+
+
+public class RecyclerItem implements Serializable{
     public String name;
     public int[][] worked_time;
     public boolean juhyu;

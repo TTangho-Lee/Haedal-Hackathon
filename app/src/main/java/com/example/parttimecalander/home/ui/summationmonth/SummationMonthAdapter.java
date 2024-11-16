@@ -80,15 +80,13 @@ public class SummationMonthAdapter extends RecyclerView.Adapter<SummationMonthAd
         holder.textviews[5].setText(String.format("(%.1f시간)", normal_hour+over_hour));
         holder.itemView.setOnClickListener(v->{
             Bundle bundle = new Bundle();
-            bundle.putSerializable("item_data", (Serializable) item);
+            bundle.putSerializable("item", item);
 
             // 새 Fragment로 이동
             FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
             SummationWeekFragment detailFragment = new SummationWeekFragment();
             detailFragment.setArguments(bundle);  // Bundle을 Fragment에 전달
-            transaction.replace(R.id.nav_host_fragment_content_main, detailFragment);  // Fragment 교체
-            transaction.addToBackStack(null);  // 백스택에 추가 (뒤로가기 시 이전 화면으로 돌아갈 수 있음)
-            transaction.commit();
+            transaction.replace(R.id.nav_host_fragment_content_main, detailFragment);
         });
     }
 

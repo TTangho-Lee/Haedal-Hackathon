@@ -88,7 +88,7 @@ public class SummationWeekFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         // 전달된 데이터 받기
         if (getArguments() != null) {
-            item = (RecyclerItem) getArguments().getSerializable("item_data");
+            item = (RecyclerItem) getArguments().getSerializable("item");
         }
 
         // 레이아웃 설정
