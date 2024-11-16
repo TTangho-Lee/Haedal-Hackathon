@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,15 +39,7 @@ import java.util.Locale;
  */
 public class SummationWeekFragment extends Fragment {
 
-    private WorkDailyDatabase dailyDatabase;
-    private WorkPlaceDatabase placeDatabase;
-    private WorkDailyDao dailyDao;
-    private WorkPlaceDao placeDao;
-    private int year;
-    private int month;
-    private SummationViewModel viewModel;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    public SummationMonthFragment.information[] array=new SummationMonthFragment.information[1000];
+    RecyclerItem item;
 
     // TODO: Rename and change types of parameters
     private static final String ARG_PARAM1 = "param1";
@@ -93,8 +86,17 @@ public class SummationWeekFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_summation_week, container, false);
+        // 전달된 데이터 받기
+        if (getArguments() != null) {
+            item = (RecyclerItem) getArguments().getSerializable("item_data");
+        }
+
+        // 레이아웃 설정
+        View view = inflater.inflate(R.layout.fragment_summation_week, container, false);
+
+
+
+        return view;
     }
 
 }
