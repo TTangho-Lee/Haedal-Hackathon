@@ -8,19 +8,14 @@
     android:padding="12dp"
     tools:context=".home.workplace.WorkPlaceRegisterActivity">
 
-    <!-- Guideline을 사용하여 지점 설정 -->
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_50"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/title_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:paddingHorizontal="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -55,11 +50,18 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
-        android:paddingVertical="12dp"
+        android:padding="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_box"
         app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_50"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
 
         <!-- Guideline을 사용하여 지점 설정 -->
         <androidx.constraintlayout.widget.Guideline
@@ -95,9 +97,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="8dp"
-                android:paddingTop="7dp"
-                android:paddingBottom="8dp"
-                android:layout_marginTop="4dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="11dp"
+                android:layout_marginTop="12dp"
                 android:hint="근무지명을 입력해주세요"
                 android:textSize="14sp"
                 android:fontFamily="@font/font_main"
@@ -106,6 +108,284 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_color"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingEnd="4dp"
+            android:paddingStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline_65"
+            app:layout_constraintTop_toTopOf="parent">
+            <TextView
+                android:id="@+id/title_color"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="3dp"
+                android:text="컬러"
+                android:textSize="18sp"
+                android:fontFamily="@font/font_bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+            <Spinner
+                android:id="@+id/content_color"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="8.5dp"
+                android:layout_marginTop="12dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/font_main"
+                android:background="@drawable/background_editText"
+                app:layout_constraintTop_toBottomOf="@id/title_color"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingHorizontal="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/container_workplace_name">
+            <TextView
+                android:id="@+id/title_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="3dp"
+                android:text="업종"
+                android:textSize="18sp"
+                android:fontFamily="@font/font_bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+            <Spinner
+                android:id="@+id/content_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="8.5dp"
+                android:layout_marginTop="12dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/font_main"
+                android:background="@drawable/background_editText"
+                app:layout_constraintTop_toBottomOf="@id/title_type"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_salary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guideline_50"
+            app:layout_constraintTop_toBottomOf="@id/container_type">
+            <TextView
+                android:id="@+id/title_salary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="3dp"
+                android:text="시급"
+                android:textSize="18sp"
+                android:fontFamily="@font/font_bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+            <EditText
+                android:id="@+id/content_salary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="11dp"
+                android:layout_marginTop="12dp"
+                android:hint="원"
+                android:textSize="14sp"
+                android:textAlignment="textEnd"
+                android:fontFamily="@font/font_main"
+                android:background="@drawable/background_editText"
+                app:layout_constraintTop_toBottomOf="@id/title_salary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_juhyu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingEnd="4dp"
+            android:paddingStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline_50"
+            app:layout_constraintTop_toBottomOf="@id/container_type">
+            <TextView
+                android:id="@+id/title_juhyu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="3dp"
+                android:text="주휴수당"
+                android:textSize="18sp"
+                android:fontFamily="@font/font_bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+            <!-- RadioGroup -->
+            <RadioGroup
+                android:id="@+id/content_juhyu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/title_juhyu"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <!-- RadioButton: 있음 -->
+                <RadioButton
+                    android:id="@+id/radioButton_yes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="있음"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/font_main"
+                    android:checked="true"/> <!-- 기본 선택 -->
+
+                <!-- RadioButton: 없음 -->
+                <RadioButton
+                    android:id="@+id/radioButton_no"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/font_main"
+                    android:text="없음" />
+            </RadioGroup>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_workstart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@id/guideline_50"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/container_salary">
+            <TextView
+                android:id="@+id/title_workstart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="3dp"
+                android:text="근무시작일"
+                android:textSize="18sp"
+                android:fontFamily="@font/font_bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+            <Spinner
+                android:id="@+id/content_workstart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="8.5dp"
+                android:layout_marginTop="12dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/font_main"
+                android:background="@drawable/background_editText"
+                app:layout_constraintTop_toBottomOf="@id/title_workstart"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_workend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingEnd="4dp"
+            android:paddingStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/guideline_50"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/container_salary">
+            <TextView
+                android:id="@+id/title_workend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="3dp"
+                android:text="근무종료일"
+                android:textSize="18sp"
+                android:fontFamily="@font/font_bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+            <Spinner
+                android:id="@+id/content_workend"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="8.5dp"
+                android:layout_marginTop="12dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/font_main"
+                android:background="@drawable/background_editText"
+                app:layout_constraintTop_toBottomOf="@id/title_workend"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_button_black"
+            android:text="근무지 등록하기"
+            android:textSize="18sp"
+            android:fontFamily="@font/font_main"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- 구분선 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/background_line_gray"
+            app:layout_constraintTop_toBottomOf="@id/container_workplace_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/background_line_gray"
+            app:layout_constraintTop_toBottomOf="@id/container_type"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/background_line_gray"
+            app:layout_constraintTop_toBottomOf="@id/container_salary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/background_line_gray"
+            app:layout_constraintTop_toBottomOf="@id/container_workstart"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
