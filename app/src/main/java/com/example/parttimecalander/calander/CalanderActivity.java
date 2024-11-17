@@ -53,6 +53,7 @@ public class CalanderActivity extends AppCompatActivity {
         //2. 날짜를 선택하면 그 날짜의 일정이 아래쪽 리사이클러 뷰에 표시됨
         mcv_month.setOnDateChangedListener((widget, date, selected) -> {
             int year = date.getYear(), month = date.getMonth(), day = date.getDay();
+            tv_date.setText(String.format("%d-%d-%d",year,month,day));
             Toast.makeText(this, "date: " + date, Toast.LENGTH_SHORT).show();
 
             //날짜 받아와서 데이터베이스의 그 날짜의 일정을 아래쪽 리사이클러 뷰에다 표기
@@ -73,7 +74,7 @@ public class CalanderActivity extends AppCompatActivity {
             // 데이터 조회 및 어댑터 설정을 위한 스레드 시작
 
             //TODO: year, month, day에 있는 일정의 근무지만 가져올 것
-            //List<WorkPlace> places = workPlaceDao.getDataAll();
+            List<WorkPlace> places = workPlaceDao.getDataAll();
 
             Log.d("ww",""+places.size());
             // 어댑터 설정

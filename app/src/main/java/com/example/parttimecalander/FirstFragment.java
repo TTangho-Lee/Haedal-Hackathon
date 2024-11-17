@@ -61,6 +61,10 @@ public class FirstFragment extends Fragment {
         // 달력 설정
         calendarView.setTopbarVisible(false);
         calendarView.addDecorator(new EventDecorator(Color.RED, Collections.singleton(CalendarDay.today())));
+        calendarView.setOnDateChangedListener((widget, date, selected)->{
+            int year = date.getYear(), month = date.getMonth(), day = date.getDay();
+            tvTest.setText(String.format("%d-%d-%d",year,month,day));
+        });
     }
 
     private void setWeekStartEnd(){
