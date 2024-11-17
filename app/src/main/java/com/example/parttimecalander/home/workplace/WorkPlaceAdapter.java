@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
-public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.WorkPlaceViewHolder> {
+public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.ViewHolder> {
     private final List<WorkPlace> workPlaces;
 
     public WorkPlaceAdapter(List<WorkPlace> workPlaces) {
@@ -27,74 +27,64 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.Work
     }
 
     // ViewHolder 정의
-    public class WorkPlaceViewHolder extends RecyclerView.ViewHolder {
-        private final LocalDate indefiniteDate = LocalDate.of(9999, 12, 31);
-
-        // title 구성
-        private final View colorView;
-        private final TextView titleTextView;
-        private final TextView startDateTextView;
-        private final TextView endDateTextView;
-
-        private final View detailsLayout;
-        private final TextView industryTextView;
-        private final TextView moneyTextView;
-        private final TextView juhyuTextView;
-        private final LinearLayout workdayBox;
-
-        public WorkPlaceViewHolder(View itemView) {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private LocalDate indefiniteDate = LocalDate.of(9999, 12, 31);
+        private View colorView;
+        private TextView titleTextView;
+        private TextView startDateTextView;
+        private TextView endDateTextView;
+        private View detailsLayout;
+        private TextView industryTextView;
+        private TextView moneyTextView;
+        private TextView juhyuTextView;
+        private LinearLayout workdayBox;
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             colorView = itemView.findViewById(R.id.workplace_color);
             titleTextView = itemView.findViewById(R.id.workplace_title);
             startDateTextView = itemView.findViewById(R.id.workplace_start);
             endDateTextView = itemView.findViewById(R.id.workplace_end);
-
             detailsLayout = itemView.findViewById(R.id.container_industry);
             industryTextView = itemView.findViewById(R.id.content_industry);
             moneyTextView = itemView.findViewById(R.id.content_money);
             juhyuTextView = itemView.findViewById(R.id.juhyu_money);
             workdayBox = itemView.findViewById(R.id.box_workday);
         }
-
-        public void bind(WorkPlace workPlace) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-            DecimalFormat decimalFormatter = new DecimalFormat("###,###");
-            int usualPay = workPlace.usualPay;
-
-            // titleLayout setting
-
-            titleTextView.setText(workPlace.placeName);
-            startDateTextView.setText(workPlace.startDate);
-            endDateTextView.setText(Objects.equals(workPlace.endDate, indefiniteDate.toString()) ? "미정" : formatter.toString());
-
-            // detailLayout setting
-
-            industryTextView.setText(workPlace.type);
-            moneyTextView.setText(decimalFormatter.format(usualPay));
-            juhyuTextView.setText(workPlace.isJuhyu ? "주휴수당 있음" : "주휴수당 없음");
-
-            // TODO: 리니어레이아웃에 "출근요일: 출근시간 - 퇴근시간"인 텍스트 뷰 동적으로 만들어서 표시하기
-
-            detailsLayout.setVisibility(workPlace.isExpanded ? View.VISIBLE : View.GONE);
-
-            // 클릭 시 아이템 확장 및 축소
-            itemView.setOnClickListener(v -> {
-                workPlace.isExpanded=!workPlace.isExpanded;
-                notifyItemChanged(getAdapterPosition());
-            });
-        }
     }
 
     @NonNull
     @Override
-    public WorkPlaceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_workplace, parent, false);
-        return new WorkPlaceViewHolder(view);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_workplace, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WorkPlaceViewHolder holder, int position) {
-        holder.bind(workPlaces.get(position));
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        DecimalFormat decimalFormatter = new DecimalFormat("###,###");
+        int usualPay = workPlaces.get(position).usualPay;
+        holder.titleTextView.setText(workPlaces.get(position).placeName);
+        if(workPlaces.get(position).startDate==null || workPlaces.get(position).startDate.trim().isEmpty()){
+            holder.startDateTextView.setText("0000-00-00");
+        }else{
+            holder.startDateTextView.setText(workPlaces.get(position).startDate);
+        }
+        if(workPlaces.get(position).endDate==null || workPlaces.get(position).endDate.trim().isEmpty()){
+            holder.endDateTextView.setText("0000-00-00");
+        }else{
+            holder.endDateTextView.setText(workPlaces.get(position).endDate);
+        }
+
+        holder.industryTextView.setText(workPlaces.get(position).type);
+        holder.moneyTextView.setText(decimalFormatter.format(usualPay));
+        holder.juhyuTextView.setText(workPlaces.get(position).isJuhyu ? "주휴수당 있음" : "주휴수당 없음");
+        // TODO: 리니어레이아웃에"출근요일: 출근시간- 퇴근시간"인 텍스트 뷰 동적으로 만들어서 표시하기
+        holder.detailsLayout.setVisibility(workPlaces.get(position).isExpanded ? View.VISIBLE : View.GONE);
+
+        holder.itemView.setOnClickListener(v -> {
+                    workPlaces.get(position).isExpanded=!workPlaces.get(position).isExpanded;
+        notifyItemChanged(holder.getAdapterPosition());});
     }
 
     @Override

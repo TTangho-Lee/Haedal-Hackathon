@@ -27,7 +27,6 @@ public class SummationMonthAdapter extends RecyclerView.Adapter<SummationMonthAd
     public SummationMonthAdapter(List<RecyclerItem> items, AppCompatActivity activity) {
         this.activity = activity;
         this.items = items;
-        Log.d("dd",""+items.size());
     }
 
     // ViewHolder 정의
