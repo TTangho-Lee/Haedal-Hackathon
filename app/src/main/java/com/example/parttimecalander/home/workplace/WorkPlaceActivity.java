@@ -15,6 +15,7 @@ import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.R;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class WorkPlaceActivity extends AppCompatActivity {
 
@@ -29,28 +30,20 @@ public class WorkPlaceActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Room 데이터베이스 초기화
-        WorkPlaceDatabase database = Room.databaseBuilder(
-                getApplicationContext(),
-                WorkPlaceDatabase.class, "place"
-        ).fallbackToDestructiveMigration().allowMainThreadQueries().build();
+        WorkPlaceDatabase database=WorkPlaceDatabase.getDatabase(this);
 
         WorkPlaceDao workPlaceDao = database.workPlaceDao();
 
 
 
-
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                // 데이터 조회 및 어댑터 설정을 위한 스레드 시작
-                List<WorkPlace> places = workPlaceDao.getDataAll();
-                // 어댑터 설정
-                WorkPlaceAdapter adapter = new WorkPlaceAdapter(places);
-                recyclerView.setAdapter(adapter);
-            }
+        Executors.newSingleThreadExecutor().execute(() -> {
+            // 데이터 조회 및 어댑터 설정을 위한 스레드 시작
+            List<WorkPlace> places = workPlaceDao.getDataAll();
+            // 어댑터 설정
+            WorkPlaceAdapter adapter = new WorkPlaceAdapter(places);
+            recyclerView.setAdapter(adapter);
         });
+
 
 
     }
