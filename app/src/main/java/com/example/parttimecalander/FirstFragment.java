@@ -1,19 +1,21 @@
 package com.example.parttimecalander;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.time.LocalDate;
+import org.threeten.bp.LocalDate;
+import java.util.Collections;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.parttimecalander.calander.EventDecorator;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
@@ -22,8 +24,8 @@ public class FirstFragment extends Fragment {
 
     TextView tvTest;
     private MaterialCalendarView calendarView;
-    private  CalendarDay today, sunday, saturday;
-
+    private CalendarDay sunday;
+    private CalendarDay saturday;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,11 +60,10 @@ public class FirstFragment extends Fragment {
 
         // 달력 설정
         calendarView.setTopbarVisible(false);
+        calendarView.addDecorator(new EventDecorator(Color.RED, Collections.singleton(CalendarDay.today())));
     }
 
     private void setWeekStartEnd(){
-        today = CalendarDay.today();
-
         LocalDate td_local = LocalDate.now();
         LocalDate sun, sat;
 
