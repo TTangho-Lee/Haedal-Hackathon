@@ -47,6 +47,19 @@
             android:fontFamily="@font/font_bold"
             app:layout_constraintTop_toTopOf="parent"/>
 
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mcv_showOtherDates="all"
+            app:mcv_selectionColor="#CCF"
+            app:mcv_calendarMode="week"
+            app:mcv_showWeekDays="true"
+            app:layout_constraintTop_toBottomOf="@id/calander_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- 월별 요약 -->

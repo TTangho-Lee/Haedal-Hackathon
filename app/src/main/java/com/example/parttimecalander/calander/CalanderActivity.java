@@ -20,5 +20,8 @@ public class CalanderActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        //TODO: 1. 날짜에 일정이 있으면 날짜 밑에 점으로 표시되게 하기
+        //TODO: 2. 날짜를 클릭하면 캘린더 아래쪽에 해당하는 날짜의 일정이 시간순으로 표시되게 하기
     }
 }
