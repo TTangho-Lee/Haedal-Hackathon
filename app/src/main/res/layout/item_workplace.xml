@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="16dp">
 
     <!-- 근무지명 -->
@@ -85,7 +85,7 @@
     <!-- 근무지 상세정보 -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_industry"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_white_border_10"
         android:layout_marginTop="16dp"

@@ -3,10 +3,11 @@ package com.example.parttimecalander.Database;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity(tableName = "place")
-public class WorkPlace {
+public class WorkPlace implements Serializable {
     @PrimaryKey(autoGenerate = true)
     public int ID;                         //기본키
     public String placeName;               //근무지명

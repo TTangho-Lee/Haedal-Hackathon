@@ -2,6 +2,7 @@ package com.example.parttimecalander.home.workplace;
 
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
@@ -39,6 +40,7 @@ public class WorkPlaceActivity extends AppCompatActivity {
         Executors.newSingleThreadExecutor().execute(() -> {
             // 데이터 조회 및 어댑터 설정을 위한 스레드 시작
             List<WorkPlace> places = workPlaceDao.getDataAll();
+            Log.d("ww",""+places.size());
             // 어댑터 설정
             WorkPlaceAdapter adapter = new WorkPlaceAdapter(places);
             recyclerView.setAdapter(adapter);

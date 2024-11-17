@@ -19,6 +19,7 @@ import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.databinding.FragmentSecondBinding;
+import com.example.parttimecalander.home.HomeActivity;
 import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
 import com.example.parttimecalander.home.ui.summationmonth.SummationMonthAdapter;
 import com.example.parttimecalander.home.ui.summationmonth.SummationMonthFragment;
@@ -93,11 +94,8 @@ public class SecondFragment extends Fragment {
 
 
             binding.buttonSecond.setOnClickListener(v -> {
-                Fragment summationMonthFragment = new SummationMonthFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.nav_host_fragment_content_main, summationMonthFragment)  // 해당 Activity 내 프래그먼트 컨테이너
-                        .addToBackStack(null)
-                        .commit();
+                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                startActivity(intent);
             });
         });
 
