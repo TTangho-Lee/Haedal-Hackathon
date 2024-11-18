@@ -5,17 +5,14 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager2.widget.ViewPager2;
+
 
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.home.ui.summationmonth.SummationMonthFragment;
-import com.example.parttimecalander.home.ui.summationmonth.SummationViewModel;
+
 
 public class SummationActivity extends AppCompatActivity {
 
-    private SummationViewModel summationViewModel;
-    private ViewPager2 viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

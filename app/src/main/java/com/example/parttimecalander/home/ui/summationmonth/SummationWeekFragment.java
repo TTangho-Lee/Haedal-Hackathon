@@ -70,16 +70,6 @@ public class SummationWeekFragment extends Fragment {
         }
 
 
-
-
-
-
-
-
-
-
-
-
     }
 
     @Nullable

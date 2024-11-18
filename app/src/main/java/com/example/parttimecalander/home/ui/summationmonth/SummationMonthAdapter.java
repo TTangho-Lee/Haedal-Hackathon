@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +24,9 @@ public class SummationMonthAdapter extends RecyclerView.Adapter<SummationMonthAd
     private List<RecyclerItem> items;
     private AppCompatActivity activity;
 
+    public interface onItemClickListner{
+        void onItemClick(RecyclerItem item);
+    }
     // 생성자
     public SummationMonthAdapter(List<RecyclerItem> items, AppCompatActivity activity) {
         this.activity = activity;
@@ -72,20 +76,24 @@ public class SummationMonthAdapter extends RecyclerView.Adapter<SummationMonthAd
                 normal_hour+=second;
             }
         }
-        holder.textviews[1].setText(String.format("%.1f원", normal_hour*item.pay));
-        holder.textviews[2].setText(String.format("(%.1f시간)", normal_hour));
-        holder.textviews[3].setText(String.format("%.1f원", over_hour*item.pay*1.5));
+        holder.textviews[1].setText(String.format("%.1f원", normal_hour*item.pay+over_hour*item.pay));
+        holder.textviews[2].setText(String.format("(%.1f시간)", normal_hour+over_hour));
+        holder.textviews[3].setText(String.format("%.1f원", over_hour*item.pay*0.5));
         holder.textviews[4].setText(String.format("%.1f원", normal_hour*item.pay+over_hour*item.pay*1.5));
         holder.textviews[5].setText(String.format("(%.1f시간)", normal_hour+over_hour));
         holder.itemView.setOnClickListener(v->{
             Bundle bundle = new Bundle();
             bundle.putSerializable("item", item);
 
-            // 새 Fragment로 이동
-            FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-            SummationWeekFragment detailFragment = new SummationWeekFragment();
-            detailFragment.setArguments(bundle);  // Bundle을 Fragment에 전달
-            transaction.replace(R.id.nav_host_fragment_content_main, detailFragment);
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            SummationWeekFragment fragment=new SummationWeekFragment();
+            fragment.setArguments(bundle);
+            // 프래그먼트를 컨테이너에 교체
+            fragmentTransaction.replace(R.id.viewPager, fragment);
+            fragmentTransaction.addToBackStack(null); // 뒤로가기 버튼으로 이전 상태로 돌아가기
+            fragmentTransaction.commit(); // 변경사항 적용
         });
     }
 
