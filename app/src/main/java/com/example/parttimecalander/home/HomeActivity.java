@@ -3,6 +3,7 @@ package com.example.parttimecalander.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CalendarView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,6 +43,7 @@ public class HomeActivity extends AppCompatActivity {
         //오늘을 포함한 일주일의 날짜를 선택
         setWeekStartEnd();
         //materialCalendarView 세팅
+        mcv=(MaterialCalendarView)findViewById(R.id.calendarView);
         mcv.setTopbarVisible(false);
         mcv.state().edit().setMinimumDate(sunday).setMaximumDate(saturday).commit();
 
