@@ -7,7 +7,7 @@
     tools:context=".home.SummationActivity">
 
     <!-- ViewPager2 설정 -->
-    <androidx.viewpager2.widget.ViewPager2
+    <FrameLayout
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"

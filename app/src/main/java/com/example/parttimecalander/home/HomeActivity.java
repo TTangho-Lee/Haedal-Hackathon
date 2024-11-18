@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CalendarView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import java.time.LocalDate;
+import java.util.Calendar;
 
 public class HomeActivity extends AppCompatActivity {
     CalendarDay today, sunday, saturday;
@@ -39,7 +41,19 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        ConstraintLayout monthly_summation=(ConstraintLayout)findViewById(R.id.monthly_summation);
+        monthly_summation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(HomeActivity.this,SummationActivity.class);
+                startActivity(intent);
+            }
+        });
+        TextView summation_title=(TextView)findViewById(R.id.summation_title);
+        Calendar calendar = Calendar.getInstance(); // 현재 날짜와 시간 가져오기
+        int currentMonth = calendar.get(Calendar.MONTH); // 0 = 1월, 11 = 12월
+        int currentYear = calendar.get(Calendar.YEAR);
+        summation_title.setText(currentMonth+1+"월 요약");
         //오늘을 포함한 일주일의 날짜를 선택
         setWeekStartEnd();
         //materialCalendarView 세팅
