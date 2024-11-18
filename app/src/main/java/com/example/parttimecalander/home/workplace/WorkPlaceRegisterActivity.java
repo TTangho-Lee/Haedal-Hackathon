@@ -1,5 +1,6 @@
 package com.example.parttimecalander.home.workplace;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -69,6 +70,9 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                     new_workplace.endDate=workplace_end.getSelectedItem().toString();
                     placeDao.setInsertData(new_workplace);
                 });
+                Intent intent=new Intent(WorkPlaceRegisterActivity.this, WorkPlaceActivity.class);
+                startActivity(intent);
+
             }
         });
 
