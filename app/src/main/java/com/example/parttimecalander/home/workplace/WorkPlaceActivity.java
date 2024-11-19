@@ -38,19 +38,21 @@ public class WorkPlaceActivity extends AppCompatActivity {
 
         WorkPlaceDao workPlaceDao = database.workPlaceDao();
         Button register_btn=(Button)findViewById(R.id.register_btn);
-        register_btn.setOnLongClickListener(v-> {
-            Intent intent = new Intent(WorkPlaceActivity.this, WorkPlaceRegisterActivity.class);
-            startActivity(intent);
-            return true;
-            //false 일 경우 onClick까지 같이 실행됨
+
+        register_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(WorkPlaceActivity.this, WorkPlaceRegisterActivity.class);
+                startActivity(intent);
+            }
         });
+
 
 
 
         Executors.newSingleThreadExecutor().execute(() -> {
             // 데이터 조회 및 어댑터 설정을 위한 스레드 시작
             List<WorkPlace> places = workPlaceDao.getDataAll();
-            Log.d("ww",""+places.size());
             // 어댑터 설정
             WorkPlaceAdapter adapter = new WorkPlaceAdapter(places);
             recyclerView.setAdapter(adapter);

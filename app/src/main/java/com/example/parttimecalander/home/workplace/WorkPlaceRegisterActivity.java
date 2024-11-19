@@ -220,7 +220,7 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                 //아마 무한루프 걸린듯
                 while (!calendar.getTime().after(endDate)) {
                     int currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-
+                    calendar.add(Calendar.DAY_OF_MONTH,1);
                     // 현재 요일이 dayList에 포함되어 있는지 확인
                     if (dayList.contains(currentDayOfWeek)) {
                         // 해당 요일에 대해 시작 시간과 끝 시간 추가
@@ -230,16 +230,6 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                             endTimeList.add(date + " " + endTimes[i]);
                         }
                     }
-                }
-
-                for (String startTime : startTimeList) {
-                    System.out.println(startTime);
-                }
-
-                // endTimeList 출력
-                System.out.println("End Time List:");
-                for (String endTime : endTimeList) {
-                    System.out.println(endTime);
                 }
 
                 int id = placeDao.findId(new_workplace.placeName);
