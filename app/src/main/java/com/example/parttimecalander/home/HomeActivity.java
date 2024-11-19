@@ -24,6 +24,7 @@ import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.MainActivity;
 import com.example.parttimecalander.R;
+import com.example.parttimecalander.home.resume.ResumeActivity;
 import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
 import com.example.parttimecalander.home.ui.summationmonth.SummationMonthAdapter;
 import com.example.parttimecalander.home.ui.summationmonth.SummationMonthFragment;
@@ -57,22 +58,39 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         enableEdgeToEdge();
         setContentView(R.layout.activity_home);
-        ConstraintLayout constraintLayout=(ConstraintLayout)findViewById(R.id.my_workplace);
-        constraintLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        //주별 캘린더
+        ConstraintLayout week_calendar = findViewById(R.id.week_calander);
+        week_calendar.setOnClickListener(v->{
+            Toast.makeText(HomeActivity.this, "캘린더 액티비티 구현 중", Toast.LENGTH_SHORT).show();
+        });
+
+        //월별&주별 요약
+        ConstraintLayout monthly_summation = findViewById(R.id.monthly_summation);
+        monthly_summation.setOnClickListener(v->{
+            Intent intent=new Intent(HomeActivity.this,SummationActivity.class);
+            startActivity(intent);
+        });
+
+        //나의 근무지
+        ConstraintLayout my_workplace = findViewById(R.id.my_workplace);
+        my_workplace.setOnClickListener(v->{
                 Intent intent = new Intent(HomeActivity.this, WorkPlaceActivity.class);
                 startActivity(intent);
-            }
         });
-        ConstraintLayout monthly_summation=(ConstraintLayout)findViewById(R.id.monthly_summation);
-        monthly_summation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(HomeActivity.this,SummationActivity.class);
-                startActivity(intent);
-            }
+
+        //나의 목표
+        ConstraintLayout my_goal = findViewById(R.id.my_goal);
+        my_goal.setOnClickListener(v->{
+            Toast.makeText(HomeActivity.this, "목표 액티비티 구현 중", Toast.LENGTH_SHORT).show();
         });
+
+        //나의 이력서
+        ConstraintLayout my_resume = findViewById(R.id.my_resume);
+        my_resume.setOnClickListener(v->{
+            Intent intent=new Intent(HomeActivity.this,ResumeActivity.class);
+            startActivity(intent);
+        });
+
         TextView summation_title=(TextView)findViewById(R.id.summation_title);
         Calendar calendar = Calendar.getInstance(); // 현재 날짜와 시간 가져오기
         int currentMonth = calendar.get(Calendar.MONTH); // 0 = 1월, 11 = 12월
@@ -177,9 +195,9 @@ public class HomeActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    worktime.setText(finalReal_time +"");
-                    earnmoney.setText(finalReal_money +"");
-                    willmoney.setText(finalAll_money +"");
+                    worktime.setText(finalReal_time +" 원");
+                    earnmoney.setText(finalReal_money +" 원");
+                    willmoney.setText(finalAll_money +" 원");
                 }
             });
         });

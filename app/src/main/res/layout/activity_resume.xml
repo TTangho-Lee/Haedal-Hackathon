@@ -75,7 +75,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/profile_img"
-                app:layout_constraintBottom_toBottomOf="parent">
+>
                 <TextView
                     android:id="@+id/title_person"
                     android:layout_width="match_parent"
@@ -85,6 +85,14 @@
                     android:textSize="18sp"
                     android:fontFamily="@font/font_bold"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginTop="4dp"
+                    android:src="@drawable/pencil_edit_button_svgrepo_com"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
                 <LinearLayout
                     android:id="@+id/line_name"
@@ -96,8 +104,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:src="@drawable/person_24px"/>
                     <TextView
                         android:layout_width="80dp"
@@ -236,8 +244,164 @@
                         android:textSize="16sp"
                         android:fontFamily="@font/font_main"/>
                 </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/background_line_gray"
+                app:layout_constraintTop_toBottomOf="@id/container_person"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_edu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/container_person">
+                <TextView
+                    android:id="@+id/title_edu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="3dp"
+                    android:text="학력"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/font_bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+                <LinearLayout
+                    android:id="@+id/content_edu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/title_edu"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/register_edu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:padding="8dp"
+                    android:text="학력 추가"
+                    android:textSize="12sp"
+                    android:textColor="#FF0000"
+                    android:fontFamily="@font/font_main"
+                    android:background="@drawable/background_button_black"
+                    android:backgroundTint="#FFE4E4"
+                    app:layout_constraintTop_toBottomOf="@id/content_edu"
+                    app:layout_constraintStart_toStartOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/background_line_gray"
+                app:layout_constraintTop_toBottomOf="@id/container_edu"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_cert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/container_edu">
+                <TextView
+                    android:id="@+id/title_cert"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="3dp"
+                    android:text="자격증"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/font_bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+                <LinearLayout
+                    android:id="@+id/content_cert"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/title_cert"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/register_cert"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:padding="8dp"
+                    android:text="자격증 추가"
+                    android:textSize="12sp"
+                    android:textColor="#FF0000"
+                    android:fontFamily="@font/font_main"
+                    android:background="@drawable/background_button_black"
+                    android:backgroundTint="#FFE4E4"
+                    app:layout_constraintTop_toBottomOf="@id/content_cert"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/background_line_gray"
+                app:layout_constraintTop_toBottomOf="@id/container_cert"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_self_introduction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/container_cert">
+                <TextView
+                    android:id="@+id/title_self_introduction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="3dp"
+                    android:text="자기소개서"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/font_bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/content_self_introduction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:errorEnabled="true"
+                    app:hintEnabled="true"
+                    app:hintAnimationEnabled="true"
+                    android:hint="나에 대한 소개를 자유롭게 작성해주세요."
+                    app:counterEnabled="true"
+                    app:counterMaxLength="200"
+                    app:layout_constraintTop_toBottomOf="@id/title_self_introduction"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
