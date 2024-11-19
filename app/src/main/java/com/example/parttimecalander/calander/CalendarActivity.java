@@ -6,7 +6,6 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,17 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.R;
-import com.example.parttimecalander.home.workplace.WorkPlaceAdapter;
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-public class CalanderActivity extends AppCompatActivity {
+public class CalendarActivity extends AppCompatActivity {
     //views
     MaterialCalendarView mcv_month;
     RecyclerView rcv_schedule;
@@ -35,7 +32,7 @@ public class CalanderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calander);
+        setContentView(R.layout.activity_calendar);
         //날짜 표시할 텍스트뷰
         tv_date = findViewById(R.id.title_day);
         //일정 표시할 리사이클러뷰
@@ -54,7 +51,6 @@ public class CalanderActivity extends AppCompatActivity {
         mcv_month.setOnDateChangedListener((widget, date, selected) -> {
             int year = date.getYear(), month = date.getMonth(), day = date.getDay();
             tv_date.setText(String.format("%d-%d-%d",year,month,day));
-            Toast.makeText(this, "date: " + date, Toast.LENGTH_SHORT).show();
 
             //날짜 받아와서 데이터베이스의 그 날짜의 일정을 아래쪽 리사이클러 뷰에다 표기
             setRecyclerView(year, month, day);
@@ -62,7 +58,9 @@ public class CalanderActivity extends AppCompatActivity {
         });
     }
     private void setDays(){
+        days = new HashSet<>();
         //TODO: db연결해서 일정이 있는 days를 hashset에 다 넣기
+        days.add(CalendarDay.today());
     }
     private void setRecyclerView(int year, int month, int day){
         rcv_schedule.setLayoutManager(new LinearLayoutManager(this));

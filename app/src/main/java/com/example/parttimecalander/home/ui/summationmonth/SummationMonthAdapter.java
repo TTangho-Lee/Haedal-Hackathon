@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.parttimecalander.R;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class SummationMonthAdapter extends RecyclerView.Adapter<SummationMonthAdapter.ViewHolder>{
@@ -58,6 +59,7 @@ public class SummationMonthAdapter extends RecyclerView.Adapter<SummationMonthAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        DecimalFormat df = new DecimalFormat("###,###");
         RecyclerItem item = items.get(position);
         holder.textviews[0].setText(item.name);
         double normal_hour=0;
@@ -76,10 +78,11 @@ public class SummationMonthAdapter extends RecyclerView.Adapter<SummationMonthAd
                 normal_hour+=second;
             }
         }
-        holder.textviews[1].setText(String.format("%.1f원", normal_hour*item.pay+over_hour*item.pay));
+
+        holder.textviews[1].setText(String.format(df.format((int)normal_hour*item.pay+over_hour*item.pay)) + "원");
         holder.textviews[2].setText(String.format("(%.1f시간)", normal_hour+over_hour));
-        holder.textviews[3].setText(String.format("%.1f원", over_hour*item.pay*0.5));
-        holder.textviews[4].setText(String.format("%.1f원", normal_hour*item.pay+over_hour*item.pay*1.5));
+        holder.textviews[3].setText(String.format(df.format((int)over_hour*item.pay*0.5)) + "원");
+        holder.textviews[4].setText(String.format(df.format((int)normal_hour*item.pay+over_hour*item.pay*1.5)) + "원");
         holder.textviews[5].setText(String.format("(%.1f시간)", normal_hour+over_hour));
         holder.itemView.setOnClickListener(v->{
             Bundle bundle = new Bundle();

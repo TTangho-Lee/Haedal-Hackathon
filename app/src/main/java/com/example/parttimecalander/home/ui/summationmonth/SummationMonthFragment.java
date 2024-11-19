@@ -32,6 +32,7 @@ import com.example.parttimecalander.MainActivity;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.home.workplace.WorkPlaceAdapter;
 
+import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -143,7 +144,8 @@ public class SummationMonthFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    time_text.setText(finalAll_time +"시간 일하고\n"+ finalAll_money +"원 벌었어요");
+                    DecimalFormat df = new DecimalFormat("###,###");
+                    time_text.setText(finalAll_time +"시간 일하고\n"+ df.format((int)finalAll_money) +"원 벌었어요");
                     recyclerView = view.findViewById(R.id.recyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 

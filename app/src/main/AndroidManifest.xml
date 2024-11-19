@@ -26,7 +26,7 @@
             android:name=".home.SummationActivity"
             android:exported="false" />
         <activity
-            android:name=".calander.CalanderActivity"
+            android:name=".calander.CalendarActivity"
             android:exported="false" />
         <activity
             android:name=".home.HomeActivity"
