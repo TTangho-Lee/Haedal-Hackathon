@@ -130,10 +130,8 @@
                 app:layout_constraintTop_toTopOf="parent"/>
             <Spinner
                 android:id="@+id/content_color"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="8.5dp"
                 android:layout_marginTop="12dp"
                 android:textSize="14sp"
                 android:fontFamily="@font/font_main"
@@ -141,7 +139,7 @@
                 app:layout_constraintTop_toBottomOf="@id/title_color"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
-         </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_type"
@@ -164,17 +162,14 @@
                 app:layout_constraintTop_toTopOf="parent"/>
             <Spinner
                 android:id="@+id/content_type"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="8.5dp"
                 android:layout_marginTop="12dp"
                 android:textSize="14sp"
                 android:fontFamily="@font/font_main"
                 android:background="@drawable/background_et"
                 app:layout_constraintTop_toBottomOf="@id/title_type"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -205,9 +200,11 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="11dp"
                 android:layout_marginTop="12dp"
+                android:inputType="number"
                 android:hint="원"
                 android:textSize="14sp"
                 android:textAlignment="textEnd"
+                android:textColor="@color/black"
                 android:fontFamily="@font/font_main"
                 android:background="@drawable/background_et"
                 app:layout_constraintTop_toBottomOf="@id/title_salary"
@@ -275,67 +272,57 @@
             android:layout_marginTop="20dp"
             android:paddingStart="4dp"
             android:paddingEnd="8dp"
-            app:layout_constraintEnd_toStartOf="@id/guideline_50"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/container_salary">
+
             <TextView
                 android:id="@+id/title_workstart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/font_bold"
                 android:paddingStart="3dp"
                 android:text="근무시작일"
                 android:textSize="18sp"
-                android:fontFamily="@font/font_bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-            <Spinner
-                android:id="@+id/content_workstart"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="8.5dp"
-                android:layout_marginTop="12dp"
-                android:textSize="14sp"
-                android:fontFamily="@font/font_main"
-                android:background="@drawable/background_et"
-                app:layout_constraintTop_toBottomOf="@id/title_workstart"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container_workend"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:paddingEnd="4dp"
-            android:paddingStart="8dp"
-            app:layout_constraintStart_toEndOf="@id/guideline_50"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/container_salary">
-            <TextView
-                android:id="@+id/title_workend"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="3dp"
-                android:text="근무종료일"
-                android:textSize="18sp"
-                android:fontFamily="@font/font_bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
             <Spinner
-                android:id="@+id/content_workend"
-                android:layout_width="0dp"
+                android:id="@+id/content_workstartyear"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="8.5dp"
                 android:layout_marginTop="12dp"
-                android:textSize="14sp"
-                android:fontFamily="@font/font_main"
                 android:background="@drawable/background_et"
-                app:layout_constraintTop_toBottomOf="@id/title_workend"
+                android:fontFamily="@font/font_main"
+                android:paddingHorizontal="0dp"
+                android:paddingVertical="0dp"
+                android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@id/title_workstart" />
+
+            <Spinner
+                android:id="@+id/content_workstartmonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/background_et"
+                android:fontFamily="@font/font_main"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@id/content_workstartyear"
+                app:layout_constraintEnd_toStartOf="@id/content_workstartday"
+                app:layout_constraintTop_toBottomOf="@id/title_workstart" />
+
+            <Spinner
+                android:id="@+id/content_workstartday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/background_et"
+                android:fontFamily="@font/font_main"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title_workstart" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.AppCompatButton
@@ -388,6 +375,305 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_workend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/container_workstart">
+
+            <TextView
+                android:id="@+id/title_workend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font_bold"
+                android:paddingStart="3dp"
+                android:text="근무종료일"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Spinner
+                android:id="@+id/content_workendyear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/background_et"
+                android:fontFamily="@font/font_main"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title_workend" />
+
+            <Spinner
+                android:id="@+id/content_workendmonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/background_et"
+                android:fontFamily="@font/font_main"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@id/content_workendyear"
+                app:layout_constraintEnd_toStartOf="@id/content_workendday"
+                app:layout_constraintTop_toBottomOf="@id/title_workend" />
+
+            <Spinner
+                android:id="@+id/content_workendday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/background_et"
+                android:fontFamily="@font/font_main"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title_workend" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/background_line_gray"
+            app:layout_constraintTop_toBottomOf="@id/container_workend"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            app:layout_constraintBottom_toTopOf="@+id/register_button"
+            app:layout_constraintTop_toBottomOf="@id/container_workend"
+            tools:layout_editor_absoluteX="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- 월요일 -->
+                <CheckBox
+                    android:id="@+id/checkbox_monday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="월요일"
+                    android:tag="1"/>
+
+                <LinearLayout
+                    android:id="@+id/time_monday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/start_time_monday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="시작 시간" />
+
+                    <Button
+                        android:id="@+id/end_time_monday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="끝 시간" />
+                </LinearLayout>
+
+                <!-- 화요일 -->
+                <CheckBox
+                    android:id="@+id/checkbox_tuesday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="화요일"
+                    android:tag="2"/>
+
+                <LinearLayout
+                    android:id="@+id/time_tuesday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/start_time_tuesday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="시작 시간" />
+
+                    <Button
+                        android:id="@+id/end_time_tuesday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="끝 시간" />
+                </LinearLayout>
+
+                <!-- 수요일 -->
+                <CheckBox
+                    android:id="@+id/checkbox_wednesday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="수요일"
+                    android:tag="3"/>
+
+                <LinearLayout
+                    android:id="@+id/time_wednesday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/start_time_wednesday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="시작 시간" />
+
+                    <Button
+                        android:id="@+id/end_time_wednesday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="끝 시간" />
+                </LinearLayout>
+
+                <!-- 목요일 -->
+                <CheckBox
+                    android:id="@+id/checkbox_thursday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="목요일"
+                    android:tag="4"/>
+
+                <LinearLayout
+                    android:id="@+id/time_thursday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/start_time_thursday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="시작 시간" />
+
+                    <Button
+                        android:id="@+id/end_time_thursday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="끝 시간" />
+                </LinearLayout>
+
+                <!-- 금요일 -->
+                <CheckBox
+                    android:id="@+id/checkbox_friday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="금요일"
+                    android:tag="5"/>
+
+                <LinearLayout
+                    android:id="@+id/time_friday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/start_time_friday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="시작 시간" />
+
+                    <Button
+                        android:id="@+id/end_time_friday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="끝 시간" />
+                </LinearLayout>
+
+                <!-- 토요일 -->
+                <CheckBox
+                    android:id="@+id/checkbox_saturday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="토요일"
+                    android:tag="6"/>
+
+                <LinearLayout
+                    android:id="@+id/time_saturday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/start_time_saturday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="시작 시간" />
+
+                    <Button
+                        android:id="@+id/end_time_saturday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="끝 시간" />
+                </LinearLayout>
+
+                <!-- 일요일 -->
+                <CheckBox
+                    android:id="@+id/checkbox_sunday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="일요일"
+                    android:tag="0"/>
+
+                <LinearLayout
+                    android:id="@+id/time_sunday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/start_time_sunday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="시작 시간" />
+
+                    <Button
+                        android:id="@+id/end_time_sunday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="끝 시간" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
