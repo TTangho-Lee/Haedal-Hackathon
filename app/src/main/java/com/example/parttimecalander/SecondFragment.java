@@ -51,6 +51,47 @@ public class SecondFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Executors.newSingleThreadExecutor().execute(() -> {
+            dailyDatabase=WorkDailyDatabase.getDatabase(getContext());
+            dailyDao=dailyDatabase.workDailyDao();
+            placeDatabase=WorkPlaceDatabase.getDatabase(getContext());
+            placeDao=placeDatabase.workPlaceDao();
+
+            WorkPlace workPlace1=new WorkPlace();
+            workPlace1.placeName="GS25";
+            workPlace1.isJuhyu=true;
+            workPlace1.type="편의점";
+            workPlace1.isExpanded=false;
+            workPlace1.usualPay=10000;
+            workPlace1.ColorHex="#888888";
+            placeDao.setInsertData(workPlace1);
+
+            WorkPlace workPlace2=new WorkPlace();
+            workPlace2.placeName="CU";
+            workPlace2.isJuhyu=true;
+            workPlace2.type="편의점";
+            workPlace2.isExpanded=false;
+            workPlace2.usualPay=20000;
+            workPlace2.ColorHex="#444444";
+            placeDao.setInsertData(workPlace2);
+
+            WorkDaily work1=new WorkDaily();
+            work1.placeId=placeDao.getDataAll().get(0).ID;
+            work1.startTime="2024-11-16 20:00:00";
+            work1.endTime="2024-11-16 21:00:00";
+            dailyDao.setInsertData(work1);
+
+            WorkDaily work2=new WorkDaily();
+            work2.placeId=placeDao.getDataAll().get(0).ID;
+            work2.startTime="2024-11-17 20:00:00";
+            work2.endTime="2024-11-17 22:00:00";
+            dailyDao.setInsertData(work2);
+
+            WorkDaily work3=new WorkDaily();
+            work3.placeId=placeDao.getDataAll().get(1).ID;
+            work3.startTime="2024-11-18 20:00:00";
+            work3.endTime="2024-11-18 23:00:00";
+            dailyDao.setInsertData(work3);
+
 
             dailyDatabase=WorkDailyDatabase.getDatabase(getContext());
             dailyDao=dailyDatabase.workDailyDao();
