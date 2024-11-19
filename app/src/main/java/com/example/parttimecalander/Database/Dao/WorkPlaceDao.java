@@ -22,4 +22,6 @@ public interface WorkPlaceDao {
     List<WorkPlace> getDataAll();
     @Query("SELECT * FROM place WHERE place.ID==:h")
     WorkPlace getByID(int h);
+    @Query("SELECT place.ID FROM place WHERE place.placeName ==:name")
+    Integer findId(String name);
 }

@@ -20,8 +20,10 @@ import androidx.room.Room;
 
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
+import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
 import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.User;
+import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.databinding.ActivityWorkplaceRegisterBinding;
@@ -32,6 +34,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -39,6 +42,9 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
     private ActivityWorkplaceRegisterBinding binding;
     private WorkPlaceDatabase placeDatabase;
     private WorkPlaceDao placeDao;
+
+    private WorkDailyDatabase dailyDatabase;
+    private WorkDailyDao dailyDao;
 
     private String[] startTimes = new String[7]; // 시작 시간 저장 (월~일)
     private String[] endTimes = new String[7];   // 종료 시간 저장 (월~일)
@@ -58,6 +64,8 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         // Database 초기화
         placeDatabase = WorkPlaceDatabase.getDatabase(this);
         placeDao = placeDatabase.workPlaceDao();
+        dailyDatabase = WorkDailyDatabase.getDatabase(this);
+        dailyDao = dailyDatabase.workDailyDao();
 
         // setupDay 호출
         setupDay(binding.checkboxMonday, binding.timeMonday, binding.startTimeMonday, binding.endTimeMonday);
@@ -69,11 +77,11 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         setupDay(binding.checkboxSunday, binding.timeSunday, binding.startTimeSunday, binding.endTimeSunday);
 
         List<String> circleColor = List.of("#FF0000", "#0000FF");
-        SpinnerColorAdapter colorAdapter = new SpinnerColorAdapter(this,circleColor);
+        SpinnerColorAdapter colorAdapter = new SpinnerColorAdapter(this, circleColor);
         binding.contentColor.setAdapter(colorAdapter);
 
-        List<String> type = List.of("카페","식당");
-        SpinnerAdapter typeAdapter = new SpinnerAdapter(this,type);
+        List<String> type = List.of("카페", "식당");
+        SpinnerAdapter typeAdapter = new SpinnerAdapter(this, type);
         binding.contentType.setAdapter(typeAdapter);
 
         int baseYear = 2024;
@@ -85,14 +93,14 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         }
 
 // ArrayAdapter 생성 및 연결
-        SpinnerAdapter startYearAdapter = new SpinnerAdapter(this,years);
+        SpinnerAdapter startYearAdapter = new SpinnerAdapter(this, years);
         binding.contentWorkstartyear.setAdapter(startYearAdapter);
 
 // 기본 선택값으로 2024년 설정
         binding.contentWorkstartyear.setSelection(years.indexOf(String.valueOf(baseYear)));
 
 // ArrayAdapter 생성 및 연결
-        SpinnerAdapter endYearAdapter = new SpinnerAdapter(this,years);
+        SpinnerAdapter endYearAdapter = new SpinnerAdapter(this, years);
         binding.contentWorkendyear.setAdapter(endYearAdapter);
 
 // 기본 선택값으로 2024년 설정
@@ -152,19 +160,94 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                     new_workplace.isJuhyu = false;
                 }
 
+                String helper = binding.contentWorkstartmonth.getSelectedItem().toString();
+                String helper2 = binding.contentWorkstartday.getSelectedItem().toString();
+                if(helper.length() == 1){
+                    helper = '0' + helper;
+                }
+                if(helper2.length() == 1){
+                    helper2 = '0' + helper2;
+                }
+
                 new_workplace.startDate = binding.contentWorkstartyear.getSelectedItem().toString() + '-'
-                        + binding.contentWorkstartmonth.getSelectedItem().toString() + '-'
-                        + binding.contentWorkstartday.getSelectedItem().toString() + ' '
+                        + helper + '-'
+                        + helper2 + ' '
                         + "00:00:00";
 
+                helper = binding.contentWorkendmonth.getSelectedItem().toString();
+                helper2 = binding.contentWorkendday.getSelectedItem().toString();
+                if(helper.length() == 1){
+                    helper = '0' + helper;
+                }
+                if(helper2.length() == 1){
+                    helper2 = '0' + helper2;
+                }
+
+
                 new_workplace.endDate = binding.contentWorkendyear.getSelectedItem().toString() + '-'
-                        + binding.contentWorkendmonth.getSelectedItem().toString() + '-'
-                        + binding.contentWorkendday.getSelectedItem().toString() + ' '
+                        + helper + '-'
+                        + helper2+ ' '
                         + "00:00:00";
                 new_workplace.day = String.valueOf(day);
                 new_workplace.startTime = combineStartTimes(startTimes);
                 new_workplace.endTime = combineStartTimes(endTimes);
                 placeDao.setInsertData(new_workplace);
+
+                Timestamp startDate = Timestamp.valueOf(new_workplace.startDate);
+                Timestamp endDate = Timestamp.valueOf(new_workplace.endDate);
+
+                // 요일 계산
+                List<Integer> dayList = new ArrayList<>();
+                char[] days = new_workplace.day.toCharArray();
+                for (int i = 0; i < 7; ++i) {
+                    if (days[i] == '1') {
+                        dayList.add(i + 1); // Calendar에서 일요일은 1
+                    }
+                }
+
+                // 시작 시간과 끝 시간 분리
+                String[] startTimes = new_workplace.startTime.split(",");
+                String[] endTimes = new_workplace.endTime.split(",");
+
+                // 결과 저장용 리스트
+                List<String> startTimeList = new ArrayList<>();
+                List<String> endTimeList = new ArrayList<>();
+
+                // Calendar로 날짜 순회
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(startDate.getTime());
+
+                while (!calendar.getTime().after(endDate)) {
+                    int currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+
+                    // 현재 요일이 dayList에 포함되어 있는지 확인
+                    if (dayList.contains(currentDayOfWeek)) {
+                        // 해당 요일에 대해 시작 시간과 끝 시간 추가
+                        for (int i = 0; i < startTimes.length; i++) {
+                            String date = new Timestamp(calendar.getTimeInMillis()).toString().split(" ")[0];
+                            startTimeList.add(date + " " + startTimes[i]);
+                            endTimeList.add(date + " " + endTimes[i]);
+                        }
+                    }
+                }
+                for (String startTime : startTimeList) {
+                    System.out.println(startTime);
+                }
+
+                // endTimeList 출력
+                System.out.println("End Time List:");
+                for (String endTime : endTimeList) {
+                    System.out.println(endTime);
+                }
+
+                int id = placeDao.findId(new_workplace.placeName);
+
+                for(int i = 0;i < startTimeList.size();++i){
+                    WorkDaily workDaily = new WorkDaily(startTimeList.get(i),endTimeList.get(i),id);
+                    dailyDao.setInsertData(workDaily);
+                }
+
+
             });
 
             // 다음 액티비티로 이동
@@ -172,7 +255,6 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-
 
     }
 
