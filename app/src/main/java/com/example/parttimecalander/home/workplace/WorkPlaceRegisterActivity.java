@@ -217,6 +217,7 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(startDate.getTime());
 
+                //아마 무한루프 걸린듯
                 while (!calendar.getTime().after(endDate)) {
                     int currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 
@@ -230,6 +231,7 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                         }
                     }
                 }
+
                 for (String startTime : startTimeList) {
                     System.out.println(startTime);
                 }
