@@ -38,13 +38,13 @@ public class WorkPlaceActivity extends AppCompatActivity {
 
         WorkPlaceDao workPlaceDao = database.workPlaceDao();
         Button register_btn=(Button)findViewById(R.id.register_btn);
-        register_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(WorkPlaceActivity.this, WorkPlaceRegisterActivity.class);
-                startActivity(intent);
-            }
+        register_btn.setOnLongClickListener(v-> {
+            Intent intent = new Intent(WorkPlaceActivity.this, WorkPlaceRegisterActivity.class);
+            startActivity(intent);
+            return true;
+            //false 일 경우 onClick까지 같이 실행됨
         });
+
 
 
         Executors.newSingleThreadExecutor().execute(() -> {

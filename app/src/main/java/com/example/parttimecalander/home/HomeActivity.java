@@ -24,6 +24,7 @@ import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.MainActivity;
 import com.example.parttimecalander.R;
+import com.example.parttimecalander.calander.CalendarActivity;
 import com.example.parttimecalander.home.resume.ResumeActivity;
 import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
 import com.example.parttimecalander.home.ui.summationmonth.SummationMonthAdapter;
@@ -32,6 +33,7 @@ import com.example.parttimecalander.home.workplace.WorkPlaceActivity;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -61,7 +63,8 @@ public class HomeActivity extends AppCompatActivity {
         //주별 캘린더
         ConstraintLayout week_calendar = findViewById(R.id.week_calander);
         week_calendar.setOnClickListener(v->{
-            Toast.makeText(HomeActivity.this, "캘린더 액티비티 구현 중", Toast.LENGTH_SHORT).show();
+            Intent intent=new Intent(HomeActivity.this, CalendarActivity.class);
+            startActivity(intent);
         });
 
         //월별&주별 요약
@@ -192,12 +195,13 @@ public class HomeActivity extends AppCompatActivity {
             double finalReal_time = real_time;
             double finalAll_money = all_money;
             double finalReal_money = real_money;
+            DecimalFormat df = new DecimalFormat("###,###");
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    worktime.setText(finalReal_time +" 원");
-                    earnmoney.setText(finalReal_money +" 원");
-                    willmoney.setText(finalAll_money +" 원");
+                    worktime.setText(df.format((int)finalReal_time )+" 원");
+                    earnmoney.setText(df.format((int)finalReal_money) +" 원");
+                    willmoney.setText(df.format((int)finalAll_money) +" 원");
                 }
             });
         });

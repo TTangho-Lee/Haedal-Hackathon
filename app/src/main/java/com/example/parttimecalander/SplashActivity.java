@@ -19,7 +19,7 @@ public class SplashActivity extends AppCompatActivity {
             // Preload data and go to the next activity after the delay
             preloadMainActivityData();
             goToMainActivity();
-        }, 2000); // Delay time in milliseconds
+        }, 200); // Delay time in milliseconds
     }
 
     private void preloadMainActivityData() {
