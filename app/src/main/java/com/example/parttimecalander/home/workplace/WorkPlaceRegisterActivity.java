@@ -67,8 +67,6 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         dailyDatabase = WorkDailyDatabase.getDatabase(this);
         dailyDao = dailyDatabase.workDailyDao();
 
-
-        
         // setupDay 호출
         setupDay(binding.checkboxMonday, binding.timeMonday, binding.startTimeMonday, binding.endTimeMonday);
         setupDay(binding.checkboxTuesday, binding.timeTuesday, binding.startTimeTuesday, binding.endTimeTuesday);
@@ -231,9 +229,6 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                             endTimeList.add(date + " " + endTimes[i]);
                         }
                     }
-
-                    // 다음 날로 이동
-                    calendar.add(Calendar.DAY_OF_MONTH, 1);
                 }
                 for (String startTime : startTimeList) {
                     System.out.println(startTime);

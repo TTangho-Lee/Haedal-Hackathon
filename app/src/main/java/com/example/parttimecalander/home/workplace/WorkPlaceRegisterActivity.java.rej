@@ -1,0 +1,10 @@
+diff a/app/src/main/java/com/example/parttimecalander/home/workplace/WorkPlaceRegisterActivity.java b/app/src/main/java/com/example/parttimecalander/home/workplace/WorkPlaceRegisterActivity.java	(rejected hunks)
+@@ -67,6 +67,8 @@
+         dailyDatabase = WorkDailyDatabase.getDatabase(this);
+         dailyDao = dailyDatabase.workDailyDao();
+ 
++
++        
+         // setupDay 호출
+         setupDay(binding.checkboxMonday, binding.timeMonday, binding.startTimeMonday, binding.endTimeMonday);
+         setupDay(binding.checkboxTuesday, binding.timeTuesday, binding.startTimeTuesday, binding.endTimeTuesday);
