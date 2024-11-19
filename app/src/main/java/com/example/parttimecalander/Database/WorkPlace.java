@@ -18,4 +18,7 @@ public class WorkPlace implements Serializable {
     public String endDate;              //근무종료일자
     public boolean isExpanded;             //확장 여부 저장
     public String ColorHex;                //색상 값
+    public String day;
+    public String startTime;
+    public String endTime;
 }
