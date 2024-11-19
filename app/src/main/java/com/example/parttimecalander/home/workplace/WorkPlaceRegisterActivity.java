@@ -28,8 +28,10 @@ import com.example.parttimecalander.databinding.ActivityWorkplaceRegisterBinding
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -42,6 +44,8 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
     private String[] endTimes = new String[7];   // 종료 시간 저장 (월~일)
 
     private char[] day = {'0', '0', '0', '0', '0', '0', '0'};
+
+    WorkPlace new_workplace = new WorkPlace();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +141,6 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         // 등록 버튼 클릭 리스너
         binding.registerButton.setOnClickListener(v -> {
             Executors.newSingleThreadExecutor().execute(() -> {
-                WorkPlace new_workplace = new WorkPlace();
                 new_workplace.placeName = binding.contentWorkplaceName.getText().toString();
                 new_workplace.ColorHex = binding.contentColor.getSelectedItem().toString();
                 new_workplace.type = binding.contentType.getSelectedItem().toString();
@@ -161,15 +164,6 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                 new_workplace.day = String.valueOf(day);
                 new_workplace.startTime = combineStartTimes(startTimes);
                 new_workplace.endTime = combineStartTimes(endTimes);
-                // 데이터베이스에 삽입
-//                System.out.println(new_workplace.placeName);
-//                System.out.println(new_workplace.type);
-//                System.out.println(new_workplace.isJuhyu);
-//                System.out.println(new_workplace.startDate);
-//                System.out.println(new_workplace.endDate);
-//                System.out.println(new_workplace.ColorHex);
-//                System.out.println(new_workplace.day);
-//                System.out.println(new_workplace.startTime);
                 placeDao.setInsertData(new_workplace);
             });
 
@@ -178,6 +172,8 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
+
     }
 
     private void setupDay(CheckBox checkBox, LinearLayout timeLayout, Button startTimeButton, Button endTimeButton) {
