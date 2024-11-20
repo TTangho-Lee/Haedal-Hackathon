@@ -216,7 +216,7 @@ public class HomeActivity extends AppCompatActivity {
         //오늘을 포함한 일주일의 날짜를 선택
         setWeekStartEnd();
         //materialCalendarView 세팅
-        mcv=(MaterialCalendarView)findViewById(R.id.calendarView);
+        mcv = findViewById(R.id.calendarView);
         mcv.setTopbarVisible(false);
         mcv.state().edit().setMinimumDate(sunday).setMaximumDate(saturday).commit();
 
@@ -246,7 +246,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // 오늘 날짜를 기준으로 주의 일요일과 토요일 계산
         sun = td_local.minusDays(dayOfWeek);        // 오늘에서 dayOfWeek만큼 빼기 -> 일요일
-        sat = td_local.plusDays(6 - dayOfWeek + 1);     // 오늘에서 (6 - dayOfWeek)만큼 더하기 -> 토요일
+        sat = td_local.plusDays(6 - dayOfWeek);     // 오늘에서 (6 - dayOfWeek)만큼 더하기 -> 토요일
 
         // 결과 확인
         sunday = CalendarDay.from(sun.getYear(), sun.getMonth().getValue(), sun.getDayOfMonth());
