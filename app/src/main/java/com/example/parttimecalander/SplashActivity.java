@@ -26,7 +26,7 @@ public class SplashActivity extends AppCompatActivity {
         // This method would normally load data from a database, etc.
         // Simulated delay
         try {
-            Thread.sleep(2000); // Simulating delay
+            Thread.sleep(200); // Simulating delay
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
