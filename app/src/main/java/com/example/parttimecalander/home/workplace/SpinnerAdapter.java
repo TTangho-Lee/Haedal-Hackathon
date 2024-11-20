@@ -46,7 +46,7 @@ public class SpinnerAdapter extends BaseAdapter {
         }
 
         border.setColor(Color.WHITE); // 배경색
-        border.setStroke(2, Color.BLACK); // 테두리 두께와 색상
+        //border.setStroke(2, Color.BLACK); // 테두리 두께와 색상
         border.setCornerRadius(20);
         TextView textView = convertView.findViewById(R.id.text);
         textView.setBackground(border);
