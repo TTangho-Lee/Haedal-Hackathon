@@ -2,19 +2,12 @@ package com.example.parttimecalander.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.CalendarView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.WindowCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
@@ -23,13 +16,10 @@ import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.GoalActivity;
-import com.example.parttimecalander.MainActivity;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.calander.CalendarActivity;
 import com.example.parttimecalander.home.resume.ResumeActivity;
 import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
-import com.example.parttimecalander.home.ui.summationmonth.SummationMonthAdapter;
-import com.example.parttimecalander.home.ui.summationmonth.SummationMonthFragment;
 import com.example.parttimecalander.home.workplace.WorkPlaceActivity;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
