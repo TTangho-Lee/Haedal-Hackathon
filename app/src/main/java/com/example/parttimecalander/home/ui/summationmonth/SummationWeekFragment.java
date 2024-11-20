@@ -40,7 +40,9 @@ import java.util.Locale;
 public class SummationWeekFragment extends Fragment {
 
     RecyclerItem item;
-
+    public String placeName;
+    public double[][] money=new double[6][7];
+    public double[] over_worked_money=new double[6];
     // TODO: Rename and change types of parameters
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -83,8 +85,27 @@ public class SummationWeekFragment extends Fragment {
 
         // 레이아웃 설정
         View view = inflater.inflate(R.layout.fragment_summation_week, container, false);
+        placeName=item.name;
+        for(int i=0;i<6;i++){
+            int week_worked_time=0;
+            for(int j=0;j<7;j++){
+                money[i][j]=item.worked_time[i][j]*item.pay/3600;
+                week_worked_time+=item.worked_time[i][j];
 
-
+            }
+            if(week_worked_time/3600>=15&&item.juhyu){
+                over_worked_money[i]=(week_worked_time/3600-15)*item.pay*0.5;
+            }
+            else{
+                over_worked_money[i]=0;
+            }
+        }
+        double[] week1=money[0];
+        double[] week2=money[1];
+        double[] week3=money[2];
+        double[] week4=money[3];
+        double[] week5=money[4];
+        double[] week6=money[5];
 
         return view;
     }
