@@ -53,7 +53,7 @@ public class ScheduleDialogFragment extends DialogFragment {
             List<WorkDaily> schedules = dailyDao.getSchedulesForDate(selectedDate);
 
             requireActivity().runOnUiThread(() -> {
-                HomeScheduleAdapter adapter = new HomeScheduleAdapter(schedules);
+                HomeScheduleAdapter adapter = new HomeScheduleAdapter(getContext(),schedules);
                 scheduleRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
                 scheduleRecycler.setAdapter(adapter);
             });
