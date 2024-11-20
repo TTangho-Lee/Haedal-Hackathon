@@ -77,7 +77,7 @@ public class FirstFragment extends Fragment {
 
 // 오늘 날짜를 기준으로 주의 일요일과 토요일 계산
         sun = td_local.minusDays(dayOfWeek);        // 오늘에서 dayOfWeek만큼 빼기 -> 일요일
-        sat = td_local.plusDays(6 - dayOfWeek);     // 오늘에서 (6 - dayOfWeek)만큼 더하기 -> 토요일
+        sat = td_local.plusDays(6 - dayOfWeek + 1);     // 오늘에서 (6 - dayOfWeek)만큼 더하기 -> 토요일
 
 // 결과 확인
         Toast.makeText(getContext(),"Sat: " + sat,Toast.LENGTH_SHORT).show();
