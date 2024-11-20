@@ -219,6 +219,16 @@ public class HomeActivity extends AppCompatActivity {
         mcv=(MaterialCalendarView)findViewById(R.id.calendarView);
         mcv.setTopbarVisible(false);
         mcv.state().edit().setMinimumDate(sunday).setMaximumDate(saturday).commit();
+        mcv.setOnDateLongClickListener((widget, date) -> {
+            int year = date.getYear();
+            int month = date.getMonth();
+            int day = date.getDay();
+
+            String selectedDate = String.format("%04d-%02d-%02d", year, month, day);
+
+            ScheduleDialogFragment dialog = ScheduleDialogFragment.newInstance(selectedDate);
+            dialog.show(getSupportFragmentManager(), "ScheduleDialog");
+        });
 
 
     }

@@ -20,5 +20,6 @@ public interface WorkDailyDao {
     void setDeleteData(WorkDaily data);
     @Query("SELECT * FROM daily")
     List<WorkDaily> getDataAll();
-
+    @Query("SELECT * FROM daily WHERE DATE(daily.startTime) = :selectedDate")
+    List<WorkDaily> getSchedulesForDate(String selectedDate);
 }
