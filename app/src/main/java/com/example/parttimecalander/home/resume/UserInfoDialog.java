@@ -43,7 +43,7 @@ public class UserInfoDialog extends Dialog {
     }
 
     private void updateUI(){
-        binding.back.setOnClickListener(v->dismiss());
+        binding.titleBox.setOnClickListener(v->dismiss());
 
         setSpinner();
 
