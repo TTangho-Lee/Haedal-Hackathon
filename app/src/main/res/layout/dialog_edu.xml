@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:text="개인정보 등록"
+            android:text="학력 추가"
             android:textSize="24sp"
             android:fontFamily="@font/font_main"
             app:layout_constraintTop_toTopOf="parent"
@@ -56,18 +56,30 @@
             android:id="@+id/title_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="이름"
+            android:text="학력"
             android:textSize="18sp"
             android:fontFamily="@font/font_bold"/>
 
         <EditText
-            android:id="@+id/content_name"
+            android:id="@+id/content_school"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:background="@drawable/background_et"
+            android:background="@drawable/background_et_upper"
             android:fontFamily="@font/font_main"
-            android:hint="이름을 입력해주세요."
+            android:hint="학교를 입력해주세요."
+            android:paddingHorizontal="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="11dp"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+        <EditText
+            android:id="@+id/content_major"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_et_lower"
+            android:fontFamily="@font/font_main"
+            android:hint="전공을 입력해주세요."
             android:paddingHorizontal="12dp"
             android:paddingTop="10dp"
             android:paddingBottom="11dp"
@@ -76,29 +88,29 @@
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container_birth"
+        android:id="@+id/container_admission"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingHorizontal="12dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/container_graduate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/container_name">
 
         <TextView
-            android:id="@+id/title_birth"
+            android:id="@+id/title_admission"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/font_bold"
-            android:text="생년월일"
+            android:text="입학일자"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
-            android:id="@+id/content_birthyear"
-            android:layout_width="70dp"
-            android:layout_height="30dp"
+            android:id="@+id/content_admission_year"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/background_spinner"
             android:fontFamily="@font/font_main"
@@ -106,129 +118,72 @@
             android:paddingVertical="0dp"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title_birth" />
+            app:layout_constraintTop_toBottomOf="@id/title_admission" />
 
         <Spinner
-            android:id="@+id/content_birthmonth"
-            android:layout_width="70dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/background_spinner"
-            android:fontFamily="@font/font_main"
-            android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@id/content_birthyear"
-            app:layout_constraintTop_toBottomOf="@id/title_birth" />
-
-        <Spinner
-            android:id="@+id/content_birthday"
-            android:layout_width="70dp"
-            android:layout_height="30dp"
+            android:id="@+id/content_admission_month"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
             android:layout_marginTop="12dp"
             android:layout_marginStart="8dp"
             android:background="@drawable/background_spinner"
             android:fontFamily="@font/font_main"
             android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@id/content_birthmonth"
-            app:layout_constraintTop_toBottomOf="@id/title_birth" />
+            app:layout_constraintStart_toEndOf="@id/content_admission_year"
+            app:layout_constraintTop_toBottomOf="@id/title_admission" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/container_phone"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_graduate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingHorizontal="12dp"
         android:layout_marginTop="12dp"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/container_birth">
-        <TextView
-            android:id="@+id/title_phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="연락처"
-            android:textSize="18sp"
-            android:fontFamily="@font/font_bold"/>
-        <EditText
-            android:id="@+id/content_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:paddingHorizontal="12dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="11dp"
-            android:hint="연락처를 입력해주세요. (010-0000-0000)"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/font_main"
-            android:background="@drawable/background_et" />
-    </LinearLayout>
+        app:layout_constraintStart_toEndOf="@id/container_admission"
+        app:layout_constraintTop_toBottomOf="@id/container_name">
 
-    <LinearLayout
-        android:id="@+id/container_email"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:paddingHorizontal="12dp"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/container_phone">
         <TextView
-            android:id="@+id/title_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="이메일"
-            android:textSize="18sp"
-            android:fontFamily="@font/font_bold"/>
-        <EditText
-            android:id="@+id/content_email"
+            android:id="@+id/title_graduate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:paddingHorizontal="12dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="11dp"
-            android:hint="이메일을 입력해주세요. (example@knu.ac.kr)"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/font_main"
-            android:background="@drawable/background_et" />
-    </LinearLayout>
+            android:fontFamily="@font/font_bold"
+            android:text="졸업일자"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/container_address"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:paddingHorizontal="12dp"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/container_email">
-        <TextView
-            android:id="@+id/title_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="주소"
-            android:textSize="18sp"
-            android:fontFamily="@font/font_bold"/>
-        <EditText
-            android:id="@+id/content_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:paddingHorizontal="12dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="11dp"
-            android:hint="주소를 입력해주세요 (대구 북구 대현동)"
-            android:textSize="14sp"
-            android:textColor="@color/black"
+        <Spinner
+            android:id="@+id/content_graduate_year"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/background_spinner"
             android:fontFamily="@font/font_main"
-            android:background="@drawable/background_et" />
-    </LinearLayout>
+            android:paddingHorizontal="0dp"
+            android:paddingVertical="0dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_graduate" />
+
+        <Spinner
+            android:id="@+id/content_graduate_month"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/background_spinner"
+            android:fontFamily="@font/font_main"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/content_graduate_year"
+            app:layout_constraintTop_toBottomOf="@id/title_graduate" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/register_button"
@@ -237,15 +192,12 @@
         android:layout_marginVertical="24dp"
         android:layout_marginHorizontal="12dp"
         android:background="@drawable/background_button_black"
-        android:text="근무지 등록하기"
+        android:text="학력 추가하기"
         android:textSize="18sp"
         android:fontFamily="@font/font_main"
         android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/container_address"
+        app:layout_constraintTop_toBottomOf="@id/container_admission"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

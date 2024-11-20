@@ -48,7 +48,7 @@ public class ResumeActivity extends AppCompatActivity {
         }
 
         //개인정보 수정
-        binding.editPerson.setOnClickListener(v -> showInfoDialog());
+        binding.containerPerson.setOnClickListener(v -> showInfoDialog());
         //학력 추가
         binding.registerEdu.setOnClickListener(v->{
             Toast.makeText(this, "test", Toast.LENGTH_SHORT).show();
