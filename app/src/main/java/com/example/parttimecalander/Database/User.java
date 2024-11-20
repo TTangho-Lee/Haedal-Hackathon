@@ -13,6 +13,9 @@ public class User {
     public String email;
     public String address;
     public String name;
+    public int birthYear;
+    public int birthMonth;
+    public int birthDay;
     public int money;                      //누적금액
     public int goal;                       //목표금액
     public String recentUpdate;     //최근 체크일자
