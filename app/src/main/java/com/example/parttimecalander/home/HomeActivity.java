@@ -8,6 +8,7 @@ import android.widget.CalendarView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.WindowCompat;
@@ -33,6 +34,7 @@ import com.example.parttimecalander.home.ui.summationmonth.SummationMonthFragmen
 import com.example.parttimecalander.home.workplace.WorkPlaceActivity;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateLongClickListener;
 
 import java.text.DecimalFormat;
 import java.time.Duration;
@@ -211,14 +213,19 @@ public class HomeActivity extends AppCompatActivity {
             });
         });
 
-
-
         //오늘을 포함한 일주일의 날짜를 선택
         setWeekStartEnd();
         //materialCalendarView 세팅
         mcv = findViewById(R.id.calendarView);
         mcv.setTopbarVisible(false);
         mcv.state().edit().setMinimumDate(sunday).setMaximumDate(saturday).commit();
+        mcv.setOnDateLongClickListener(new OnDateLongClickListener() {
+            @Override
+            public void onDateLongClick(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date) {
+                Toast.makeText(HomeActivity.this, "pop up",Toast.LENGTH_SHORT).show();
+                //TODO: 일정 있는 팝업창 띄우기
+            }
+        });
 
 
     }
