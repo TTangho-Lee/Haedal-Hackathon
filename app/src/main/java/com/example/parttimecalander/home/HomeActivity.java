@@ -22,6 +22,7 @@ import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
 import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.GoalActivity;
 import com.example.parttimecalander.MainActivity;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.calander.CalendarActivity;
@@ -83,8 +84,12 @@ public class HomeActivity extends AppCompatActivity {
 
         //나의 목표
         ConstraintLayout my_goal = findViewById(R.id.my_goal);
-        my_goal.setOnClickListener(v->{
-            Toast.makeText(HomeActivity.this, "목표 액티비티 구현 중", Toast.LENGTH_SHORT).show();
+        my_goal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, GoalActivity.class);
+                startActivity(intent);
+            }
         });
 
         //나의 이력서

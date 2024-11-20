@@ -92,6 +92,7 @@ public class SummationMonthFragment extends Fragment {
             double all_money=0;
             List<WorkPlace> placeList = placeDao.getDataAll();
             List<WorkDaily> dailyList = dailyDao.getDataAll();
+            items.clear();
             for (int i = 0; i < placeList.size(); i++) {
                 WorkPlace place = placeList.get(i);
                 for (int ii = 0; ii < 6; ii++) {
@@ -151,6 +152,7 @@ public class SummationMonthFragment extends Fragment {
 
                     // 어댑터 설정
                     if (items != null && !items.isEmpty()) {
+
                         adapter = new SummationMonthAdapter(items, (AppCompatActivity) requireActivity());
                         recyclerView.setAdapter(adapter);
                     } else {

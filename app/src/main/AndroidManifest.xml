@@ -16,6 +16,9 @@
             android:name=".home.resume.ResumeActivity"
             android:exported="false" />
         <activity
+            android:name=".GoalActivity"
+            android:exported="false" />
+        <activity
             android:name=".home.workplace.WorkPlaceRegisterActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan"/>
