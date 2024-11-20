@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="8dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:paddingHorizontal="12dp"
+        android:layout_marginHorizontal="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -44,13 +45,203 @@
         android:id="@+id/container_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
+        android:paddingHorizontal="12dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_box">
+        <TextView
+            android:id="@+id/title_workplace_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이름"
+            android:textSize="18sp"
+            android:fontFamily="@font/font_bold"/>
 
+        <EditText
+            android:id="@+id/content_workplace_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/background_et"
+            android:fontFamily="@font/font_main"
+            android:hint="이름을 입력해주세요."
+            android:paddingHorizontal="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="11dp"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
     </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_birth"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="12dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_name">
+
+        <TextView
+            android:id="@+id/title_birth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/font_bold"
+            android:text="생년월일"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Spinner
+            android:id="@+id/content_birthyear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/background_et"
+            android:fontFamily="@font/font_main"
+            android:paddingHorizontal="0dp"
+            android:paddingVertical="0dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_birth" />
+
+        <Spinner
+            android:id="@+id/content_birthmonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/background_et"
+            android:fontFamily="@font/font_main"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/content_birthyear"
+            app:layout_constraintEnd_toStartOf="@id/content_birthday"
+            app:layout_constraintTop_toBottomOf="@id/title_birth" />
+
+        <Spinner
+            android:id="@+id/content_birthday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/background_et"
+            android:fontFamily="@font/font_main"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_birth" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/container_phone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="12dp"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_birth">
+        <TextView
+            android:id="@+id/title_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="연락처"
+            android:textSize="18sp"
+            android:fontFamily="@font/font_bold"/>
+        <EditText
+            android:id="@+id/content_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingHorizontal="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="11dp"
+            android:hint="연락처를 입력해주세요. (010-0000-0000)"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/font_main"
+            android:background="@drawable/background_et" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/container_email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:paddingHorizontal="12dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_phone">
+        <TextView
+            android:id="@+id/title_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이메일"
+            android:textSize="18sp"
+            android:fontFamily="@font/font_bold"/>
+        <EditText
+            android:id="@+id/content_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingHorizontal="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="11dp"
+            android:hint="이메일을 입력해주세요. (example@knu.ac.kr)"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/font_main"
+            android:background="@drawable/background_et" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/container_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:paddingHorizontal="12dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_email">
+        <TextView
+            android:id="@+id/title_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="주소"
+            android:textSize="18sp"
+            android:fontFamily="@font/font_bold"/>
+        <EditText
+            android:id="@+id/content_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingHorizontal="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="11dp"
+            android:hint="주소를 입력해주세요 (대구 북구 대현동)"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/font_main"
+            android:background="@drawable/background_et" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/register_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="24dp"
+        android:layout_marginHorizontal="12dp"
+        android:background="@drawable/background_button_black"
+        android:text="근무지 등록하기"
+        android:textSize="18sp"
+        android:fontFamily="@font/font_main"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/container_address"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
 
