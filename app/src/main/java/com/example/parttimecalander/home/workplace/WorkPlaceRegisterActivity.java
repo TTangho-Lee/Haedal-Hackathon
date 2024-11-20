@@ -201,7 +201,7 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                 char[] days = new_workplace.day.toCharArray();
                 for (int i = 0; i < 7; ++i) {
                     if (days[i] == '1') {
-                        dayList.add(i + 1); // Calendar에서 일요일은 1
+                        dayList.add(i); // Calendar에서 일요일은 1
                     }
                 }
 
