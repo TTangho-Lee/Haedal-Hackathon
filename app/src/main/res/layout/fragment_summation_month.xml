@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context="home.ui.summationmonth.SummationMonthFragment">
+    tools:context="home.SummationActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/title_box"
@@ -42,15 +42,25 @@
             app:layout_constraintStart_toEndOf="@id/back"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- 스피너로 돈이 등록된 월만 나오게 하기 ex. 2024년 11월, 2024년 12월 .. 중에 선택 -->
-    <Spinner
-        android:id="@+id/spinner_month"
+
+
+    <LinearLayout
+        android:id="@+id/spinner_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/title_box"
-        app:layout_constraintStart_toStartOf="parent"/>
-
+        app:layout_constraintStart_toStartOf="parent">
+        <Spinner
+            android:id="@+id/spinner_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Spinner
+            android:id="@+id/spinner_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <TextView
         android:id="@+id/time_text"
         android:layout_width="wrap_content"
@@ -59,7 +69,7 @@
         android:text="%d시간 일하고\n%d원 벌었어요"
         android:textSize="20sp"
         android:fontFamily="@font/font_main"
-        app:layout_constraintTop_toBottomOf="@id/spinner_month"
+        app:layout_constraintTop_toBottomOf="@id/spinner_layout"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <!-- TODO : 차트 추가 -->

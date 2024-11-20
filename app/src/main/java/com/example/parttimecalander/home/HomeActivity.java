@@ -2,19 +2,12 @@ package com.example.parttimecalander.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.CalendarView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.WindowCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
@@ -23,13 +16,10 @@ import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.GoalActivity;
-import com.example.parttimecalander.MainActivity;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.calander.CalendarActivity;
 import com.example.parttimecalander.home.resume.ResumeActivity;
 import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
-import com.example.parttimecalander.home.ui.summationmonth.SummationMonthAdapter;
-import com.example.parttimecalander.home.ui.summationmonth.SummationMonthFragment;
 import com.example.parttimecalander.home.workplace.WorkPlaceActivity;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -216,7 +206,7 @@ public class HomeActivity extends AppCompatActivity {
         //오늘을 포함한 일주일의 날짜를 선택
         setWeekStartEnd();
         //materialCalendarView 세팅
-        mcv=(MaterialCalendarView)findViewById(R.id.calendarView);
+        mcv = findViewById(R.id.calendarView);
         mcv.setTopbarVisible(false);
         mcv.state().edit().setMinimumDate(sunday).setMaximumDate(saturday).commit();
         mcv.setOnDateLongClickListener((widget, date) -> {
@@ -256,7 +246,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // 오늘 날짜를 기준으로 주의 일요일과 토요일 계산
         sun = td_local.minusDays(dayOfWeek);        // 오늘에서 dayOfWeek만큼 빼기 -> 일요일
-        sat = td_local.plusDays(6 - dayOfWeek + 1);     // 오늘에서 (6 - dayOfWeek)만큼 더하기 -> 토요일
+        sat = td_local.plusDays(6 - dayOfWeek);     // 오늘에서 (6 - dayOfWeek)만큼 더하기 -> 토요일
 
         // 결과 확인
         sunday = CalendarDay.from(sun.getYear(), sun.getMonth().getValue(), sun.getDayOfMonth());

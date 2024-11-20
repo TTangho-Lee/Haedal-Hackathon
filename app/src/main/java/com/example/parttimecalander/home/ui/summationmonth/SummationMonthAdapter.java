@@ -94,7 +94,7 @@ public class SummationMonthAdapter extends RecyclerView.Adapter<SummationMonthAd
             SummationWeekFragment fragment=new SummationWeekFragment();
             fragment.setArguments(bundle);
             // 프래그먼트를 컨테이너에 교체
-            fragmentTransaction.replace(R.id.viewPager, fragment);
+            fragmentTransaction.replace(R.id.summation_month, fragment);
             fragmentTransaction.addToBackStack(null); // 뒤로가기 버튼으로 이전 상태로 돌아가기
             fragmentTransaction.commit(); // 변경사항 적용
         });

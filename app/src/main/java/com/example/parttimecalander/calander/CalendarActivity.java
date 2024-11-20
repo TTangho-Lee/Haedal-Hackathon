@@ -10,13 +10,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.parttimecalander.Database.Dao.WorkDailyDao;
+import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
 import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
+import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -27,58 +33,79 @@ public class CalendarActivity extends AppCompatActivity {
     RecyclerView rcv_schedule;
     TextView tv_date;
     //자료형
-    HashSet<CalendarDay> days; //일정 있는 날짜들(CalendarDay자료형), 년월일로 구성
+    HashSet<CalendarDay> days = new HashSet<>(); //일정 있는 날짜들(CalendarDay자료형), 년월일로 구성
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
-        //날짜 표시할 텍스트뷰
+
+        // UI 요소 초기화
         tv_date = findViewById(R.id.title_day);
-        //일정 표시할 리사이클러뷰
         rcv_schedule = findViewById(R.id.recyclerView_schedule);
-        //달력
         mcv_month = findViewById(R.id.calendarView);
 
-
-        // 데이터베이스에서 일정 있는 날짜들 전부 받아서 days에 넣기
-        setDays();
-        
-        //1. 날짜에 일정이 있으면 날짜 밑에 점으로 표시됨
-        mcv_month.addDecorator(new EventDecorator(Color.RED, days));
-
-        //2. 날짜를 선택하면 그 날짜의 일정이 아래쪽 리사이클러 뷰에 표시됨
-        mcv_month.setOnDateChangedListener((widget, date, selected) -> {
-            int year = date.getYear(), month = date.getMonth(), day = date.getDay();
-            tv_date.setText(String.format("%d-%d-%d",year,month,day));
-
-            //날짜 받아와서 데이터베이스의 그 날짜의 일정을 아래쪽 리사이클러 뷰에다 표기
-            setRecyclerView(year, month, day);
-            
-        });
-    }
-    private void setDays(){
-        days = new HashSet<>();
-        //TODO: db연결해서 일정이 있는 days를 hashset에 다 넣기
-        days.add(CalendarDay.today());
-    }
-    private void setRecyclerView(int year, int month, int day){
-        rcv_schedule.setLayoutManager(new LinearLayoutManager(this));
-
-        WorkPlaceDatabase database=WorkPlaceDatabase.getDatabase(this);
-        WorkPlaceDao workPlaceDao = database.workPlaceDao();
-        
+        // 데이터베이스 작업: 백그라운드 스레드 실행
         Executors.newSingleThreadExecutor().execute(() -> {
-            // 데이터 조회 및 어댑터 설정을 위한 스레드 시작
+            WorkDailyDatabase workDailyDatabase = WorkDailyDatabase.getDatabase(this);
+            WorkDailyDao workDailyDao = workDailyDatabase.workDailyDao();
+            List<WorkDaily> list = workDailyDao.getDataAll();
 
-            //TODO: year, month, day에 있는 일정의 근무지만 가져올 것
-            List<WorkPlace> places = workPlaceDao.getDataAll();
+            // CalendarDay 데이터를 생성
+            for (WorkDaily workDaily : list) {
+                String dateString = workDaily.startTime;
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
 
-            Log.d("ww",""+places.size());
-            // 어댑터 설정
-            ScheduleAdapter adapter = new ScheduleAdapter(places);
-            rcv_schedule.setAdapter(adapter);
+                CalendarDay calendarDay = CalendarDay.from(
+                        localDateTime.getYear(),
+                        localDateTime.getMonthValue(),
+                        localDateTime.getDayOfMonth()
+                );
+                days.add(calendarDay);
+            }
+
+            // UI 업데이트
+            runOnUiThread(() -> {
+                // 1. 날짜 밑에 점으로 표시
+                mcv_month.addDecorator(new EventDecorator(Color.RED, days));
+
+                // 2. 날짜를 선택하면 일정 표시
+                mcv_month.setOnDateChangedListener((widget, date, selected) -> {
+                    int year = date.getYear(), month = date.getMonth(), day = date.getDay();
+                    tv_date.setText(String.format("%d-%d-%d", year, month, day));
+
+                    // 선택한 날짜의 일정 불러오기
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        List<WorkPlace> places = new ArrayList<>();
+                        WorkPlaceDatabase database = WorkPlaceDatabase.getDatabase(this);
+                        WorkPlaceDao workPlaceDao = database.workPlaceDao();
+
+                        for (WorkDaily workDaily : list) {
+                            String dateString = workDaily.startTime;
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                            LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+
+                            if (localDateTime.getYear() == year &&
+                                    localDateTime.getMonthValue() == month &&
+                                    localDateTime.getDayOfMonth() == day) {
+                                int placeID = workDaily.placeId;
+                                WorkPlace place = workPlaceDao.getByID(placeID);
+                                if (place != null) places.add(place);
+                            }
+                        }
+
+                        // UI 업데이트
+                        runOnUiThread(() -> {
+                            ScheduleAdapter adapter = new ScheduleAdapter(places);
+                            rcv_schedule.setLayoutManager(new LinearLayoutManager(this));
+                            rcv_schedule.setAdapter(adapter);
+                        });
+                    });
+                });
+            });
         });
-
     }
+
+
 }
