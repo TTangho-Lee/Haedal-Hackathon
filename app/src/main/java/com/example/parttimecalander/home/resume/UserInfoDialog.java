@@ -75,9 +75,9 @@ public class UserInfoDialog extends Dialog {
 
     }
 
-    private void updateUI(){
+    private void updateUI(int year,int month,int day){
         binding.titleBox.setOnClickListener(v->dismiss());
-        
+
         setSpinner(year,month,day);
 
         binding.registerButton.setOnClickListener(v->changeData());
