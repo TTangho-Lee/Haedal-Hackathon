@@ -9,10 +9,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.WindowCompat;
 
+import com.example.parttimecalander.Database.Dao.UserDao;
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
+import com.example.parttimecalander.Database.Database.UserDatabase;
 import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
 import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
+import com.example.parttimecalander.Database.User;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.GoalActivity;
@@ -111,6 +114,17 @@ public class HomeActivity extends AppCompatActivity {
 
 
         Executors.newSingleThreadExecutor().execute(() -> {
+
+            TextView user_text=(TextView)findViewById(R.id.user_text);
+            UserDatabase userDatabase= UserDatabase.getDatabase(this);
+            UserDao userDao=userDatabase.userDao();
+            User user;
+            if(userDao.getDataAll().isEmpty()){
+                user=new User();
+            }else{
+                user=userDao.getDataAll().get(0);
+            }
+
             double real_time=0;
             double real_money=0;
             double all_money=0;
@@ -194,7 +208,12 @@ public class HomeActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    worktime.setText(df.format((int)finalReal_time )+" 원");
+                    if(user.name==null){
+                        user_text.setText("가입부터 해라 애송이");
+                    }else{
+                        user_text.setText(user.name+"님, 열심히 땀 흘려\n"+user.money+"원이나 모았어요!");
+                    }
+                    worktime.setText(df.format((int)finalReal_time )+" 시간");
                     earnmoney.setText(df.format((int)finalReal_money) +" 원");
                     willmoney.setText(df.format((int)finalAll_money) +" 원");
                 }

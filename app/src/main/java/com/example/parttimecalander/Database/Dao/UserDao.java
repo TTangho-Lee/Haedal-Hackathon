@@ -1,5 +1,6 @@
 package com.example.parttimecalander.Database.Dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -21,4 +22,6 @@ public interface UserDao {
     void setDeleteData(User data);
     @Query("SELECT * FROM user")
     List<User> getDataAll();
+    @Query("SELECT * FROM user")
+    LiveData<List<User>> getDataChange();
 }

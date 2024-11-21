@@ -21,6 +21,8 @@ import com.example.parttimecalander.Database.User;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.databinding.DialogUserInfoBinding;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -33,7 +35,7 @@ public class UserInfoDialog extends Dialog {
     private ArrayList<Integer> months;
     private ArrayList<Integer> daysInMonth;
     private ArrayAdapter<Integer> dayAdapter;
-    int baseYear;
+    int year,month,day;
 
     public UserInfoDialog(Context context){
         super(context);
@@ -46,42 +48,26 @@ public class UserInfoDialog extends Dialog {
         binding = DialogUserInfoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         Calendar calendar = Calendar.getInstance();
-        baseYear= calendar.get(Calendar.YEAR);
         Executors.newSingleThreadExecutor().execute(() -> {
             UserDatabase userDatabase=UserDatabase.getDatabase(context);
             UserDao userDao= userDatabase.userDao();
-            setSpinner();
+
             if(!userDao.getDataAll().isEmpty()){
                 binding.contentName.setText(userDao.getDataAll().get(0).name);
                 binding.contentPhone.setText(userDao.getDataAll().get(0).phone);
                 binding.contentEmail.setText(userDao.getDataAll().get(0).email);
                 binding.contentAddress.setText(userDao.getDataAll().get(0).address);
-
-
-                SpinnerAdapter adapter1 = binding.contentBirthyear.getAdapter();
-                for (int i = 0; i < adapter1.getCount(); i++) {
-                    if (Integer.parseInt(adapter1.getItem(i).toString())==userDao.getDataAll().get(0).birthYear) {
-                        binding.contentBirthyear.setSelection(i);
-                        break;
-                    }
-                }
-                SpinnerAdapter adapter2 = binding.contentBirthmonth.getAdapter();
-                for (int i = 0; i < adapter2.getCount(); i++) {
-                    if (adapter2.getItem(i).equals(userDao.getDataAll().get(0).birthMonth)) {
-                        binding.contentBirthmonth.setSelection(i);
-                        break;
-                    }
-                }
-                SpinnerAdapter adapter3 = binding.contentBirthday.getAdapter();
-                for (int i = 0; i < adapter3.getCount(); i++) {
-                    if (adapter3.getItem(i).equals(userDao.getDataAll().get(0).birthDay)) {
-                        binding.contentBirthday.setSelection(i);
-                        break;
-                    }
-                }
+                year=userDao.getDataAll().get(0).birthYear;
+                month=userDao.getDataAll().get(0).birthMonth;
+                day=userDao.getDataAll().get(0).birthDay;
+            }
+            else{
+                year = calendar.get(Calendar.YEAR);           // 현재 년도
+                month = calendar.get(Calendar.MONTH) + 1;    // 현재 월 (0부터 시작하므로 +1 필요)
+                day = calendar.get(Calendar.DAY_OF_MONTH);
             }
             new Handler(Looper.getMainLooper()).post(() -> {
-                updateUI();
+                updateUI(year,month,day);
             });
         });
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -89,10 +75,10 @@ public class UserInfoDialog extends Dialog {
 
     }
 
-    private void updateUI(){
+    private void updateUI(int year,int month,int day){
         binding.back.setOnClickListener(v->dismiss());
 
-        setSpinner();
+        setSpinner(year,month,day);
 
         binding.registerButton.setOnClickListener(v->changeData());
     }
@@ -120,6 +106,11 @@ public class UserInfoDialog extends Dialog {
                 user.birthYear=Integer.parseInt(binding.contentBirthyear.getSelectedItem().toString());
                 user.birthMonth=Integer.parseInt(binding.contentBirthmonth.getSelectedItem().toString());
                 user.birthDay=Integer.parseInt(binding.contentBirthday.getSelectedItem().toString());
+                user.money=0;
+                user.goal=0;
+                LocalDateTime now = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                user.recentUpdate=now.format(formatter);
                 userDao.setInsertData(user);
             }
             new Handler(Looper.getMainLooper()).post(() -> {
@@ -129,10 +120,10 @@ public class UserInfoDialog extends Dialog {
 
     }
 
-    private void setSpinner(){
+    private void setSpinner(int year,int month,int day){
         // 연도 스피너
         years = new ArrayList<>();
-        for (int i = baseYear - 50; i <= baseYear + 1; i++) {
+        for (int i = Calendar.getInstance().get(Calendar.YEAR) - 50; i <= Calendar.getInstance().get(Calendar.YEAR) + 1; i++) {
             years.add(i);
         }
         ArrayAdapter<Integer> yearAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, years);
@@ -170,9 +161,9 @@ public class UserInfoDialog extends Dialog {
                 // Do nothing
             }
         });
-        binding.contentBirthyear.setSelection(years.indexOf(Calendar.getInstance().get(Calendar.YEAR)));
-        binding.contentBirthmonth.setSelection(Calendar.getInstance().get(Calendar.MONTH));  // 0-11 범위, 1월은 0
-        updateDaysInMonth(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH) + 1);
+        binding.contentBirthyear.setSelection(year-Calendar.getInstance().get(Calendar.YEAR)+50);
+        binding.contentBirthmonth.setSelection(month-1);
+        binding.contentBirthday.setSelection(day-1);
     }
     private void updateDaysInMonth(int year, int month){
         Calendar calendar = Calendar.getInstance();
