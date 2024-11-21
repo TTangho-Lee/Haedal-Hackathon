@@ -62,20 +62,24 @@ public class ResumeActivity extends AppCompatActivity {
         }
 
         //개인정보 수정
-        binding.editPerson.setOnClickListener(v -> showInfoDialog());
+        binding.containerPerson.setOnClickListener(v -> showInfoDialog());
         //학력 추가
-        binding.registerEdu.setOnClickListener(v->{
-            Toast.makeText(this, "test", Toast.LENGTH_SHORT).show();
-        });
+        binding.registerEdu.setOnClickListener(v -> showEduDialog());
         //자격증 추가
-        binding.registerCert.setOnClickListener(v->{
-
-        });
+        binding.registerCert.setOnClickListener(v->showCertDialog());
     }
 
     private void showInfoDialog(){
         UserInfoDialog userInfoDialog = new UserInfoDialog(this);
         userInfoDialog.show();
+    }
+    private void showEduDialog(){
+        EduDialog eduDialog = new EduDialog(this);
+        eduDialog.show();
+    }
+    private void showCertDialog(){
+        CertDialog certDialog = new CertDialog(this);
+        certDialog.show();
     }
 
 }
