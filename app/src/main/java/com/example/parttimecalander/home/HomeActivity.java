@@ -114,7 +114,7 @@ public class HomeActivity extends AppCompatActivity {
         UserDao userDao=userDatabase.userDao();
         TextView user_text=(TextView)findViewById(R.id.user_text);
         userDao.getDataChange().observe(this, users -> {
-            if(users.get(0).name==null){
+            if(users.size()==0||users.get(0).name==null){
                 user_text.setText("가입부터 해라 애송이");
             }else{
                 user_text.setText(users.get(0).name+"님, 열심히 땀 흘려\n"+users.get(0).money+"원이나 모았어요!");
