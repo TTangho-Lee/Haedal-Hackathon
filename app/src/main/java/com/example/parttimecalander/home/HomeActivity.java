@@ -54,6 +54,21 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         enableEdgeToEdge();
         setContentView(R.layout.activity_home);
+        reset_layout();
+
+
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        reset_layout();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        reset_layout();
+    }
+    public void reset_layout(){
         //주별 캘린더
         ConstraintLayout week_calendar = findViewById(R.id.week_calander);
         week_calendar.setOnClickListener(v->{
@@ -71,8 +86,8 @@ public class HomeActivity extends AppCompatActivity {
         //나의 근무지
         ConstraintLayout my_workplace = findViewById(R.id.my_workplace);
         my_workplace.setOnClickListener(v->{
-                Intent intent = new Intent(HomeActivity.this, WorkPlaceActivity.class);
-                startActivity(intent);
+            Intent intent = new Intent(HomeActivity.this, WorkPlaceActivity.class);
+            startActivity(intent);
         });
 
         //나의 목표
@@ -243,8 +258,6 @@ public class HomeActivity extends AppCompatActivity {
             ScheduleDialogFragment dialog = ScheduleDialogFragment.newInstance(selectedDate);
             dialog.show(getSupportFragmentManager(), "ScheduleDialog");
         });
-
-
     }
     public void set_time(int day, int worked_time) {
         int d = day + dayOfWeekNumber - 1;
