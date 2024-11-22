@@ -63,6 +63,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
+
             <View
                 android:id="@+id/goal_img"
                 android:layout_width="100dp"
