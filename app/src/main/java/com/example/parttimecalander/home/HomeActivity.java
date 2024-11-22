@@ -121,29 +121,32 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        //TODO: 일정에서 오늘 거만 뽑아서 타이머 만들기
+        //1. 데이터베이스에서 -> 
         Executors.newSingleThreadExecutor().execute(() -> {
-
-
-
             double real_time=0;
             double real_money=0;
             double all_money=0;
             List<WorkPlace> placeList = placeDao.getDataAll();
             List<WorkDaily> dailyList = dailyDao.getDataAll();
             for (int i = 0; i < placeList.size(); i++) {
+                //근무지 리스트의 각 근무지마다
                 WorkPlace place = placeList.get(i);
+
                 for (int ii = 0; ii < 6; ii++) {
                     for (int j = 0; j < 7; j++) {
                         time_calander[ii][j] = 0;
                         real_calander[ii][j]=0;
                     }
                 }
-
+                //일정을 담고 있는 리스트에서 하나씩 읽기
                 for (int j = 0; j < dailyList.size(); j++) {
                     WorkDaily dailyWork = dailyList.get(j);
                     if (dailyWork.placeId == place.ID) {
+                        //현지 보고 있는 근무지와 같은 일정일 경우 시작과 끝시간
                         LocalDateTime startTime = LocalDateTime.parse(dailyWork.startTime, formatter);
                         LocalDateTime endTime = LocalDateTime.parse(dailyWork.endTime, formatter);
+
                         if (startTime.getYear() == currentYear && startTime.getMonthValue() == currentMonth+1) {
                             set_time(startTime.getDayOfMonth(), (int) Duration.between(startTime, endTime).getSeconds());
                             if(startTime.getDayOfMonth()<currentDay){
