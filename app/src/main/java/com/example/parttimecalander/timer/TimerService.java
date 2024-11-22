@@ -10,9 +10,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
 import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
