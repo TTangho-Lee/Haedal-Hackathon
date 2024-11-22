@@ -1,9 +1,11 @@
 package com.example.parttimecalander.home;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,6 +38,7 @@ public class homeRecyclerviewAdapter extends RecyclerView.Adapter<homeRecyclervi
         String[] parts = data.split("///");
         holder.textView.setText(parts[0]);
         holder.textView2.setText((parts[1].substring(2,10)+"~"+parts[1].substring(22,30)).replace("-","."));
+        holder.linearLayout.setBackgroundColor(Color.parseColor(parts[2]));
     }
 
     @Override
@@ -47,10 +50,12 @@ public class homeRecyclerviewAdapter extends RecyclerView.Adapter<homeRecyclervi
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
         TextView textView2;
+        LinearLayout linearLayout;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.place_name);
             textView2=itemView.findViewById(R.id.work_time);
+            linearLayout=itemView.findViewById(R.id.home_background);
         }
     }
 }

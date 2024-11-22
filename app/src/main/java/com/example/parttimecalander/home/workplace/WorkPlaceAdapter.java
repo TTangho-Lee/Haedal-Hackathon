@@ -1,6 +1,7 @@
 package com.example.parttimecalander.home.workplace;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parttimecalander.Database.WorkPlace;
@@ -38,6 +40,7 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
         private TextView moneyTextView;
         private TextView juhyuTextView;
         private LinearLayout workdayBox;
+        private ConstraintLayout constraintLayout;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             colorView = itemView.findViewById(R.id.workplace_color);
@@ -49,6 +52,7 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
             moneyTextView = itemView.findViewById(R.id.content_money);
             juhyuTextView = itemView.findViewById(R.id.juhyu_money);
             workdayBox = itemView.findViewById(R.id.box_workday);
+            constraintLayout=itemView.findViewById(R.id.container_industry);
         }
     }
 
@@ -68,12 +72,12 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
         if(workPlaces.get(position).startDate==null || workPlaces.get(position).startDate.trim().isEmpty()){
             holder.startDateTextView.setText("0000-00-00");
         }else{
-            holder.startDateTextView.setText(workPlaces.get(position).startDate);
+            holder.startDateTextView.setText(workPlaces.get(position).startDate.replace("00:00:00",""));
         }
         if(workPlaces.get(position).endDate==null || workPlaces.get(position).endDate.trim().isEmpty()){
             holder.endDateTextView.setText("0000-00-00");
         }else{
-            holder.endDateTextView.setText(workPlaces.get(position).endDate);
+            holder.endDateTextView.setText(workPlaces.get(position).endDate.replace("00:00:00",""));
         }
 
         holder.industryTextView.setText(workPlaces.get(position).type);
@@ -85,6 +89,8 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
         holder.itemView.setOnClickListener(v -> {
                     workPlaces.get(position).isExpanded=!workPlaces.get(position).isExpanded;
         notifyItemChanged(holder.getAdapterPosition());});
+        holder.colorView.setBackgroundColor(Color.parseColor(workPlaces.get(position).ColorHex));
+        holder.constraintLayout.setBackgroundColor(Color.parseColor(workPlaces.get(position).ColorHex));
     }
 
     @Override

@@ -240,7 +240,7 @@ public class HomeActivity extends AppCompatActivity {
 // 데이터 생성
                     List<String> dataList = new ArrayList<>();
                     for (int i = 0; i < placeList.size(); i++) {
-                        dataList.add(placeList.get(i).placeName+"///"+placeList.get(i).startDate+"~"+placeList.get(i).endDate);
+                        dataList.add(placeList.get(i).placeName+"///"+placeList.get(i).startDate+"~"+placeList.get(i).endDate+"///"+placeList.get(i).ColorHex);
                     }
                     homeRecyclerviewAdapter adapter = new homeRecyclerviewAdapter(dataList);
                     RecyclerView recyclerView=(RecyclerView)findViewById(R.id.home_recyclerView);
