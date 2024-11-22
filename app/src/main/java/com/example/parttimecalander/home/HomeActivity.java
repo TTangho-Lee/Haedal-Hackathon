@@ -15,10 +15,9 @@ import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
 import com.example.parttimecalander.Database.Database.UserDatabase;
 import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
 import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
-import com.example.parttimecalander.Database.User;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
-import com.example.parttimecalander.GoalActivity;
+import com.example.parttimecalander.home.goal.GoalActivity;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.calander.CalendarActivity;
 import com.example.parttimecalander.home.resume.ResumeActivity;
@@ -34,6 +33,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 
 public class HomeActivity extends AppCompatActivity {
@@ -121,9 +121,15 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        //TODO: 일정에서 오늘 거만 뽑아서 타이머 만들기
-        //1. 데이터베이스에서 ->
         Executors.newSingleThreadExecutor().execute(() -> {
+
+            //TODO: 일정에서 오늘 거만 뽑아서 타이머 만들기
+            //타이머
+            LocalDate todayDate  = LocalDate.now();
+            String selectedDate = todayDate.toString();
+            List<WorkDaily> todaySchedule = dailyDao.getSchedulesForDate(selectedDate);
+            //타이머
+
             double real_time=0;
             double real_money=0;
             double all_money=0;
@@ -143,7 +149,7 @@ public class HomeActivity extends AppCompatActivity {
                 for (int j = 0; j < dailyList.size(); j++) {
                     WorkDaily dailyWork = dailyList.get(j);
                     if (dailyWork.placeId == place.ID) {
-                        //현지 보고 있는 근무지와 같은 일정일 경우 시작과 끝시간
+                        //현재 보고 있는 근무지와 같은 일정일 경우 시작과 끝시간
                         LocalDateTime startTime = LocalDateTime.parse(dailyWork.startTime, formatter);
                         LocalDateTime endTime = LocalDateTime.parse(dailyWork.endTime, formatter);
 
