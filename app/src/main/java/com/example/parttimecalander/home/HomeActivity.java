@@ -2,12 +2,15 @@ package com.example.parttimecalander.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.WindowCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
@@ -31,6 +34,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -89,6 +93,7 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, WorkPlaceActivity.class);
             startActivity(intent);
         });
+
 
         //나의 목표
         ConstraintLayout my_goal = findViewById(R.id.my_goal);
@@ -232,6 +237,15 @@ public class HomeActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+// 데이터 생성
+                    List<String> dataList = new ArrayList<>();
+                    for (int i = 0; i < placeList.size(); i++) {
+                        dataList.add(placeList.get(i).placeName+"///"+placeList.get(i).startDate+"~"+placeList.get(i).endDate);
+                    }
+                    homeRecyclerviewAdapter adapter = new homeRecyclerviewAdapter(dataList);
+                    RecyclerView recyclerView=(RecyclerView)findViewById(R.id.home_recyclerView);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
+                    recyclerView.setAdapter(adapter);
 
                     worktime.setText(df.format((int)finalReal_time )+" 시간");
                     earnmoney.setText(df.format((int)finalReal_money) +" 원");
