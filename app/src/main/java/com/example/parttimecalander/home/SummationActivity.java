@@ -194,7 +194,7 @@ public class SummationActivity extends AppCompatActivity {
                 for (int ii = 0; ii < 6; ii++) {
                     System.arraycopy(time_calander[ii], 0, new_calander[ii], 0, 7);
                 }
-                RecyclerItem new_item = new RecyclerItem(place.placeName, new_calander, place.isJuhyu, place.usualPay,place.ColorHex);
+                RecyclerItem new_item = new RecyclerItem(year,month,place.placeName, new_calander, place.isJuhyu, place.usualPay,place.ColorHex);
                 items.add(new_item);
                 double normal_hour=0;
                 double over_hour=0;
