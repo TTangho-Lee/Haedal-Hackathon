@@ -122,7 +122,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         //TODO: 일정에서 오늘 거만 뽑아서 타이머 만들기
-        //1. 데이터베이스에서 ->
+        //1. 데이터베이스에서 -> push 연습
         Executors.newSingleThreadExecutor().execute(() -> {
             double real_time=0;
             double real_money=0;
