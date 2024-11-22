@@ -1,16 +1,13 @@
 package com.example.parttimecalander.home;
 
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,9 +24,9 @@ import com.example.parttimecalander.home.goal.GoalActivity;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.calander.CalendarActivity;
 import com.example.parttimecalander.home.resume.ResumeActivity;
+import com.example.parttimecalander.home.scheduledialog.ScheduleDialogFragment;
 import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
 import com.example.parttimecalander.home.workplace.WorkPlaceActivity;
-import com.example.parttimecalander.timer.TimerService;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
@@ -41,7 +38,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.Executors;
 
 public class HomeActivity extends AppCompatActivity {
@@ -254,8 +250,6 @@ public class HomeActivity extends AppCompatActivity {
             });
         });
 
-
-
         //오늘을 포함한 일주일의 날짜를 선택
         setWeekStartEnd();
         //materialCalendarView 세팅
@@ -274,22 +268,6 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-        // BroadcastReceiver 등록
-        timerReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                long timeLeftMillis = intent.getLongExtra(TimerService.EXTRA_TIME_LEFT, 0);
-                updateTimerUI(timeLeftMillis);  // TextView 업데이트
-            }
-        };
-        // ACTION_UPDATE_TIMER 브로드캐스트 필터링하여 등록
-        IntentFilter filter = new IntentFilter(TimerService.ACTION_UPDATE_TIMER);
-        registerReceiver(timerReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-
-        //타이머 서비스 시작 코드
-        Intent serviceIntent = new Intent(this, TimerService.class);
-        ContextCompat.startForegroundService(this, serviceIntent);
-        //타이머
     }
     private void updateTimerUI(long timeLeftMillis) {
         // 남은 시간을 시, 분, 초로 변환

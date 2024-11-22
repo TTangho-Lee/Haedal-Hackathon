@@ -1,160 +1,113 @@
 package com.example.parttimecalander.timer;
-
-import android.Manifest;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
-import com.example.parttimecalander.Database.Dao.WorkDailyDao;
-import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
-import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.R;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class TimerService extends Service {
-    public static final String ACTION_UPDATE_TIMER = "com.example.parttimecalander.timer.ACTION_UPDATE_TIMER";
-    public static final String EXTRA_TIME_LEFT = "EXTRA_TIME_LEFT";
-    private CountDownTimer countDownTimer;
-    private Handler handler = new Handler();
-    private Runnable runnable;
-    WorkDailyDao dailyDao;
-    WorkDailyDatabase dailyDatabase;
-    private ScheduledExecutorService scheduler;
-    private LocalDateTime lastCheckedDate;
+
+    private LocalDateTime endTime;
+    private Handler handler;
+    private Runnable updateTimerRunnable;
+    private static final int NOTIFICATION_ID = 1;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        handler = new Handler();
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        dailyDatabase = WorkDailyDatabase.getDatabase(this);
-        dailyDao = dailyDatabase.workDailyDao();
+        // 알림 설정 (포그라운드 서비스로 실행)
+        startForeground(NOTIFICATION_ID, createNotification());
+        // 시작 시간과 끝 시간 받기
+        String startTimeStr = intent.getStringExtra("start_time");
+        String endTimeStr = intent.getStringExtra("end_time");
 
-        // 서비스가 시작될 때 현재 날짜 설정
-        lastCheckedDate = LocalDateTime.now().toLocalDate().atStartOfDay();
-        int year = lastCheckedDate.getYear();
-        int month = lastCheckedDate.getMonthValue();
-        int day = lastCheckedDate.getDayOfMonth();
-        String todayString = String.format("%04d-%02d-%02d", year, month, day);
+        // 날짜 형식 파싱
+        LocalDateTime startTime = LocalDateTime.parse(startTimeStr);
+        endTime = LocalDateTime.parse(endTimeStr);
 
-        // 오늘의 일정 데이터를 가져옴
-        List<WorkDaily> workDailyList = dailyDao.getSchedulesForDate(todayString);
+        // 타이머 업데이트 시작
+        startTimer();
 
-        // 매시간마다 현재 시간을 확인하여 날짜가 바뀌었는지 확인
-        scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleAtFixedRate(() -> checkDateAndUpdate(workDailyList), 0, 1, TimeUnit.HOURS);
-
-
-        // Foreground 서비스로 설정
-        //startForeground(1, createNotification("Service running"));
-
-        return START_STICKY;
+        return START_STICKY;  // 서비스가 종료될 때 자동으로 재시작하도록 설정
     }
 
-    // 현재 날짜를 체크하여 날짜가 바뀌면 일정을 새로 받아옴
-    private void checkDateAndUpdate(List<WorkDaily> workDailyList) {
-        LocalDateTime now = LocalDateTime.now().toLocalDate().atStartOfDay();
+    private void startTimer() {
+        // 주기적으로 타이머를 갱신할 Runnable 정의
+        updateTimerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateRemainingTime();
+                handler.postDelayed(this, 1000);  // 1초마다 타이머 갱신
+            }
+        };
 
-        // 날짜가 바뀌었으면 새로 일정을 받아옴
-        if (!now.isEqual(lastCheckedDate)) {
-            lastCheckedDate = now; // 날짜 업데이트
-            Log.d("TimerService", "Date changed, updating schedule...");
-
-            int year = lastCheckedDate.getYear();
-            int month = lastCheckedDate.getMonthValue();
-            int day = lastCheckedDate.getDayOfMonth();
-            String todayString = String.format("%04d-%02d-%02d", year, month, day);
-
-            // 새로운 날짜의 일정을 가져오고 타이머를 새로 시작
-            workDailyList.clear();  // 이전 일정을 지우고
-            workDailyList.addAll(dailyDao.getSchedulesForDate(todayString));  // 새 일정을 받아옴
-            startTimersForToday(workDailyList);  // 새 타이머 시작
-        }
+        // 타이머 시작
+        handler.post(updateTimerRunnable);
     }
-    // 오늘의 일정에 대해 타이머를 시작하는 메서드
-    private void startTimersForToday(List<WorkDaily> workDailyList) {
+
+    private void updateRemainingTime() {
         LocalDateTime now = LocalDateTime.now();
 
-        // 오늘 일정에 대해 각 일정마다 타이머를 시작합니다.
-        for (WorkDaily workDaily : workDailyList) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        // 남은 시간 계산
+        Duration duration = Duration.between(now, endTime);
 
-            // 시작 시간과 종료 시간을 LocalDateTime으로 변환
-            //startTime: yyyy-mm-dd 00:00:00
-            String start = workDaily.startTime + ".000";
-            String end = workDaily.endTime + ".000";
-            LocalDateTime startTime = LocalDateTime.parse(start, formatter);
-            LocalDateTime endTime = LocalDateTime.parse(end, formatter);
+        // 남은 시간이 0이 되면 타이머를 멈추고 종료
+        if (duration.isNegative() || duration.isZero()) {
+            stopSelf();
+            Toast.makeText(getApplicationContext(), "타이머 종료!", Toast.LENGTH_SHORT).show();
+        } else {
+            long secondsRemaining = duration.getSeconds();
+            long hours = secondsRemaining / 3600;
+            long minutes = (secondsRemaining % 3600) / 60;
+            long seconds = secondsRemaining % 60;
 
-            // 현재 시간과 시작 시간 비교하여 타이머 시작
-            if (now.isAfter(startTime)) {
-                long startDelay = Duration.between(now, startTime).toMillis();
-                long duration = Duration.between(startTime, endTime).toMillis();
-
-                // 일정의 시작 시간이 되었을 때 타이머 시작
-                new CountDownTimer(startDelay, 10000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        // 시작까지 남은 시간 업데이트
-                        Log.d("Timer", "Time left to start: " + millisUntilFinished / 1000);
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        // 타이머 시작 후 종료 시간까지의 카운트다운 시작
-                        startEndTimer(duration);
-                    }
-                }.start();
-            }
+            // 남은 시간 출력
+            String remainingTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+            Toast.makeText(getApplicationContext(), "남은 시간: " + remainingTime, Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void startEndTimer(long duration) {
-        // 종료 시간까지 카운트다운
-        new CountDownTimer(duration, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                // 종료까지 남은 시간 업데이트
-                broadcastTimeLeft(millisUntilFinished);
-            }
-
-            @Override
-            public void onFinish() {
-                // 종료 시 타이머 종료
-                Log.d("Timer", "Timer finished");
-                broadcastTimeLeft(0);
-            }
-        }.start();
-    }
-
-    private void broadcastTimeLeft(long timeLeftMillis) {
-        // 남은 시간을 텍스트 형식으로 만들어 Broadcast로 전송
-        Intent intent = new Intent(ACTION_UPDATE_TIMER);
-        intent.putExtra(EXTRA_TIME_LEFT, timeLeftMillis);
-        sendBroadcast(intent);  // 메인 액티비티로 브로드캐스트 전송
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;  // 이 서비스는 바인딩을 사용하지 않음
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (scheduler != null) {
-            scheduler.shutdown();  // 서비스 종료 시 스케줄러 종료
+        handler.removeCallbacks(updateTimerRunnable);  // 서비스 종료 시 타이머 중지
+    }
+
+    private Notification createNotification() {
+        NotificationChannel channel = new NotificationChannel(
+                "timer_channel", "타이머 채널", NotificationManager.IMPORTANCE_LOW);
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager != null) {
+            manager.createNotificationChannel(channel);
         }
-    }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+        return new NotificationCompat.Builder(this, "timer_channel")
+                .setContentTitle("타이머")
+                .setContentText("타이머가 실행 중입니다.")
+                .setSmallIcon(R.drawable.arrow_back)
+                .build();
     }
-
 }

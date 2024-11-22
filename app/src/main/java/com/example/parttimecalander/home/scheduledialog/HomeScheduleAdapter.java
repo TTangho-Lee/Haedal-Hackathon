@@ -1,4 +1,4 @@
-package com.example.parttimecalander.home.workplace;
+package com.example.parttimecalander.home.scheduledialog;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,7 +14,6 @@ import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.R;
-import com.example.parttimecalander.calander.ScheduleAdapter;
 
 import java.util.List;
 
@@ -64,11 +63,16 @@ public class HomeScheduleAdapter extends RecyclerView.Adapter<HomeScheduleAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView scheduleTextView;
+        TextView scheduleTextView, startTimer;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             scheduleTextView = itemView.findViewById(R.id.schedule_text);
+            startTimer = itemView.findViewById(R.id.timer_button);
+            startTimer.setOnClickListener(v->{
+                //TODO: 시작시간 < 현재시간 < 끝시간인지 검사
+                //TODO: 맞으면 타이머 서비스 현재시간~끝시간까지 남은 시간에 대한 타이머 실행
+            });
         }
     }
 }
