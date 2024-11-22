@@ -204,11 +204,12 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                         dayList.add(i); // Calendar에서 일요일은 1
                     }
                 }
-
                 // 시작 시간과 끝 시간 분리
                 String[] startTimes = new_workplace.startTime.split(",");
                 String[] endTimes = new_workplace.endTime.split(",");
-
+                System.out.println(dayList.toString());
+                System.out.println(startTimes.toString());
+                System.out.println(endTimes.toString());
                 // 결과 저장용 리스트
                 List<String> startTimeList = new ArrayList<>();
                 List<String> endTimeList = new ArrayList<>();
@@ -224,21 +225,18 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                     // 현재 요일이 dayList에 포함되어 있는지 확인
                     if (dayList.contains(currentDayOfWeek)) {
                         // 해당 요일에 대해 시작 시간과 끝 시간 추가
-                        for (int i = 0; i < startTimes.length; i++) {
-                            String date = new Timestamp(calendar.getTimeInMillis()).toString().split(" ")[0];
-                            startTimeList.add(date + " " + startTimes[i]);
-                            endTimeList.add(date + " " + endTimes[i]);
-                        }
+                        String date = new Timestamp(calendar.getTimeInMillis()).toString().split(" ")[0];
+                        startTimeList.add(date + " " + startTimes[dayList.indexOf(currentDayOfWeek)]);
+                        endTimeList.add(date + " " + endTimes[dayList.indexOf(currentDayOfWeek)]);
                     }
                 }
 
                 int id = placeDao.findId(new_workplace.placeName);
-
+                System.out.println(startTimeList.size());
                 for(int i = 0;i < startTimeList.size();++i){
                     WorkDaily workDaily = new WorkDaily(startTimeList.get(i),endTimeList.get(i),id);
                     dailyDao.setInsertData(workDaily);
                 }
-
 
             });
 
@@ -307,7 +305,7 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                 combinedTimes.append(time);
             }
         }
-
+        Log.d("qqqqq",""+combinedTimes);
         return combinedTimes.toString(); // 결합된 문자열 반환
     }
 }
