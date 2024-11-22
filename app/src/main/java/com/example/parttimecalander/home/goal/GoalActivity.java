@@ -1,4 +1,4 @@
-package com.example.parttimecalander;
+package com.example.parttimecalander.home.goal;
 
 import androidx.appcompat.app.AppCompatActivity;
 
