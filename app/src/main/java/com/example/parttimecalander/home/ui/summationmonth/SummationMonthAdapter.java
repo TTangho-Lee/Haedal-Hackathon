@@ -1,5 +1,6 @@
 package com.example.parttimecalander.home.ui.summationmonth;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,9 +39,12 @@ public class SummationMonthAdapter extends RecyclerView.Adapter<SummationMonthAd
     // ViewHolder 정의
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView[] textviews=new TextView[6];
-
+        View view;
+        ConstraintLayout constraintLayout;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            view=itemView.findViewById(R.id.workplace_color);
+            constraintLayout=itemView.findViewById(R.id.container_industry);
             textviews[0]=itemView.findViewById(R.id.workplace_title);
             textviews[1]=itemView.findViewById(R.id.content_money);
             textviews[2]=itemView.findViewById(R.id.content_hour);
@@ -62,6 +67,8 @@ public class SummationMonthAdapter extends RecyclerView.Adapter<SummationMonthAd
         DecimalFormat df = new DecimalFormat("###,###");
         RecyclerItem item = items.get(position);
         holder.textviews[0].setText(item.name);
+        holder.view.setBackgroundColor(Color.parseColor(item.ColorHex));
+        holder.constraintLayout.setBackgroundColor(Color.parseColor(item.ColorHex));
         double normal_hour=0;
         double over_hour=0;
         for(int i=0;i<6;i++){

@@ -184,7 +184,7 @@ public class HomeActivity extends AppCompatActivity {
                 for (int ii = 0; ii < 6; ii++) {
                     System.arraycopy(time_calander[ii], 0, new_calander[ii], 0, 7);
                 }
-                RecyclerItem new_item = new RecyclerItem(place.placeName, new_calander, place.isJuhyu, place.usualPay);
+                RecyclerItem new_item = new RecyclerItem(place.placeName, new_calander, place.isJuhyu, place.usualPay,place.ColorHex);
                 double normal_hour=0;
                 double over_hour=0;
                 for(int ii=0;ii<6;ii++){
@@ -207,7 +207,7 @@ public class HomeActivity extends AppCompatActivity {
                 for (int ii = 0; ii < 6; ii++) {
                     System.arraycopy(real_calander[ii], 0, new_calander1[ii], 0, 7);
                 }
-                RecyclerItem new_item1 = new RecyclerItem(place.placeName, new_calander1, place.isJuhyu, place.usualPay);
+                RecyclerItem new_item1 = new RecyclerItem(place.placeName, new_calander1, place.isJuhyu, place.usualPay,place.ColorHex);
                 double normal_hour1=0;
                 double over_hour1=0;
                 for(int ii=0;ii<6;ii++){
