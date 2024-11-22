@@ -1,12 +1,16 @@
 package com.example.parttimecalander.home;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
@@ -23,6 +27,7 @@ import com.example.parttimecalander.calander.CalendarActivity;
 import com.example.parttimecalander.home.resume.ResumeActivity;
 import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
 import com.example.parttimecalander.home.workplace.WorkPlaceActivity;
+import com.example.parttimecalander.timer.TimerService;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
@@ -99,6 +104,9 @@ public class HomeActivity extends AppCompatActivity {
         int currentDay=calendar.get(Calendar.DAY_OF_MONTH);
         summation_title.setText(currentMonth+1+"월 요약");
 
+        //타이머
+        TextView timer_content;
+        timer_content = (TextView)findViewById(R.id.timer_content);
 
         TextView worktime=(TextView)findViewById(R.id.worktime);
         TextView earnmoney=(TextView)findViewById(R.id.earnmoney);
@@ -123,12 +131,44 @@ public class HomeActivity extends AppCompatActivity {
 
         Executors.newSingleThreadExecutor().execute(() -> {
 
+            /*
             //TODO: 일정에서 오늘 거만 뽑아서 타이머 만들기
+            //workDaily: yyyy-mm-dd 00:00:00(start, end)
             //타이머
             LocalDate todayDate  = LocalDate.now();
-            String selectedDate = todayDate.toString();
+            int year = todayDate.getYear();
+            int month = todayDate.getMonthValue();
+            int day = todayDate.getDayOfMonth();
+            String selectedDate = String.format("%04d-%02d-%02d", year, month, day);
+            //String selectedDate = todayDate.toString();
             List<WorkDaily> todaySchedule = dailyDao.getSchedulesForDate(selectedDate);
+
+            //TODO: 매 시작 시간마다 타이머 서비스를 실행한다
+
+            for(WorkDaily schedule : todaySchedule){
+                String start = schedule.startTime;
+                String end = schedule.endTime;
+
+
+            }
+            //타이머 서비스 시작 코드
+            Intent serviceIntent = new Intent(this, TimerService.class);
+            serviceIntent.putExtra("duration", 3 * 60 * 60 * 1000); // 3시간 타이머
+            ContextCompat.startForegroundService(this, serviceIntent);
+
+            // BroadcastReceiver 등록
+            IntentFilter filter = new IntentFilter(TimerService.ACTION_UPDATE_TIMER);
+            BroadcastReceiver timerReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    long timeLeft = intent.getLongExtra(TimerService.EXTRA_TIME_LEFT, 0);
+                    //279줄
+                    timer_content.setText(formatTime(timeLeft));
+                }
+            };
+            registerReceiver(timerReceiver, filter);
             //타이머
+             */
 
             double real_time=0;
             double real_money=0;
@@ -275,5 +315,12 @@ public class HomeActivity extends AppCompatActivity {
         // 결과 확인
         sunday = CalendarDay.from(sun.getYear(), sun.getMonth().getValue(), sun.getDayOfMonth());
         saturday = CalendarDay.from(sat.getYear(),sat.getMonth().getValue(),sat.getDayOfMonth());
+    }
+    //타이머
+    private String formatTime(long millis) {
+        long hours = millis / (1000 * 60 * 60);
+        long minutes = (millis / (1000 * 60)) % 60;
+        long seconds = (millis / 1000) % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }
