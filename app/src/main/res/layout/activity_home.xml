@@ -79,10 +79,19 @@
             android:id="@+id/timer_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="타이머"
+            android:text="퇴근까지 남은 시간"
             android:textSize="20sp"
             android:fontFamily="@font/font_bold"
             app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+            android:id="@+id/timer_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="00:00:00"
+            android:textSize="30sp"
+            android:fontFamily="@font/font_bold"
+            app:layout_constraintTop_toBottomOf="@id/timer_title"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

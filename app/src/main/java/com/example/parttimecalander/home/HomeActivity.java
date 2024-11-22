@@ -1,6 +1,9 @@
 package com.example.parttimecalander.home;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +30,7 @@ import com.example.parttimecalander.calander.CalendarActivity;
 import com.example.parttimecalander.home.resume.ResumeActivity;
 import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
 import com.example.parttimecalander.home.workplace.WorkPlaceActivity;
+import com.example.parttimecalander.timer.TimerService;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
@@ -51,6 +56,8 @@ public class HomeActivity extends AppCompatActivity {
     private WorkPlaceDatabase placeDatabase;
     private WorkDailyDao dailyDao;
     private WorkPlaceDao placeDao;
+    private BroadcastReceiver timerReceiver;
+    TextView timer_content;
 
 
     @Override
@@ -119,6 +126,8 @@ public class HomeActivity extends AppCompatActivity {
         int currentDay=calendar.get(Calendar.DAY_OF_MONTH);
         summation_title.setText(currentMonth+1+"월 요약");
 
+        //타이머
+        timer_content = (TextView)findViewById(R.id.timer_content);
 
         TextView worktime=(TextView)findViewById(R.id.worktime);
         TextView earnmoney=(TextView)findViewById(R.id.earnmoney);
@@ -142,13 +151,6 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         Executors.newSingleThreadExecutor().execute(() -> {
-
-            //TODO: 일정에서 오늘 거만 뽑아서 타이머 만들기
-            //타이머
-            LocalDate todayDate  = LocalDate.now();
-            String selectedDate = todayDate.toString();
-            List<WorkDaily> todaySchedule = dailyDao.getSchedulesForDate(selectedDate);
-            //타이머
 
             double real_time=0;
             double real_money=0;
@@ -272,7 +274,37 @@ public class HomeActivity extends AppCompatActivity {
             ScheduleDialogFragment dialog = ScheduleDialogFragment.newInstance(selectedDate);
             dialog.show(getSupportFragmentManager(), "ScheduleDialog");
         });
+        //타이머(timer)
+
+        // BroadcastReceiver 등록
+        timerReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                long timeLeftMillis = intent.getLongExtra(TimerService.EXTRA_TIME_LEFT, 0);
+                updateTimerUI(timeLeftMillis);  // TextView 업데이트
+            }
+        };
+        // ACTION_UPDATE_TIMER 브로드캐스트 필터링하여 등록
+        IntentFilter filter = new IntentFilter(TimerService.ACTION_UPDATE_TIMER);
+        registerReceiver(timerReceiver, filter);
+
+        //타이머 서비스 시작 코드
+        Intent serviceIntent = new Intent(this, TimerService.class);
+        ContextCompat.startForegroundService(this, serviceIntent);
+        //타이머
+        
     }
+    private void updateTimerUI(long timeLeftMillis) {
+        // 남은 시간을 시, 분, 초로 변환
+        long seconds = timeLeftMillis / 1000;
+        long minutes = (seconds / 60) % 60;
+        long hours = (seconds / 3600) % 24;
+        String timeLeft = String.format("%02d:%02d:%02d", hours, minutes, seconds % 60);
+
+        // TextView 업데이트
+        timer_content.setText(timeLeft);
+    }
+
     public void set_time(int day, int worked_time) {
         int d = day + dayOfWeekNumber - 1;
         time_calander[d / 7][d % 7] += worked_time;
@@ -302,5 +334,11 @@ public class HomeActivity extends AppCompatActivity {
         // 결과 확인
         sunday = CalendarDay.from(sun.getYear(), sun.getMonth().getValue(), sun.getDayOfMonth());
         saturday = CalendarDay.from(sat.getYear(),sat.getMonth().getValue(),sat.getDayOfMonth());
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 리시버 해제
+        unregisterReceiver(timerReceiver);
     }
 }
