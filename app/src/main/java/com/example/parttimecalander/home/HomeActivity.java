@@ -258,7 +258,7 @@ public class HomeActivity extends AppCompatActivity {
         };
         // ACTION_UPDATE_TIMER 브로드캐스트 필터링하여 등록
         IntentFilter filter = new IntentFilter(TimerService.ACTION_UPDATE_TIMER);
-        registerReceiver(timerReceiver, filter);
+        registerReceiver(timerReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
 
         //타이머 서비스 시작 코드
         Intent serviceIntent = new Intent(this, TimerService.class);
