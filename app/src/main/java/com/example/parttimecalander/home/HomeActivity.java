@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,8 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
@@ -39,7 +36,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -65,21 +61,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         enableEdgeToEdge();
         setContentView(R.layout.activity_home);
-        reset_layout();
-
-
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        reset_layout();
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        reset_layout();
-    }
-    public void reset_layout(){
         //주별 캘린더
         ConstraintLayout week_calendar = findViewById(R.id.week_calander);
         week_calendar.setOnClickListener(v->{
@@ -97,10 +78,9 @@ public class HomeActivity extends AppCompatActivity {
         //나의 근무지
         ConstraintLayout my_workplace = findViewById(R.id.my_workplace);
         my_workplace.setOnClickListener(v->{
-            Intent intent = new Intent(HomeActivity.this, WorkPlaceActivity.class);
-            startActivity(intent);
+                Intent intent = new Intent(HomeActivity.this, WorkPlaceActivity.class);
+                startActivity(intent);
         });
-
 
         //나의 목표
         ConstraintLayout my_goal = findViewById(R.id.my_goal);
@@ -239,6 +219,7 @@ public class HomeActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+<<<<<<< HEAD
 // 데이터 생성
                     List<String> dataList = new ArrayList<>();
                     for (int i = 0; i < placeList.size(); i++) {
@@ -248,6 +229,8 @@ public class HomeActivity extends AppCompatActivity {
                     RecyclerView recyclerView=(RecyclerView)findViewById(R.id.home_recyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
                     recyclerView.setAdapter(adapter);
+=======
+>>>>>>> origin/SeungHwan
 
                     worktime.setText(df.format((int)finalReal_time )+" 시간");
                     earnmoney.setText(df.format((int)finalReal_money) +" 원");
@@ -274,6 +257,10 @@ public class HomeActivity extends AppCompatActivity {
             ScheduleDialogFragment dialog = ScheduleDialogFragment.newInstance(selectedDate);
             dialog.show(getSupportFragmentManager(), "ScheduleDialog");
         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/SeungHwan
         //타이머(timer)
 
         // BroadcastReceiver 등록
@@ -286,13 +273,17 @@ public class HomeActivity extends AppCompatActivity {
         };
         // ACTION_UPDATE_TIMER 브로드캐스트 필터링하여 등록
         IntentFilter filter = new IntentFilter(TimerService.ACTION_UPDATE_TIMER);
-        registerReceiver(timerReceiver, filter);
+        registerReceiver(timerReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
 
         //타이머 서비스 시작 코드
         Intent serviceIntent = new Intent(this, TimerService.class);
         ContextCompat.startForegroundService(this, serviceIntent);
         //타이머
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> origin/SeungHwan
     }
     private void updateTimerUI(long timeLeftMillis) {
         // 남은 시간을 시, 분, 초로 변환
