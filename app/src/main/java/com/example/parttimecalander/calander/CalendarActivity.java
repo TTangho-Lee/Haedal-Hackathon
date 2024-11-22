@@ -1,5 +1,6 @@
 package com.example.parttimecalander.calander;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +32,7 @@ public class CalendarActivity extends AppCompatActivity {
     //views
     MaterialCalendarView mcv_month;
     RecyclerView rcv_schedule;
-    TextView tv_date;
+    TextView tv_date, add_schedule;
     //자료형
     HashSet<CalendarDay> days = new HashSet<>(); //일정 있는 날짜들(CalendarDay자료형), 년월일로 구성
 
@@ -44,6 +45,12 @@ public class CalendarActivity extends AppCompatActivity {
         tv_date = findViewById(R.id.title_day);
         rcv_schedule = findViewById(R.id.recyclerView_schedule);
         mcv_month = findViewById(R.id.calendarView);
+        add_schedule = findViewById(R.id.add_schedule);
+
+        add_schedule.setOnClickListener(v->{
+            Intent intent = new Intent(CalendarActivity.this, SchduleRegisterActivity.class);
+            startActivity(intent);
+        });
 
         // 데이터베이스 작업: 백그라운드 스레드 실행
         Executors.newSingleThreadExecutor().execute(() -> {
