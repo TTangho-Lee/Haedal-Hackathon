@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class User {
     @PrimaryKey(autoGenerate = true)
     public int ID;                         //기본키
+    public byte[] image;
     public String phone;
     public String email;
     public String address;
