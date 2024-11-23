@@ -16,6 +16,7 @@ import com.example.parttimecalander.R;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
 public class TimerService extends Service {
 
@@ -35,16 +36,26 @@ public class TimerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 알림 설정 (포그라운드 서비스로 실행)
         startForeground(NOTIFICATION_ID, createNotification());
+
         // 시작 시간과 끝 시간 받기
         String startTimeStr = intent.getStringExtra("start_time");
         String endTimeStr = intent.getStringExtra("end_time");
 
         // 날짜 형식 파싱
-        LocalDateTime startTime = LocalDateTime.parse(startTimeStr);
-        endTime = LocalDateTime.parse(endTimeStr);
+        if (startTimeStr != null && endTimeStr != null) {
+            try {
+                LocalDateTime startTime = LocalDateTime.parse(startTimeStr);
+                endTime = LocalDateTime.parse(endTimeStr);
 
-        // 타이머 업데이트 시작
-        startTimer();
+                // 타이머 업데이트 시작
+                startTimer();
+            } catch (DateTimeParseException e) {
+                e.printStackTrace();
+                stopSelf(); // 날짜 형식이 잘못되었을 경우 서비스 종료
+            }
+        } else {
+            stopSelf(); // 필요한 데이터가 없으면 서비스 종료
+        }
 
         return START_STICKY;  // 서비스가 종료될 때 자동으로 재시작하도록 설정
     }

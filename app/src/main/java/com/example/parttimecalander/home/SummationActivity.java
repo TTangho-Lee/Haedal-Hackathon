@@ -71,7 +71,9 @@ public class SummationActivity extends AppCompatActivity {
         month = sharedPreferences.getInt("selectedMonth", currentMonth+1);  // 기본값 11월
         previousYear = year;
         previousMonth = month;
-        LocalDate firstDay = LocalDate.of(year, month+1, 1);
+        currentYear=year;
+        currentMonth=month-1;
+        LocalDate firstDay = LocalDate.of(year, month, 1);
         dayOfWeekNumber = firstDay.getDayOfWeek().getValue() - 1;
         time_text=(TextView)findViewById(R.id.time_text);
         dailyDatabase = WorkDailyDatabase.getDatabase(this);
@@ -243,6 +245,9 @@ public class SummationActivity extends AppCompatActivity {
 
     public void set_time(int day, int worked_time) {
         int d = day + dayOfWeekNumber - 1;
+        Log.d("day",day+"");
+        Log.d("date",dayOfWeekNumber+"");
+        Log.d("array",""+d/7+""+d%7);
         time_calander[d / 7][d % 7] += worked_time;
     }
 }
