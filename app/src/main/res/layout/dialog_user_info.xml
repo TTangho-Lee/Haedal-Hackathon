@@ -159,6 +159,8 @@
             android:paddingHorizontal="12dp"
             android:paddingTop="10dp"
             android:paddingBottom="11dp"
+            android:inputType="phone"
+            android:maxLength="13"
             android:hint="연락처를 입력해주세요. (010-0000-0000)"
             android:textSize="14sp"
             android:textColor="@color/black"
