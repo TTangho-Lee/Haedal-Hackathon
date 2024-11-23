@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,7 +47,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements ScheduleDialogFragment.TimerDialogListener {
     CalendarDay today, sunday, saturday;
     MaterialCalendarView mcv;
     int dayOfWeekNumber;
@@ -67,16 +70,6 @@ public class HomeActivity extends AppCompatActivity {
         reset_layout();
         setBroadcastReciver();
 
-        // 시작 시간과 끝 시간 설정 (예시)
-        String startTime = "2024-11-23T10:00:00";
-        String endTime = "2024-11-23T11:00:00";
-
-        // 서비스 시작
-        Intent serviceIntent = new Intent(this, TimerService.class);
-        serviceIntent.putExtra("start_time", startTime);
-        serviceIntent.putExtra("end_time", endTime);
-        startService(serviceIntent);
-
     }
     @Override
     protected void onResume(){
@@ -98,6 +91,37 @@ public class HomeActivity extends AppCompatActivity {
         // 브로드캐스트 리시버 해제
         unregisterReceiver(timerReceiver);
     }
+    // 인터페이스 메서드 구현
+    @Override
+    public void onTimeSet(String startTime, String endTime) {
+        // 전달받은 데이터를 처리
+        Log.d("MainActivity", "Start Time: " + startTime + ", End Time: " + endTime);
+
+        LocalDateTime currentTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime startDateTime = LocalDateTime.parse(startTime, formatter);
+        LocalDateTime endDateTime = LocalDateTime.parse(endTime, formatter);
+        // 현재 시간 < 시작 시간 < 끝 시간 인지 확인
+        if (currentTime.isAfter(startDateTime) && currentTime.isBefore(endDateTime)) {
+
+            //혹시 실행중인 타이머 서비스가 있다면 종료
+            Intent stopIntent = new Intent(this, TimerService.class);
+            stopService(stopIntent);
+
+            // 현재 시간이 시작 시간과 끝 시간 사이에 있을 때
+            Toast.makeText(this, "근무를 시작합니다.",Toast.LENGTH_SHORT).show();
+
+            Intent serviceIntent = new Intent(this, TimerService.class);
+            serviceIntent.putExtra("start_time", startTime);
+            serviceIntent.putExtra("end_time", endTime);
+            ContextCompat.startForegroundService(this, serviceIntent);
+        } else {
+            // 그렇지 않을 때
+            Toast.makeText(this, "근무 시간이 아닙니다.",Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
     private void setBroadcastReciver(){
         // 브로드캐스트 리시버 설정
         timerReceiver = new BroadcastReceiver() {
@@ -110,6 +134,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         };
     }
+
     public void reset_layout(){
         //주별 캘린더
         ConstraintLayout week_calendar = findViewById(R.id.week_calander);

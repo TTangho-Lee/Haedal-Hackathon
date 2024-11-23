@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -16,10 +17,11 @@ import com.example.parttimecalander.R;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class TimerService extends Service {
 
-    private LocalDateTime endTime;
+    private LocalDateTime startTime, endTime;
     private Handler handler;
     private Runnable updateTimerRunnable;
     private static final int NOTIFICATION_ID = 1;
@@ -36,12 +38,18 @@ public class TimerService extends Service {
         // 알림 설정 (포그라운드 서비스로 실행)
         startForeground(NOTIFICATION_ID, createNotification());
         // 시작 시간과 끝 시간 받기
-        String startTimeStr = intent.getStringExtra("start_time");
-        String endTimeStr = intent.getStringExtra("end_time");
+        try{
+            String startTimeStr = intent.getStringExtra("start_time");
+            String endTimeStr = intent.getStringExtra("end_time");
 
-        // 날짜 형식 파싱
-        LocalDateTime startTime = LocalDateTime.parse(startTimeStr);
-        endTime = LocalDateTime.parse(endTimeStr);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+            // 날짜 형식 파싱
+            startTime = LocalDateTime.parse(startTimeStr,formatter);
+            endTime = LocalDateTime.parse(endTimeStr,formatter);
+        } catch (Exception e) {
+            Log.d("exception", "nullptrException");
+        }
 
         // 타이머 업데이트 시작
         startTimer();
