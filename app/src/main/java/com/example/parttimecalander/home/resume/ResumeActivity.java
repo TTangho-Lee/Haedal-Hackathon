@@ -141,8 +141,9 @@ public class ResumeActivity extends AppCompatActivity {
             }
             //근무지 리사이클러뷰
             if(workPlaces != null){
+                HistoryAdapter adapter = new HistoryAdapter(workPlaces);
                 binding.workplaceRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-                //binding.workplaceRecyclerView.setAdapter
+                binding.workplaceRecyclerView.setAdapter(adapter);
             }
             
             //자기소개서 에딧텍스트

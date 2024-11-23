@@ -462,20 +462,21 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/register_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_button_black"
+                android:text="자소서 저장하기"
+                android:textSize="18sp"
+                android:fontFamily="@font/font_main"
+                android:textColor="#FFFFFF"
+                app:layout_constraintTop_toBottomOf="@id/container_self_introduction"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/register_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/background_button_black"
-        android:text="자소서 저장하기"
-        android:textSize="18sp"
-        android:fontFamily="@font/font_main"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
