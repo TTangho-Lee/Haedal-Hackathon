@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,12 +31,12 @@ public class SchoolEduAdapter extends RecyclerView.Adapter<SchoolEduAdapter.MyVi
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView textView;
         public TextView textView2;
-        public ImageButton imageButton;
+        public ImageView imageView;
         public MyViewHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.schoolName);
             textView2=itemView.findViewById(R.id.schoolDuration);
-            imageButton=itemView.findViewById(R.id.delete_button);
+            imageView=itemView.findViewById(R.id.delete_button);
         }
     }
 
@@ -52,7 +53,7 @@ public class SchoolEduAdapter extends RecyclerView.Adapter<SchoolEduAdapter.MyVi
         if(items.length==2){
             holder.textView.setText(items[0]);
             holder.textView2.setText(items[1]);
-            holder.imageButton.setOnClickListener(new View.OnClickListener() {
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     executorService.execute(new Runnable() {
