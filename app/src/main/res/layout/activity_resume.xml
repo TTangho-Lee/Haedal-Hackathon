@@ -64,6 +64,7 @@
 
     <!-- content -->
     <ScrollView
+        android:id="@+id/scrollviewpdf"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
@@ -307,6 +308,13 @@
 
                 </LinearLayout>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/schoolEduRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/content_edu"
+                    app:layout_constraintBottom_toTopOf="@+id/register_edu"/>
+
                 <TextView
                     android:id="@+id/register_edu"
                     android:layout_width="wrap_content"
@@ -319,8 +327,9 @@
                     android:fontFamily="@font/font_main"
                     android:background="@drawable/background_button_black"
                     android:backgroundTint="#FFE4E4"
-                    app:layout_constraintTop_toBottomOf="@id/content_edu"
+                    app:layout_constraintTop_toBottomOf="@+id/schoolEduRecyclerView"
                     app:layout_constraintStart_toStartOf="parent"/>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -360,9 +369,16 @@
                     android:orientation="vertical"
                     app:layout_constraintTop_toBottomOf="@id/title_cert"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/certRecyclerView">
 
                 </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/certRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/content_cert"
+                    app:layout_constraintBottom_toTopOf="@+id/register_cert"/>
                 <TextView
                     android:id="@+id/register_cert"
                     android:layout_width="wrap_content"
@@ -375,7 +391,7 @@
                     android:fontFamily="@font/font_main"
                     android:background="@drawable/background_button_black"
                     android:backgroundTint="#FFE4E4"
-                    app:layout_constraintTop_toBottomOf="@id/content_cert"
+                    app:layout_constraintTop_toBottomOf="@id/certRecyclerView"
                     app:layout_constraintStart_toStartOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -440,7 +456,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/background_button_black"
-        android:text="저장하기"
+        android:text="자소서 저장하기"
         android:textSize="18sp"
         android:fontFamily="@font/font_main"
         android:textColor="#FFFFFF"

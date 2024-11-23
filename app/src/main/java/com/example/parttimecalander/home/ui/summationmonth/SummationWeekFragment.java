@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -50,6 +51,7 @@ public class SummationWeekFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public TextView[] textViews=new TextView[6];
+    public ImageView back;
     public LinearLayout[] linearLayouts=new LinearLayout[6];
     private String param1;
     private String param2;
@@ -100,6 +102,8 @@ public class SummationWeekFragment extends Fragment {
 
         // 레이아웃 설정
         View view = inflater.inflate(R.layout.fragment_summation_week, container, false);
+        back = view.findViewById(R.id.back);
+        back.setOnClickListener(v-> getActivity().onBackPressed());
         textViews[0]=view.findViewById(R.id.week_1_text);
         textViews[1]=view.findViewById(R.id.week_2_text);
         textViews[2]=view.findViewById(R.id.week_3_text);

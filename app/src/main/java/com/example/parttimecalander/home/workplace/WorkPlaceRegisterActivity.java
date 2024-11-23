@@ -53,6 +53,13 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
     private char[] day = {'0', '0', '0', '0', '0', '0', '0'};
 
     WorkPlace new_workplace = new WorkPlace();
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        Intent intent = new Intent(WorkPlaceRegisterActivity.this, WorkPlaceActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +88,7 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         SpinnerColorAdapter colorAdapter = new SpinnerColorAdapter(this, circleColor);
         binding.contentColor.setAdapter(colorAdapter);
 
-        List<String> type = List.of("카페", "식당");
+        List<String> type = List.of("음식점/카페", "판매", "문화/여가", "서비스", "사무/회계", "교육/강사", "기타");
         SpinnerAdapter typeAdapter = new SpinnerAdapter(this, type);
         binding.contentType.setAdapter(typeAdapter);
 

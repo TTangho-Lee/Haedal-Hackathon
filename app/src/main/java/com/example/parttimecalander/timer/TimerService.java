@@ -3,17 +3,21 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.example.parttimecalander.R;
+import com.example.parttimecalander.widget.TimerWidget;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -26,6 +30,7 @@ public class TimerService extends Service {
     private Runnable updateTimerRunnable;
     private static final int NOTIFICATION_ID = 1;
     public static final String TIMER_BROADCAST = "com.example.parttimecalander.timer.TIMER_UPDATE";
+    public static final String TIMER_WIDGET_BROADCAST = "com.example.parttimecalander.timer.TIMER_WIDGET_BROADCAST";
 
     @Override
     public void onCreate() {
@@ -86,11 +91,17 @@ public class TimerService extends Service {
             long hours = secondsRemaining / 3600;
             long minutes = (secondsRemaining % 3600) / 60;
             long seconds = secondsRemaining % 60;
+            String left_time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
 
             // 남은 시간을 브로드캐스트로 전달
             Intent broadcastIntent = new Intent(TIMER_BROADCAST);
-            broadcastIntent.putExtra("remaining_time", String.format("%02d:%02d:%02d", hours, minutes, seconds));
+            broadcastIntent.putExtra("remaining_time", left_time );
             sendBroadcast(broadcastIntent);
+
+
+            updateWidgetDirectly(getApplicationContext(), left_time);
+
+            Log.d("TimerService", "Broadcast sent: " + TIMER_BROADCAST);
         }
     }
 
@@ -103,7 +114,19 @@ public class TimerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        updateWidgetDirectly(getApplicationContext(), "타이머를 켜주세요.");
         handler.removeCallbacks(updateTimerRunnable);  // 서비스 종료 시 타이머 중지
+    }
+
+    private void updateWidgetDirectly(Context context, String timeText) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        ComponentName widget = new ComponentName(context, TimerWidget.class);
+
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.timer_widget);
+        views.setTextViewText(R.id.timer_title, "퇴근까지 남은 시간");
+        views.setTextViewText(R.id.timer_content, timeText);
+
+        appWidgetManager.updateAppWidget(widget, views);
     }
 
     private Notification createNotification() {

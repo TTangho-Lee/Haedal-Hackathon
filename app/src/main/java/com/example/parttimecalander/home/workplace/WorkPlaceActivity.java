@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
@@ -22,12 +24,17 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 public class WorkPlaceActivity extends AppCompatActivity {
+    ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         enableEdgeToEdge();
         setContentView(R.layout.activity_workplace);
+
+        //뒤로가기 버튼 초기화
+        back = findViewById(R.id.back);
+        back.setOnClickListener(v->onBackPressed());
 
         // RecyclerView 초기화
         RecyclerView recyclerView = findViewById(R.id.workplace_recyclerView);
@@ -37,24 +44,22 @@ public class WorkPlaceActivity extends AppCompatActivity {
         WorkPlaceDatabase database=WorkPlaceDatabase.getDatabase(this);
 
         WorkPlaceDao workPlaceDao = database.workPlaceDao();
-        Button register_btn=(Button)findViewById(R.id.register_btn);
 
+        Button register_btn = findViewById(R.id.register_btn);
         register_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WorkPlaceActivity.this, WorkPlaceRegisterActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
-
-
-
 
         Executors.newSingleThreadExecutor().execute(() -> {
             // 데이터 조회 및 어댑터 설정을 위한 스레드 시작
             List<WorkPlace> places = workPlaceDao.getDataAll();
             // 어댑터 설정
-            WorkPlaceAdapter adapter = new WorkPlaceAdapter(places);
+            WorkPlaceAdapter adapter = new WorkPlaceAdapter(this, places);
             recyclerView.setAdapter(adapter);
         });
 

@@ -1,4 +1,4 @@
-package com.example.parttimecalander.home;
+package com.example.parttimecalander.home.ui.summationmonth;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -23,8 +23,6 @@ import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.R;
-import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
-import com.example.parttimecalander.home.ui.summationmonth.SummationMonthAdapter;
 
 import java.text.DecimalFormat;
 import java.time.Duration;
@@ -63,7 +61,7 @@ public class SummationActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_summation_month);
+        setContentView(R.layout.activity_summation_month);
         sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
         // 현재 연도와 월 가져오기
         Calendar calendar = Calendar.getInstance();
@@ -83,7 +81,7 @@ public class SummationActivity extends AppCompatActivity {
         placeDao = placeDatabase.workPlaceDao();
         Spinner spinnerYear = findViewById(R.id.spinner_year);
         Spinner spinnerMonth = findViewById(R.id.spinner_month);
-        
+
         back = findViewById(R.id.back);
         back.setOnClickListener(v->onBackPressed());
 
@@ -230,7 +228,7 @@ public class SummationActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     DecimalFormat df = new DecimalFormat("###,###");
-                    time_text.setText(finalAll_time +"시간 일하고\n"+ df.format((int)finalAll_money) +"원 벌었어요");
+                    time_text.setText(finalAll_time +"시간 일하고\n"+ df.format((int)finalAll_money) +"원 벌 예정이에요");
                     recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(SummationActivity.this));
 

@@ -1,19 +1,29 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Widget.HomeActivityjava.AppWidget.Container"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:theme="@style/Theme.ParttimeCalander.AppWidgetContainer">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#FFFFFF">
 
+    <!-- 제목 -->
     <TextView
-        android:id="@+id/appwidget_text"
-        style="@style/Widget.HomeActivityjava.AppWidget.InnerView"
-        android:layout_width="wrap_content"
+        android:id="@+id/timer_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:contentDescription="@string/appwidget_text"
-        android:text="@string/appwidget_text"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
-</RelativeLayout>
+        android:text="퇴근까지 남은 시간"
+        android:textSize="20sp"
+        android:fontFamily="@font/font_bold"
+        android:gravity="center" />
+
+    <!-- 남은 시간 -->
+    <TextView
+        android:id="@+id/timer_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="00:00:00"
+        android:textSize="40sp"
+        android:textColor="#1111CC"
+        android:fontFamily="@font/font_bold"/>
+</LinearLayout>

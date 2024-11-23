@@ -18,26 +18,37 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.print.PrintAttributes;
+import android.print.pdf.PrintedPdfDocument;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
 import com.example.parttimecalander.Database.Database.UserDatabase;
 import com.example.parttimecalander.Database.User;
+import com.example.parttimecalander.Database.WorkDaily;
+import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.databinding.ActivityResumeBinding;
+import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
+import com.example.parttimecalander.home.ui.summationmonth.SummationActivity;
+import com.example.parttimecalander.home.ui.summationmonth.SummationMonthAdapter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,7 +56,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executors;
+
 
 public class ResumeActivity extends AppCompatActivity {
     private ActivityResumeBinding binding;
@@ -82,10 +100,38 @@ public class ResumeActivity extends AppCompatActivity {
             binding.email.setText(user.email);
             binding.address.setText(user.address);
             if(user.image!=null){
-                Log.d("qqqq","qqqq");
                 binding.profileImg.setBackground(byteArrayToDrawable(this,user.image));
             }
+            if(user.schoolList!=null){
+                Log.d("qqqq",user.schoolList);
+                List<String> itemlist;
+                if(user.schoolList.contains("\n")){
+                    itemlist= Arrays.asList(user.schoolList.split("\n"));
+
+                }else{
+                    itemlist=new ArrayList<>();
+                }
+                SchoolEduAdapter adapter=new SchoolEduAdapter(itemlist);
+                binding.schoolEduRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                binding.schoolEduRecyclerView.setAdapter(adapter);
+            }
+            if(user.certList!=null){
+                List<String> itemlist;
+                if(user.certList.contains("\n")){
+                    itemlist= Arrays.asList(user.certList.split("\n"));
+
+                }else{
+                    itemlist=new ArrayList<>();
+                }
+                CertAdapter adapter=new CertAdapter(itemlist);
+                binding.certRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                binding.certRecyclerView.setAdapter(adapter);
+            }
+            if(user.selfIntroduce!=null){
+                binding.selfIntroductionEdit.setText(user.selfIntroduce);
+            }
         }
+
         binding.pdfConvert.setOnClickListener(v->convertToPdf());
 
         binding.profileImg.setOnClickListener(v->openGallery());
@@ -95,6 +141,36 @@ public class ResumeActivity extends AppCompatActivity {
         binding.registerEdu.setOnClickListener(v -> showEduDialog());
         //자격증 추가
         binding.registerCert.setOnClickListener(v->showCertDialog());
+
+
+
+
+
+
+
+        binding.registerButton.setOnClickListener(v->saveintroduce());
+    }
+    public void saveintroduce(){
+        new Thread(() -> {
+            String myintroduce=binding.selfIntroductionEdit.getText().toString();
+            UserDatabase userDatabase=UserDatabase.getDatabase(this);
+            UserDao userDao=userDatabase.userDao();
+            User user1;
+            if(userDao.getDataAll().size()==0){
+                user1=new User();
+                user1.selfIntroduce=myintroduce;
+                userDao.setInsertData(user1);
+            }else{
+                user1=userDao.getDataAll().get(0);
+                user1.selfIntroduce=myintroduce;
+                userDao.setUpdateData(user1);
+            }
+            runOnUiThread(() ->
+                    Toast.makeText(ResumeActivity.this, "자소서가 저장되었습니다", Toast.LENGTH_SHORT).show()
+            );
+        }).start();
+
+
     }
     private void convertToPdf() {
         // 버튼을 invisible로 만들어 숨기기
@@ -103,92 +179,72 @@ public class ResumeActivity extends AppCompatActivity {
         binding.registerEdu.setVisibility(View.INVISIBLE);
         binding.registerButton.setVisibility(View.INVISIBLE);
         binding.editPerson.setVisibility(View.INVISIBLE);
-        // 화면 캡처 후 PDF로 저장
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            savePdfToDownloadsAndroidQ();
-        } else {
-            savePdfToDownloadsLegacy();
-        }
+        ScrollView scrollView=(ScrollView)findViewById(R.id.scrollviewpdf);
+        saveScrollViewAsPdf(scrollView,this,"자소서");
     }
 
-    private void savePdfToDownloadsAndroidQ() {
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.MediaColumns.DISPLAY_NAME, "captured_screen.pdf");  // 파일 이름
-        values.put(MediaStore.MediaColumns.MIME_TYPE, "application/pdf");
-        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);  // 다운로드 폴더
 
-        // URI 가져오기
-        Uri contentUri = getContentResolver().insert(MediaStore.Files.getContentUri("external"), values);
-        if (contentUri != null) {
-            try (OutputStream outputStream = getContentResolver().openOutputStream(contentUri)) {
-                if (outputStream != null) {
-                    // 비트맵을 PDF로 저장
-                    saveBitmapAsPdf(outputStream);
-                    Toast.makeText(this, "PDF가 다운로드 폴더에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+    public void saveScrollViewAsPdf(ScrollView scrollView, Context context, String fileName) {
+        // Step 1: ScrollView를 비트맵으로 변환
+        Bitmap bitmap = getBitmapFromScrollView(scrollView);
+
+        if (bitmap != null) {
+            // Step 2: 비트맵을 PDF로 변환
+
+            File pdfFile = getUniqueFile(fileName);
+
+            PdfDocument pdfDocument = new PdfDocument();
+            try {
+                PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(bitmap.getWidth(), bitmap.getHeight(), 1).create();
+                PdfDocument.Page page = pdfDocument.startPage(pageInfo);
+
+                Canvas canvas = page.getCanvas();
+                canvas.drawBitmap(bitmap, 0, 0, null);
+
+                pdfDocument.finishPage(page);
+
+                // Step 3: PDF를 파일로 저장
+                try (FileOutputStream out = new FileOutputStream(pdfFile)) {
+                    pdfDocument.writeTo(out);
                 }
+
+                Toast.makeText(context,"PDF가 저장되었습니다.",Toast.LENGTH_SHORT).show();
+
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(this, "PDF 저장에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+            } finally {
+                // 명시적으로 PdfDocument 닫기
+                pdfDocument.close();
             }
         }
-
-        // 캡처 후 버튼을 visible로 되돌리기
         binding.pdfConvert.setVisibility(View.VISIBLE);
         binding.registerCert.setVisibility(View.VISIBLE);
         binding.registerEdu.setVisibility(View.VISIBLE);
         binding.registerButton.setVisibility(View.VISIBLE);
         binding.editPerson.setVisibility(View.VISIBLE);
     }
+    private static File getUniqueFile(String baseFileName) {
+        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File pdfFile = new File(downloadsDir, baseFileName + ".pdf");
+        int counter = 1;
 
-    private void savePdfToDownloadsLegacy() {
-        File downloadsFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File file = new File(downloadsFolder, "captured_screen.pdf");
-
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            // 비트맵을 PDF로 저장
-            saveBitmapAsPdf(fos);
-            Toast.makeText(this, "PDF가 다운로드 폴더에 저장되었습니다.", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "PDF 저장에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+        // 중복된 이름이 존재할 경우 이름 변경
+        while (pdfFile.exists()) {
+            pdfFile = new File(downloadsDir, baseFileName + "(" + counter + ").pdf");
+            counter++;
         }
-
-        // 캡처 후 버튼을 visible로 되돌리기
-        binding.pdfConvert.setVisibility(View.VISIBLE);
+        return pdfFile;
     }
+    private static Bitmap getBitmapFromScrollView(ScrollView scrollView) {
+        int width = scrollView.getChildAt(0).getWidth();
+        int height = scrollView.getChildAt(0).getHeight();
 
-    private void saveBitmapAsPdf(OutputStream outputStream) {
-        try {
-            // PDF 문서 생성
-            android.graphics.pdf.PdfDocument document = new android.graphics.pdf.PdfDocument();
-            android.graphics.pdf.PdfDocument.PageInfo pageInfo = new android.graphics.pdf.PdfDocument.PageInfo.Builder(1080, 1920, 1).create();
-            android.graphics.pdf.PdfDocument.Page page = document.startPage(pageInfo);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        scrollView.getChildAt(0).draw(canvas);
 
-            Canvas canvas = page.getCanvas();
-            Bitmap bitmap = getActivityBitmap(); // 액티비티 전체 캡처 비트맵
-            canvas.drawBitmap(bitmap, 0, 0, null);
-
-            document.finishPage(page);
-            document.writeTo(outputStream);
-            document.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "PDF 저장에 실패하였습니다.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    // 액티비티 전체를 캡처하는 메소드
-    private Bitmap getActivityBitmap() {
-        // 액티비티의 전체 화면을 캡처하는 비트맵을 생성
-        View rootView = getWindow().getDecorView().getRootView();
-        rootView.setDrawingCacheEnabled(true); // 캡처를 위한 DrawingCache 활성화
-        Bitmap bitmap = Bitmap.createBitmap(rootView.getDrawingCache()); // 비트맵 생성
-        rootView.setDrawingCacheEnabled(false); // DrawingCache 비활성화
         return bitmap;
     }
-
-
-
 
 
 
