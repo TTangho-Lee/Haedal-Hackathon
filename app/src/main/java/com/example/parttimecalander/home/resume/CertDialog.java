@@ -3,13 +3,19 @@ package com.example.parttimecalander.home.resume;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import com.example.parttimecalander.Database.Dao.UserDao;
+import com.example.parttimecalander.Database.Database.UserDatabase;
+import com.example.parttimecalander.Database.User;
 import com.example.parttimecalander.databinding.DialogCertBinding;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.Executors;
 
 
 public class CertDialog  extends Dialog {
@@ -42,9 +48,37 @@ public class CertDialog  extends Dialog {
         binding.registerButton.setOnClickListener(v->changeData());
     }
     private void changeData(){
-        //TODO: 입력받은 데이터 DB애 저장하기
-
-        dismiss();
+        String data="";
+        data=data.concat(binding.contentCertName.getText().toString());
+        data=data.concat(" ");
+        data=data.concat(binding.contentCertGrade.getText().toString());
+        data=data.concat("///(");
+        data=data.concat(binding.contentCertYear.getSelectedItem().toString());
+        data=data.concat(".");
+        data=data.concat(binding.contentCertMonth.getSelectedItem().toString());
+        data=data.concat(")\n");
+        String finalData = data;
+        Executors.newSingleThreadExecutor().execute(() -> {
+            UserDatabase userDatabase=UserDatabase.getDatabase(context);
+            UserDao userDao= userDatabase.userDao();
+            if(userDao.getDataAll().isEmpty()){
+                User user=new User();
+                user.certList="";
+                user.certList=user.certList.concat(finalData);
+                userDao.setInsertData(user);
+            }
+            else{
+                User user=userDao.getDataAll().get(0);
+                if(user.certList==null){
+                    user.certList="";
+                }
+                user.certList=user.certList.concat(finalData);
+                userDao.setUpdateData(user);
+            }
+            new Handler(Looper.getMainLooper()).post(() -> {
+                dismiss();
+            });
+        });
     }
     private void setSpinner(){
         baseYear = Calendar.getInstance().get(Calendar.YEAR);
