@@ -51,6 +51,7 @@ public class WorkPlaceActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(WorkPlaceActivity.this, WorkPlaceRegisterActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -58,7 +59,7 @@ public class WorkPlaceActivity extends AppCompatActivity {
             // 데이터 조회 및 어댑터 설정을 위한 스레드 시작
             List<WorkPlace> places = workPlaceDao.getDataAll();
             // 어댑터 설정
-            WorkPlaceAdapter adapter = new WorkPlaceAdapter(places);
+            WorkPlaceAdapter adapter = new WorkPlaceAdapter(this, places);
             recyclerView.setAdapter(adapter);
         });
 

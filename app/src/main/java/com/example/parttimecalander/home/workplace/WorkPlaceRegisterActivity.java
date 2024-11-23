@@ -53,6 +53,13 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
     private char[] day = {'0', '0', '0', '0', '0', '0', '0'};
 
     WorkPlace new_workplace = new WorkPlace();
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        Intent intent = new Intent(WorkPlaceRegisterActivity.this, WorkPlaceActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
