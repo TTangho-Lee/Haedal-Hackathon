@@ -1,6 +1,7 @@
 package com.example.parttimecalander.home.workplace;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -76,7 +77,7 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         setupDay(binding.checkboxSaturday, binding.timeSaturday, binding.startTimeSaturday, binding.endTimeSaturday);
         setupDay(binding.checkboxSunday, binding.timeSunday, binding.startTimeSunday, binding.endTimeSunday);
 
-        List<String> circleColor = List.of("#FF0000", "#0000FF");
+        List<String> circleColor = List.of("#FFB3B3","#FFCC99","#FFFF99","#B3E6B3","#99CCFF","#99B3FF","#D9B3FF");
         SpinnerColorAdapter colorAdapter = new SpinnerColorAdapter(this, circleColor);
         binding.contentColor.setAdapter(colorAdapter);
 
