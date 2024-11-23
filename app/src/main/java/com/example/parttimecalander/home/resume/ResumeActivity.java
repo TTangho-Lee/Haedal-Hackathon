@@ -8,10 +8,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,6 +60,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.time.Duration;
@@ -305,14 +308,57 @@ public class ResumeActivity extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
             try {
+                // EXIF 정보를 사용하여 회전된 이미지를 처리
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                saveImageToDatabase(bitmap);
+                bitmap = rotateImageIfRequired(bitmap, imageUri);
+
+                // 이미지 크기 조정 (최대 크기 제한을 예시로 1024px로 설정)
+                Bitmap resizedBitmap = resizeImage(bitmap, 1024);
+
+                // 이미지 저장
+                saveImageToDatabase(resizedBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
+    // EXIF 정보를 사용하여 회전된 이미지를 올바르게 회전시키는 메소드
+    private Bitmap rotateImageIfRequired(Bitmap img, Uri selectedImage) throws IOException {
+        InputStream input = getContentResolver().openInputStream(selectedImage);
+        ExifInterface ei = new ExifInterface(input);
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 
+        Matrix matrix = new Matrix();
+        // 회전 처리
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            matrix.postRotate(90);
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            matrix.postRotate(180);
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            matrix.postRotate(270);
+        }
+
+        // 회전된 이미지를 반환
+        return Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+    }
+    // 이미지 크기를 조정하는 메소드
+    private Bitmap resizeImage(Bitmap bitmap, int maxSize) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        // 크기가 maxSize보다 클 경우, 비율에 맞게 크기를 줄임
+        float aspectRatio = (float) width / height;
+        if (width > height) {
+            width = maxSize;
+            height = (int) (width / aspectRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * aspectRatio);
+        }
+
+        // 크기 조정된 Bitmap 반환
+        return Bitmap.createScaledBitmap(bitmap, width, height, true);
+    }
     private void saveImageToDatabase(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
