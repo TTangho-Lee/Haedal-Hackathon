@@ -1,5 +1,6 @@
 package com.example.parttimecalander.home.ui.summationmonth;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,7 +22,11 @@ import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.R;
+import com.example.parttimecalander.databinding.FragmentSummationWeekBinding;
 
+import org.w3c.dom.Text;
+
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.Duration;
@@ -48,6 +53,15 @@ public class SummationWeekFragment extends Fragment {
     public LinearLayout[] linearLayouts=new LinearLayout[6];
     private String param1;
     private String param2;
+
+    private List<WorkDaily> workDailyList = new ArrayList<>();
+
+    WorkDailyDatabase workDailyDatabase;
+    WorkDailyDao workDailyDao;
+
+    private int sumMoney;
+    private int sumTime;
+
     public SummationWeekFragment() {
         // Required empty public constructor
     }
@@ -81,6 +95,9 @@ public class SummationWeekFragment extends Fragment {
             item = (RecyclerItem) getArguments().getSerializable("item");
         }
 
+        workDailyDatabase = WorkDailyDatabase.getDatabase(getContext());
+        workDailyDao = workDailyDatabase.workDailyDao();
+
         // 레이아웃 설정
         View view = inflater.inflate(R.layout.fragment_summation_week, container, false);
         textViews[0]=view.findViewById(R.id.week_1_text);
@@ -96,12 +113,12 @@ public class SummationWeekFragment extends Fragment {
         linearLayouts[4]=view.findViewById(R.id.week_5_layout);
         linearLayouts[5]=view.findViewById(R.id.week_6_layout);
         placeName=item.name;
+
         for(int i=0;i<6;i++){
             int week_worked_time=0;
             for(int j=0;j<7;j++){
                 money[i][j]=item.worked_time[i][j]*item.pay/3600;
                 week_worked_time+=item.worked_time[i][j];
-
             }
             if(week_worked_time/3600>=15&&item.juhyu){
                 over_worked_money[i]=(week_worked_time/3600-15)*item.pay*0.5;
@@ -110,51 +127,79 @@ public class SummationWeekFragment extends Fragment {
                 over_worked_money[i]=0;
             }
         }
+        sumMoney = 0;
+        sumTime  = 0;
         String[] array={"월","화","수","목","금","토","일"};
         List<String> array2=getWeekRanges(item.year,item.month);
         Log.d("ssss",array2.size()+"");
-        for(int i=0;i<array2.size();i++){
-            double money_sum=0;
-            double time_sum=0;
-            TextView textView=new TextView(getContext());
+        for(int i=0;i<array2.size();i++) {
+            double money_sum = 0;
+            double time_sum = 0;
+            TextView textView = new TextView(getContext());
             textView.setText("기본급");
-            for(int j=0;j<7;j++){
-                if(item.worked_time[i][j]!=0){
-                    LinearLayout linearLayout=new LinearLayout(getContext());
-                    TextView textView1=new TextView(getContext());
-                    textView1.setText(array[j]+"요일");
+            for(int j=0; j<7; j++) {
+                if(item.worked_time[i][j] != 0) {
+                    LinearLayout linearLayout = new LinearLayout(getContext());
+
+                    TextView textView1 = new TextView(getContext());
+                    textView1.setText(array[j] + "요일");
                     textView1.setGravity(Gravity.LEFT);
-
-                    TextView textView2=new TextView(getContext());
-                    textView2.setText(money[i][j]+"원("+item.worked_time[i][j]/3600+"시간)");
+                    textView1.setTextColor(Color.BLACK);
+                    TextView textView2 = new TextView(getContext());
+                    String formattedMoney = String.format(Locale.getDefault(), "%,d", (int) money[i][j]); // 정수형 변환 및 천 단위 콤마 추가
+                    String formattedTime = String.format(Locale.getDefault(), "%d", item.worked_time[i][j] / 3600); // 정수형 변환
+                    textView2.setText(formattedMoney + "원(" + formattedTime + "시간)");
                     textView2.setGravity(Gravity.RIGHT);
-
+                    textView2.setTextColor(Color.BLACK);
                     linearLayout.addView(textView1);
                     linearLayout.addView(textView2);
                     linearLayouts[i].addView(linearLayout);
 
-                    money_sum+=money[i][j];
-                    time_sum+=item.worked_time[i][j];
+                    money_sum += money[i][j];
+                    time_sum += item.worked_time[i][j];
                 }
             }
-            textViews[i].setText(item.month+"월 "+(i+1)+"주"+" ("+array2.get(i)+")     "+money_sum+"원("+time_sum/3600+"시간)");
-            if(over_worked_money[i]!=0){
-                LinearLayout linearLayout=new LinearLayout(getContext());
-                TextView textView1=new TextView(getContext());
+            sumMoney += (int)money_sum;
+            sumTime  += (int)(time_sum / 3600);
+
+            String formattedMoneySum = String.format(Locale.getDefault(), "%,d", (int) money_sum);
+            String formattedTimeSum = String.format(Locale.getDefault(), "%d", (int) (time_sum / 3600));
+            textViews[i].setText(item.month + "월 " + (i + 1) + "주" + " (" + array2.get(i) + ")     " + formattedMoneySum + "원(" + formattedTimeSum + "시간)");
+            textViews[i].setTextColor(Color.BLACK);
+            if(over_worked_money[i] != 0) {
+                LinearLayout linearLayout = new LinearLayout(getContext());
+
+                TextView textView1 = new TextView(getContext());
                 textView1.setText("주휴수당");
                 textView1.setGravity(Gravity.LEFT);
+                textView1.setTextColor(Color.BLACK);
 
-                TextView textView2=new TextView(getContext());
-                textView2.setText(over_worked_money[i]+"원");
+                TextView textView2 = new TextView(getContext());
+                String formattedOverworkedMoney = String.format(Locale.getDefault(), "%,d", (int) over_worked_money[i]);
+                textView2.setText(formattedOverworkedMoney + "원");
                 textView2.setGravity(Gravity.RIGHT);
+                textView2.setTextColor(Color.BLACK);
 
                 linearLayout.addView(textView1);
                 linearLayout.addView(textView2);
                 linearLayouts[i].addView(linearLayout);
             }
+            final int index = i;
+            textViews[i].setOnClickListener(v -> {
+                if (linearLayouts[index].getVisibility() == View.VISIBLE) {
+                    linearLayouts[index].setVisibility(View.GONE);
+                } else {
+                    linearLayouts[index].setVisibility(View.VISIBLE);
+                }
+            });
 
-
+            // Initially hide all layouts
+            linearLayouts[i].setVisibility(View.GONE);
         }
+        String formattedSum = NumberFormat.getNumberInstance(Locale.US).format(sumMoney);
+        String sumTimeString = String.valueOf(sumTime);
+        TextView sumTextView = view.findViewById(R.id.sumText);
+        sumTextView.setText(formattedSum + "원" + "("  + sumTimeString +"시간" + ")");
         return view;
     }
     public static List<String> getWeekRanges(int year, int month) {
