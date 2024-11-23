@@ -50,7 +50,7 @@
             android:name=".home.workplace.WorkPlaceActivity"
             android:exported="false" />
         <activity
-            android:name=".home.SummationActivity"
+            android:name=".home.ui.summationmonth.SummationActivity"
             android:exported="false" />
         <activity
             android:name=".calander.CalendarActivity"
