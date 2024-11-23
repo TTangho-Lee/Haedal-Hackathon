@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,8 @@ public class CalendarActivity extends AppCompatActivity {
     ImageView back;
     //자료형
     HashSet<CalendarDay> days = new HashSet<>(); //일정 있는 날짜들(CalendarDay자료형), 년월일로 구성
+    List<WorkDaily> todayList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,31 +88,31 @@ public class CalendarActivity extends AppCompatActivity {
                 // 2. 날짜를 선택하면 일정 표시
                 mcv_month.setOnDateChangedListener((widget, date, selected) -> {
                     int year = date.getYear(), month = date.getMonth(), day = date.getDay();
-                    tv_date.setText(String.format("%d-%d-%d", year, month, day));
+                    String selectedDate = String.format("%d-%d-%d", year, month, day);
+                    tv_date.setText(selectedDate);
 
                     // 선택한 날짜의 일정 불러오기
                     Executors.newSingleThreadExecutor().execute(() -> {
-                        List<WorkPlace> places = new ArrayList<>();
+                        //days 배열 중에 선택한 날짜의 WorkDaily만 뽑아옫기
+                        todayList = workDailyDao.getSchedulesForDate(selectedDate);
+
+                        List<Pair<WorkPlace, WorkDaily>> places = new ArrayList<>();
                         WorkPlaceDatabase database = WorkPlaceDatabase.getDatabase(this);
                         WorkPlaceDao workPlaceDao = database.workPlaceDao();
 
-                        for (WorkDaily workDaily : list) {
-                            String dateString = workDaily.startTime;
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                            LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+                        //오늘의 workDaily만 가져옴
+                        for (WorkDaily todayWork : todayList) {
+                            int placeID = todayWork.placeId;
+                            WorkPlace place = workPlaceDao.getByID(placeID);
 
-                            if (localDateTime.getYear() == year &&
-                                    localDateTime.getMonthValue() == month &&
-                                    localDateTime.getDayOfMonth() == day) {
-                                int placeID = workDaily.placeId;
-                                WorkPlace place = workPlaceDao.getByID(placeID);
-                                if (place != null) places.add(place);
+                            if (place != null) {
+                                places.add(new Pair<>(place, todayWork));
                             }
                         }
 
                         // UI 업데이트
                         runOnUiThread(() -> {
-                            ScheduleAdapter adapter = new ScheduleAdapter(places);
+                            ScheduleDayAdapter adapter = new ScheduleDayAdapter(places);
                             rcv_schedule.setLayoutManager(new LinearLayoutManager(this));
                             rcv_schedule.setAdapter(adapter);
                         });
