@@ -24,6 +24,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -93,6 +94,7 @@ public class ResumeActivity extends AppCompatActivity {
 
     }
     private void updateUI(){
+        binding.back.setOnClickListener(v->onBackPressed());
         if(user != null){
             binding.name.setText(user.name);
             binding.birth.setText(user.birthYear+"."+user.birthMonth+"."+user.birthDay);
