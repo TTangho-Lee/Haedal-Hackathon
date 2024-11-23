@@ -88,7 +88,7 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         SpinnerColorAdapter colorAdapter = new SpinnerColorAdapter(this, circleColor);
         binding.contentColor.setAdapter(colorAdapter);
 
-        List<String> type = List.of("음식점/카페", "판매", "문화/여가", "서비스", "사무/회계", "교육/강사", "기타");
+        List<String> type = List.of("음식점", "카페", "판매", "문화", "서비스", "사무", "교육", "기타");
         SpinnerAdapter typeAdapter = new SpinnerAdapter(this, type);
         binding.contentType.setAdapter(typeAdapter);
 
