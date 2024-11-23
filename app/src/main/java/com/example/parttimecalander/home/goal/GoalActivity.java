@@ -161,8 +161,8 @@ public class GoalActivity extends AppCompatActivity {
             if((int) amountValue != 0) {
                 user.goal = (int) amountValue;
             }
-            if(newNickname != null) {
-                user.goalName = newNickname;
+            if(newNickname != null){
+            user.goalName = newNickname;
             }
             if(UserDatabase.getDatabase(this).userDao().getDataAll().isEmpty()){
                 UserDatabase.getDatabase(this).userDao().setInsertData(user);

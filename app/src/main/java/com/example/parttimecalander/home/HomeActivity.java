@@ -7,7 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +34,7 @@ import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
 import com.example.parttimecalander.Database.Database.UserDatabase;
 import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
 import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
+import com.example.parttimecalander.Database.User;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.calander.EventDecorator;
@@ -250,6 +255,12 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
             double all_money=0;
             List<WorkPlace> placeList = placeDao.getDataAll();
             List<WorkDaily> dailyList = dailyDao.getDataAll();
+            User user;
+            if(userDao.getDataAll().size()==0){
+                user=new User();
+            }else{
+                user=userDao.getDataAll().get(0);
+            }
             for (WorkDaily workDaily : dailyList) {
                 String dateString = workDaily.startTime;
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -345,6 +356,12 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
                 @Override
                 public void run() {
 
+                    View view=(View)findViewById(R.id.profileImage);
+                    if(user.goalImage!=null){
+                        view.setBackground(byteArrayToDrawable(HomeActivity.this,user.goalImage));
+
+                    }
+
                     List<String> dataList = new ArrayList<>();
                     for (int i = 0; i < placeList.size(); i++) {
                         dataList.add(placeList.get(i).placeName+"///"+placeList.get(i).startDate+"~"+placeList.get(i).endDate+"///"+placeList.get(i).ColorHex);
@@ -410,6 +427,13 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         // 결과 확인
         sunday = CalendarDay.from(sun.getYear(), sun.getMonth().getValue(), sun.getDayOfMonth());
         saturday = CalendarDay.from(sat.getYear(),sat.getMonth().getValue(),sat.getDayOfMonth());
+    }
+    public static Drawable byteArrayToDrawable(Context context, byte[] imageData) {
+        // byte[]를 Bitmap으로 변환
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+
+        // Bitmap을 Drawable로 변환
+        return new BitmapDrawable(context.getResources(), bitmap);
     }
     @Override
     protected void onDestroy() {

@@ -23,6 +23,11 @@ import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.R;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 
 import java.text.DecimalFormat;
 import java.time.Duration;
@@ -221,6 +226,8 @@ public class SummationActivity extends AppCompatActivity {
 
             }
 
+
+
             // UI 스레드에서 RecyclerView 업데이트
             double finalAll_time = all_time;
             double finalAll_money = all_money;
@@ -231,6 +238,55 @@ public class SummationActivity extends AppCompatActivity {
                     time_text.setText(finalAll_time +"시간 일하고\n"+ df.format((int)finalAll_money) +"원 벌 예정이에요");
                     recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(SummationActivity.this));
+
+
+                    int[] week_money= {0,0,0,0,0,0};
+                    for(RecyclerItem item:items){
+                        int[][] week_money_each=item.worked_time;
+                        for(int i=0;i<6;i++){
+                            int week_time_all=0;
+                            for(int j=0;j<7;j++){
+                                week_time_all+=week_money_each[i][j];
+                            }
+                            int over_time=0;
+                            if(item.juhyu){
+                                over_time=week_time_all-54000;
+                            }
+                            if(over_time>0){
+                                week_time_all+= (int) (over_time*0.5);
+                            }
+                            week_money[i]=week_time_all*item.pay/3600;
+                        }
+                    }
+                    // BarChart 초기화
+                    BarChart barChart = findViewById(R.id.time_gragh);
+
+                    // 막대 데이터 생성
+                    ArrayList<BarEntry> barEntries = new ArrayList<>();
+
+                    for(int i=0;i<getWeeksInMonth(year,month);i++){
+                        barEntries.add(new BarEntry(i+1, week_money[i])); // (x, y)
+                    }
+                    // 데이터셋 설정
+                    BarDataSet barDataSet = new BarDataSet(barEntries, "주별 번 돈");
+                    barDataSet.setColor(getResources().getColor(android.R.color.holo_blue_light)); // 막대 색상 설정
+                    barDataSet.setValueTextSize(12f); // 값 텍스트 크기
+
+                    // BarData에 데이터셋 추가
+                    BarData barData = new BarData(barDataSet);
+                    barData.setBarWidth(0.7f);
+                    barChart.setData(barData);
+
+                    // 설명 비활성화
+                    Description description = new Description();
+                    description.setText(""); // 설명을 비워줌
+                    barChart.setDescription(description);
+                    barChart.animateY(1500);
+                    barChart.getXAxis().setDrawLabels(false);  // x축 레이블 숨기기
+                    barChart.getAxisLeft().setDrawLabels(false);  // y축 레이블 숨기기
+                    barChart.getAxisRight().setDrawLabels(false);
+                    // 차트 새로고침
+                    barChart.invalidate();
 
                     // 어댑터 설정
                     if (items != null && !items.isEmpty()) {
@@ -244,12 +300,32 @@ public class SummationActivity extends AppCompatActivity {
             });
         });
     }
+    public static int getWeeksInMonth(int year, int month1) {
+        Calendar calendar = Calendar.getInstance();
+
+        // 시작 날짜 설정: 주의 첫날(월요일)로 시작
+        calendar.setFirstDayOfWeek(Calendar.MONDAY); // 한 주의 시작을 월요일로 설정
+        calendar.setMinimalDaysInFirstWeek(4); // 첫 주에 최소 4일 포함해야 첫 주로 인정
+
+        // 시작 주 계산
+        calendar.set(year, month1 - 1, 1);  // 1일로 설정
+        int firstWeek = calendar.get(Calendar.WEEK_OF_YEAR);
+
+        // 마지막 주 계산
+        calendar.set(year, month1 - 1, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));  // 해당 월의 마지막 날로 설정
+        int lastWeek = calendar.get(Calendar.WEEK_OF_YEAR);
+
+        // 만약 첫 주와 마지막 주가 다른 해에 속하는 경우, 마지막 주가 새 해로 넘어가는 경우를 고려
+        if (lastWeek < firstWeek) {
+            // 마지막 주가 1번 주로 넘어가는 경우, 그 해의 마지막 주는 lastWeek + 52
+            lastWeek += calendar.getActualMaximum(Calendar.WEEK_OF_YEAR);
+        }
+
+        return lastWeek - firstWeek + 1;  // 시작 주와 마지막 주 사이의 차이를 계산
+    }
 
     public void set_time(int day, int worked_time) {
         int d = day + dayOfWeekNumber - 1;
-        Log.d("day",day+"");
-        Log.d("date",dayOfWeekNumber+"");
-        Log.d("array",""+d/7+""+d%7);
         time_calander[d / 7][d % 7] += worked_time;
     }
 }
