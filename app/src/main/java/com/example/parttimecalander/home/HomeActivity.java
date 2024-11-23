@@ -1,18 +1,24 @@
 package com.example.parttimecalander.home;
 
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,6 +42,7 @@ import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
 import com.example.parttimecalander.home.ui.summationmonth.SummationActivity;
 import com.example.parttimecalander.home.workplace.WorkPlaceActivity;
 import com.example.parttimecalander.timer.TimerService;
+import com.example.parttimecalander.widget.TimerWidget;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
@@ -63,17 +70,43 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
     private WorkPlaceDao placeDao;
     TextView timer_content;
     private BroadcastReceiver timerReceiver;
-
+    private static final int REQUEST_CODE_NOTIFICATION_PERMISSION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         enableEdgeToEdge();
         setContentView(R.layout.activity_home);
+
         reset_layout();
         setBroadcastReciver();
 
+        //알림 권한 요청
+        request_noti();
+        updateWidgetDirectly(this, "00:00:00");
     }
+    private void request_noti(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // 권한 요청
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.POST_NOTIFICATIONS},
+                        REQUEST_CODE_NOTIFICATION_PERMISSION);
+            }
+        }
+    }
+    private void updateWidgetDirectly(Context context, String timeText) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        ComponentName widget = new ComponentName(context, TimerWidget.class);
+
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.timer_widget);
+        views.setTextViewText(R.id.timer_title, "퇴근까지 남은 시간");
+        views.setTextViewText(R.id.timer_content, timeText);
+
+        appWidgetManager.updateAppWidget(widget, views);
+    }
+
     @Override
     protected void onResume(){
         super.onResume();
@@ -132,12 +165,12 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(TimerService.TIMER_BROADCAST)) {
                     String remainingTime = intent.getStringExtra("remaining_time");
+
                     timer_content.setText(remainingTime);  // 텍스트뷰 업데이트
                 }
             }
         };
     }
-
     public void reset_layout(){
         //주별 캘린더
         //materialCalendarView 세팅 -> 설정은 uithread밑으로
@@ -348,7 +381,6 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         });
 
     }
-
     public void set_time(int day, int worked_time) {
         int d = day + dayOfWeekNumber - 1;
         time_calander[d / 7][d % 7] += worked_time;
@@ -382,7 +414,11 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         // 리시버 해제
+        Intent stopIntent = new Intent(this, TimerService.class);
+        stopService(stopIntent);
+
         unregisterReceiver(timerReceiver);
     }
 }
