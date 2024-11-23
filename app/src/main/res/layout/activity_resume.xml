@@ -456,7 +456,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/background_button_black"
-        android:text="저장하기"
+        android:text="자소서 저장하기"
         android:textSize="18sp"
         android:fontFamily="@font/font_main"
         android:textColor="#FFFFFF"

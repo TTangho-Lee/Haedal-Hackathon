@@ -37,12 +37,18 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
 import com.example.parttimecalander.Database.Database.UserDatabase;
 import com.example.parttimecalander.Database.User;
+import com.example.parttimecalander.Database.WorkDaily;
+import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.databinding.ActivityResumeBinding;
+import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
+import com.example.parttimecalander.home.ui.summationmonth.SummationActivity;
+import com.example.parttimecalander.home.ui.summationmonth.SummationMonthAdapter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,6 +56,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -118,6 +127,9 @@ public class ResumeActivity extends AppCompatActivity {
                 binding.certRecyclerView.setLayoutManager(new LinearLayoutManager(this));
                 binding.certRecyclerView.setAdapter(adapter);
             }
+            if(user.selfIntroduce!=null){
+                binding.selfIntroductionEdit.setText(user.selfIntroduce);
+            }
         }
 
         binding.pdfConvert.setOnClickListener(v->convertToPdf());
@@ -129,6 +141,36 @@ public class ResumeActivity extends AppCompatActivity {
         binding.registerEdu.setOnClickListener(v -> showEduDialog());
         //자격증 추가
         binding.registerCert.setOnClickListener(v->showCertDialog());
+
+
+
+
+
+
+
+        binding.registerButton.setOnClickListener(v->saveintroduce());
+    }
+    public void saveintroduce(){
+        new Thread(() -> {
+            String myintroduce=binding.selfIntroductionEdit.getText().toString();
+            UserDatabase userDatabase=UserDatabase.getDatabase(this);
+            UserDao userDao=userDatabase.userDao();
+            User user1;
+            if(userDao.getDataAll().size()==0){
+                user1=new User();
+                user1.selfIntroduce=myintroduce;
+                userDao.setInsertData(user1);
+            }else{
+                user1=userDao.getDataAll().get(0);
+                user1.selfIntroduce=myintroduce;
+                userDao.setUpdateData(user1);
+            }
+            runOnUiThread(() ->
+                    Toast.makeText(ResumeActivity.this, "자소서가 저장되었습니다", Toast.LENGTH_SHORT).show()
+            );
+        }).start();
+
+
     }
     private void convertToPdf() {
         // 버튼을 invisible로 만들어 숨기기
