@@ -25,6 +25,7 @@ public class User {
     public String recentUpdate;     //최근 체크일자
     public String schoolList;
     public String certList;
+    public String selfIntroduce;
     public User() {
     }
 }
