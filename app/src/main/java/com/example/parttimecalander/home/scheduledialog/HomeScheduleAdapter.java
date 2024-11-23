@@ -16,6 +16,8 @@ import com.example.parttimecalander.Database.WorkPlace;
 import com.example.parttimecalander.R;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class HomeScheduleAdapter extends RecyclerView.Adapter<HomeScheduleAdapter.ViewHolder> {
 
@@ -23,15 +25,48 @@ public class HomeScheduleAdapter extends RecyclerView.Adapter<HomeScheduleAdapte
     private WorkPlaceDatabase placeDatabase;
     private WorkPlaceDao placeDao;
     private Context context;
+    private OnItemClickListener listener;
 
-    public HomeScheduleAdapter(Context context, List<WorkDaily> schedules) {
+    public HomeScheduleAdapter(Context context, List<WorkDaily> schedules, OnItemClickListener listener) {
         this.context = context;
         this.schedules = schedules;
+        this.listener = listener;
 
         // Initialize the database and DAO
         placeDatabase = WorkPlaceDatabase.getDatabase(context);
         placeDao = placeDatabase.workPlaceDao();
     }
+
+
+    // 아이템 클릭 리스너 인터페이스
+    public interface OnItemClickListener {
+        void onItemClick(WorkDaily schedule);
+    }
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView scheduleTextView, startTimer;
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            scheduleTextView = itemView.findViewById(R.id.schedule_text);
+            startTimer = itemView.findViewById(R.id.timer_button);
+        }
+        public void bind(WorkDaily schedule, WorkPlaceDao placeDao){
+            // UI 초기화
+            scheduleTextView.setText("Loading...");
+
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            executor.execute(() -> {
+                WorkPlace place = placeDao.getByID(schedule.placeId);
+                if (place != null) {
+                    String placeName = place.placeName;
+
+                    scheduleTextView.post(() -> scheduleTextView.setText(
+                            placeName + "   " + schedule.startTime.substring(11, 16) + " - " + schedule.endTime.substring(11, 16)
+                    ));
+                }
+            });
+        }
+    }
+
 
     @NonNull
     @Override
@@ -44,17 +79,14 @@ public class HomeScheduleAdapter extends RecyclerView.Adapter<HomeScheduleAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         WorkDaily schedule = schedules.get(position);
-        new Thread(() -> {
-            WorkPlace place = placeDao.getByID(schedule.placeId);
-            if (place != null) {
-                String placeName = place.placeName; // Assume WorkPlace has a getName() method
+        holder.bind(schedules.get(position),placeDao);
 
-                // Update the UI on the main thread
-                holder.itemView.post(() -> holder.scheduleTextView.setText(
-                        placeName+ "   " + schedule.startTime.substring(11, 16) + " - " + schedule.endTime.substring(11, 16)
-                ));
+        // 아이템 클릭 시 리스너 호출
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(schedule);  // 클릭된 schedule을 리스너에 전달
             }
-        }).start();
+        });
     }
 
     @Override
@@ -62,17 +94,5 @@ public class HomeScheduleAdapter extends RecyclerView.Adapter<HomeScheduleAdapte
         return schedules.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView scheduleTextView, startTimer;
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            scheduleTextView = itemView.findViewById(R.id.schedule_text);
-            startTimer = itemView.findViewById(R.id.timer_button);
-            startTimer.setOnClickListener(v->{
-                //TODO: 시작시간 < 현재시간 < 끝시간인지 검사
-                //TODO: 맞으면 타이머 서비스 현재시간~끝시간까지 남은 시간에 대한 타이머 실행
-            });
-        }
-    }
 }
