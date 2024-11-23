@@ -2,15 +2,39 @@ package com.example.parttimecalander.home.resume;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.parttimecalander.Database.Dao.UserDao;
+import com.example.parttimecalander.Database.Database.UserDatabase;
+import com.example.parttimecalander.Database.User;
+import com.example.parttimecalander.Database.WorkDaily;
+import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.R;
+import com.example.parttimecalander.calander.EventDecorator;
 import com.example.parttimecalander.databinding.DialogCertBinding;
 import com.example.parttimecalander.databinding.DialogEduBinding;
+import com.example.parttimecalander.home.HomeActivity;
+import com.example.parttimecalander.home.homeRecyclerviewAdapter;
+import com.example.parttimecalander.home.scheduledialog.ScheduleDialogFragment;
+import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.concurrent.Executors;
 
 public class EduDialog  extends Dialog {
     Context context;
@@ -42,9 +66,42 @@ public class EduDialog  extends Dialog {
         binding.registerButton.setOnClickListener(v->changeData());
     }
     private void changeData(){
-        //TODO: 입력받은 데이터 DB애 저장하기
+        String data="";
+        data=data.concat(binding.contentSchool.getText().toString());
+        data=data.concat(" ");
+        data=data.concat(binding.contentMajor.getText().toString());
+        data=data.concat("///(");
+        data=data.concat(binding.contentAdmissionYear.getSelectedItem().toString());
+        data=data.concat(".");
+        data=data.concat(binding.contentAdmissionMonth.getSelectedItem().toString());
+        data=data.concat(" ~ ");
 
-        dismiss();
+        data=data.concat(binding.contentGraduateYear.getSelectedItem().toString());
+        data=data.concat(".");
+        data=data.concat(binding.contentGraduateMonth.getSelectedItem().toString());
+        data=data.concat(")\n");
+        String finalData = data;
+        Executors.newSingleThreadExecutor().execute(() -> {
+            UserDatabase userDatabase=UserDatabase.getDatabase(context);
+            UserDao userDao= userDatabase.userDao();
+            if(userDao.getDataAll().isEmpty()){
+                User user=new User();
+                user.schoolList="";
+                user.schoolList=user.schoolList.concat(finalData);
+                userDao.setInsertData(user);
+            }
+            else{
+                User user=userDao.getDataAll().get(0);
+                if(user.schoolList==null){
+                    user.schoolList="";
+                }
+                user.schoolList=user.schoolList.concat(finalData);
+                userDao.setUpdateData(user);
+            }
+            new Handler(Looper.getMainLooper()).post(() -> {
+                dismiss();
+            });
+        });
     }
 
     private void setSpinner(){
