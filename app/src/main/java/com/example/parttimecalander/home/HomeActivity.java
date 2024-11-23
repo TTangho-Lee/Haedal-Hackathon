@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
 import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.calander.EventDecorator;
 import com.example.parttimecalander.home.goal.GoalActivity;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.calander.CalendarActivity;
@@ -44,6 +46,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -204,14 +207,27 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
                 user_text.setText(users.get(0).name+"님, 열심히 땀 흘려\n"+users.get(0).money+"원이나 모았어요!");
             }
         });
-
+        HashSet<CalendarDay> days = new HashSet<>();
         Executors.newSingleThreadExecutor().execute(() -> {
+
 
             double real_time=0;
             double real_money=0;
             double all_money=0;
             List<WorkPlace> placeList = placeDao.getDataAll();
             List<WorkDaily> dailyList = dailyDao.getDataAll();
+            for (WorkDaily workDaily : dailyList) {
+                String dateString = workDaily.startTime;
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+
+                CalendarDay calendarDay = CalendarDay.from(
+                        localDateTime.getYear(),
+                        localDateTime.getMonthValue(),
+                        localDateTime.getDayOfMonth()
+                );
+                days.add(calendarDay);
+            }
             for (int i = 0; i < placeList.size(); i++) {
                 //근무지 리스트의 각 근무지마다
                 WorkPlace place = placeList.get(i);
@@ -318,6 +334,8 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         mcv = findViewById(R.id.calendarView);
         mcv.setTopbarVisible(false);
         mcv.state().edit().setMinimumDate(sunday).setMaximumDate(saturday).commit();
+
+        mcv.addDecorator(new EventDecorator(Color.RED, days));
         mcv.setOnDateLongClickListener((widget, date) -> {
             int year = date.getYear();
             int month = date.getMonth();
