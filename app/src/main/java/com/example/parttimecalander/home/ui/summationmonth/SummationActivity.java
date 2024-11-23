@@ -228,7 +228,7 @@ public class SummationActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     DecimalFormat df = new DecimalFormat("###,###");
-                    time_text.setText(finalAll_time +"시간 일하고\n"+ df.format((int)finalAll_money) +"원 벌었어요");
+                    time_text.setText(finalAll_time +"시간 일하고\n"+ df.format((int)finalAll_money) +"원 벌 예정이에요");
                     recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(SummationActivity.this));
 
