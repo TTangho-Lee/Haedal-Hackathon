@@ -264,12 +264,12 @@ public class SummationActivity extends AppCompatActivity {
                     // 막대 데이터 생성
                     ArrayList<BarEntry> barEntries = new ArrayList<>();
 
-                    for(int i=0;i<getWeeksInMonth(year,month-1);i++){
+                    for(int i=0;i<getWeeksInMonth(year,month);i++){
                         barEntries.add(new BarEntry(i+1, week_money[i])); // (x, y)
                     }
                     // 데이터셋 설정
-                    BarDataSet barDataSet = new BarDataSet(barEntries, "샘플 데이터");
-                    barDataSet.setColor(getResources().getColor(R.color.pastel_yellow)); // 막대 색상 설정
+                    BarDataSet barDataSet = new BarDataSet(barEntries, "주별 번 돈");
+                    barDataSet.setColor(getResources().getColor(android.R.color.holo_blue_light)); // 막대 색상 설정
                     barDataSet.setValueTextSize(12f); // 값 텍스트 크기
 
                     // BarData에 데이터셋 추가
@@ -300,26 +300,32 @@ public class SummationActivity extends AppCompatActivity {
             });
         });
     }
-    public static int getWeeksInMonth(int year, int month) {
+    public static int getWeeksInMonth(int year, int month1) {
         Calendar calendar = Calendar.getInstance();
 
-        // 월 시작일 설정
-        calendar.set(year, month - 1, 1);
+        // 시작 날짜 설정: 주의 첫날(월요일)로 시작
+        calendar.setFirstDayOfWeek(Calendar.MONDAY); // 한 주의 시작을 월요일로 설정
+        calendar.setMinimalDaysInFirstWeek(4); // 첫 주에 최소 4일 포함해야 첫 주로 인정
 
-        // 시작 주와 마지막 주 계산
+        // 시작 주 계산
+        calendar.set(year, month1 - 1, 1);  // 1일로 설정
         int firstWeek = calendar.get(Calendar.WEEK_OF_YEAR);
 
-        calendar.set(year, month - 1, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        // 마지막 주 계산
+        calendar.set(year, month1 - 1, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));  // 해당 월의 마지막 날로 설정
         int lastWeek = calendar.get(Calendar.WEEK_OF_YEAR);
 
-        // 시작 주와 마지막 주의 차이 + 1
-        return lastWeek - firstWeek + 1;
+        // 만약 첫 주와 마지막 주가 다른 해에 속하는 경우, 마지막 주가 새 해로 넘어가는 경우를 고려
+        if (lastWeek < firstWeek) {
+            // 마지막 주가 1번 주로 넘어가는 경우, 그 해의 마지막 주는 lastWeek + 52
+            lastWeek += calendar.getActualMaximum(Calendar.WEEK_OF_YEAR);
+        }
+
+        return lastWeek - firstWeek + 1;  // 시작 주와 마지막 주 사이의 차이를 계산
     }
+
     public void set_time(int day, int worked_time) {
         int d = day + dayOfWeekNumber - 1;
-        Log.d("day",day+"");
-        Log.d("date",dayOfWeekNumber+"");
-        Log.d("array",""+d/7+""+d%7);
         time_calander[d / 7][d % 7] += worked_time;
     }
 }
