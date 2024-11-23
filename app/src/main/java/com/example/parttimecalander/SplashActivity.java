@@ -7,6 +7,8 @@ import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.parttimecalander.home.HomeActivity;
+
 public class SplashActivity extends AppCompatActivity {
 
     @Override
@@ -18,7 +20,7 @@ public class SplashActivity extends AppCompatActivity {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             // Preload data and go to the next activity after the delay
             preloadMainActivityData();
-            goToMainActivity();
+            goToHomeActivity();
         }, 200); // Delay time in milliseconds
     }
 
@@ -26,14 +28,14 @@ public class SplashActivity extends AppCompatActivity {
         // This method would normally load data from a database, etc.
         // Simulated delay
         try {
-            Thread.sleep(200); // Simulating delay
+            Thread.sleep(1000); // Simulating delay
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    private void goToMainActivity() {
-        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+    private void goToHomeActivity() {
+        Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
         startActivity(intent);
         finish();
     }
