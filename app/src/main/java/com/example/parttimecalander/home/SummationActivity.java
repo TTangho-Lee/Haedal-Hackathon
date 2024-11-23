@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -54,6 +55,7 @@ public class SummationActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     private SummationMonthAdapter adapter;  // 어댑터 선언
     public TextView time_text;
+    private ImageView back;
 
     public int first_start=0;
 
@@ -71,7 +73,9 @@ public class SummationActivity extends AppCompatActivity {
         month = sharedPreferences.getInt("selectedMonth", currentMonth+1);  // 기본값 11월
         previousYear = year;
         previousMonth = month;
-        LocalDate firstDay = LocalDate.of(year, month+1, 1);
+        currentYear=year;
+        currentMonth=month-1;
+        LocalDate firstDay = LocalDate.of(year, month, 1);
         dayOfWeekNumber = firstDay.getDayOfWeek().getValue() - 1;
         time_text=(TextView)findViewById(R.id.time_text);
         dailyDatabase = WorkDailyDatabase.getDatabase(this);
@@ -80,6 +84,9 @@ public class SummationActivity extends AppCompatActivity {
         placeDao = placeDatabase.workPlaceDao();
         Spinner spinnerYear = findViewById(R.id.spinner_year);
         Spinner spinnerMonth = findViewById(R.id.spinner_month);
+        
+        back = findViewById(R.id.back);
+        back.setOnClickListener(v->onBackPressed());
 
 
 
@@ -194,7 +201,7 @@ public class SummationActivity extends AppCompatActivity {
                 for (int ii = 0; ii < 6; ii++) {
                     System.arraycopy(time_calander[ii], 0, new_calander[ii], 0, 7);
                 }
-                RecyclerItem new_item = new RecyclerItem(place.placeName, new_calander, place.isJuhyu, place.usualPay);
+                RecyclerItem new_item = new RecyclerItem(year,month,place.placeName, new_calander, place.isJuhyu, place.usualPay,place.ColorHex);
                 items.add(new_item);
                 double normal_hour=0;
                 double over_hour=0;
@@ -243,6 +250,9 @@ public class SummationActivity extends AppCompatActivity {
 
     public void set_time(int day, int worked_time) {
         int d = day + dayOfWeekNumber - 1;
+        Log.d("day",day+"");
+        Log.d("date",dayOfWeekNumber+"");
+        Log.d("array",""+d/7+""+d%7);
         time_calander[d / 7][d % 7] += worked_time;
     }
 }

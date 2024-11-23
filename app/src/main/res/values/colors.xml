@@ -10,5 +10,24 @@
     <color name="color_1">#0200CD</color>
     <color name="color_2">#ef8b88</color>
 
+    <!-- 파스텔톤 빨강 -->
+    <color name="pastel_red">#FFB3B3</color>
+    <!-- 파스텔톤 주황 -->
+    <color name="pastel_orange">#FFCC99</color>
+    <!-- 파스텔톤 노랑 -->
+    <color name="pastel_yellow">#FFFF99</color>
+    <!-- 파스텔톤 초록 -->
+    <color name="pastel_green">#B3E6B3</color>
+    <!-- 파스텔톤 파랑 -->
+    <color name="pastel_blue">#99CCFF</color>
+    <!-- 파스텔톤 남색 -->
+    <color name="pastel_indigo">#99B3FF</color>
+    <!-- 파스텔톤 보라 -->
+    <color name="pastel_purple">#D9B3FF</color>
+
     <color name="gray">#a8a8a8</color>
+    <color name="light_blue_50">#FFE1F5FE</color>
+    <color name="light_blue_200">#FF81D4FA</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
 </resources>

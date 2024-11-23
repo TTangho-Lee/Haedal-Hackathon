@@ -18,6 +18,10 @@ import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 
@@ -32,6 +36,10 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.concurrent.Executors;
+
+import com.example.parttimecalander.R;
+import com.example.parttimecalander.timer.TimerService;
+
 
 public class GoalActivity extends AppCompatActivity {
 
@@ -201,3 +209,4 @@ public class GoalActivity extends AppCompatActivity {
         binding = null;
     }
 }
+

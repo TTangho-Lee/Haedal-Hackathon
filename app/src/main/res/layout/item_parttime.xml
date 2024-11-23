@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="12dp">
+    android:padding="8dp">
 
     <!-- 근무지명 -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,8 +15,8 @@
         app:layout_constraintTop_toTopOf="parent">
         <View
             android:id="@+id/workplace_color"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
             android:background="@drawable/background_round"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -24,10 +24,10 @@
         <TextView
             android:id="@+id/workplace_title"
             android:layout_width="wrap_content"
-            android:layout_height="24dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="A 카페"
-            android:textSize="20sp"
+            android:textSize="12sp"
             android:fontFamily="@font/font_main"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
@@ -36,9 +36,9 @@
         <TextView
             android:id="@+id/workplace_start"
             android:layout_width="wrap_content"
-            android:layout_height="24dp"
+            android:layout_height="wrap_content"
             android:text="2024.11.01"
-            android:textSize="16sp"
+            android:textSize="8sp"
             android:fontFamily="@font/font_main"
             android:gravity="bottom"
             android:textColor="#989898"
@@ -49,10 +49,10 @@
         <TextView
             android:id="@+id/workplace_middle"
             android:layout_width="wrap_content"
-            android:layout_height="24dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="~"
-            android:textSize="16sp"
+            android:textSize="8sp"
             android:fontFamily="@font/font_main"
             android:gravity="bottom"
             android:textColor="#989898"
@@ -63,10 +63,10 @@
         <TextView
             android:id="@+id/workplace_end"
             android:layout_width="wrap_content"
-            android:layout_height="24dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="2025.10.30"
-            android:textSize="16sp"
+            android:textSize="8sp"
             android:fontFamily="@font/font_main"
             android:gravity="bottom"
             android:textColor="#989898"
