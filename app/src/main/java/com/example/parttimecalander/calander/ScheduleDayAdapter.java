@@ -17,6 +17,13 @@ import java.util.List;
 
 public class ScheduleDayAdapter extends RecyclerView.Adapter<ScheduleDayAdapter.ViewHolder>{
     private final List<Pair<WorkPlace, WorkDaily>> workPlaces;
+    private OnItemLongClickListener longClickListener;
+    public interface OnItemLongClickListener {
+        void onItemLongClick(Pair<WorkPlace, WorkDaily> item, int position);
+    }
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+        this.longClickListener = listener;
+    }
     public ScheduleDayAdapter(List<Pair<WorkPlace, WorkDaily>> workPlaces)  {
         this.workPlaces = workPlaces;
     }
@@ -43,9 +50,10 @@ public class ScheduleDayAdapter extends RecyclerView.Adapter<ScheduleDayAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String placeName = workPlaces.get(position).first.placeName;
-        String startTime = workPlaces.get(position).second.startTime.split(" ")[1];
-        String endTime = workPlaces.get(position).second.endTime.split(" ")[1];
+        Pair<WorkPlace, WorkDaily> currentItem = workPlaces.get(position);
+        String placeName = currentItem.first.placeName;
+        String startTime = currentItem.second.startTime.split(" ")[1];
+        String endTime = currentItem.second.endTime.split(" ")[1];
         if(startTime == null || startTime.trim().isEmpty()) startTime = "00:00:00";
         if(endTime == null || endTime.trim().isEmpty()) endTime = "23:59:59";
 
@@ -59,6 +67,16 @@ public class ScheduleDayAdapter extends RecyclerView.Adapter<ScheduleDayAdapter.
 
         holder.endDateTextView.setText(endTime);
         holder.endDateTextView.setTextSize(16.f);
+
+        // 롱 클릭 이벤트 연결
+        // 롱 클릭 이벤트 연결
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onItemLongClick(currentItem, position);
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override

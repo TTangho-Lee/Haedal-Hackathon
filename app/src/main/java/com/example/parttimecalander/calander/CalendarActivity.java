@@ -80,7 +80,6 @@ public class CalendarActivity extends AppCompatActivity {
                 days.add(calendarDay);
             }
 
-            // UI 업데이트
             runOnUiThread(() -> {
                 // 1. 날짜 밑에 점으로 표시
                 mcv_month.addDecorator(new EventDecorator(Color.RED, days));
@@ -88,34 +87,53 @@ public class CalendarActivity extends AppCompatActivity {
                 // 2. 날짜를 선택하면 일정 표시
                 mcv_month.setOnDateChangedListener((widget, date, selected) -> {
                     int year = date.getYear(), month = date.getMonth(), day = date.getDay();
-                    String selectedDate = String.format("%d-%d-%d", year, month, day);
+                    String selectedDate = String.format("%d-%02d-%02d", year, month, day); // 날짜 형식 보정
                     tv_date.setText(selectedDate);
 
                     // 선택한 날짜의 일정 불러오기
                     Executors.newSingleThreadExecutor().execute(() -> {
-                        //days 배열 중에 선택한 날짜의 WorkDaily만 뽑아옫기
-                        todayList = workDailyDao.getSchedulesForDate(selectedDate);
+                        try {
+                            todayList = workDailyDao.getSchedulesForDate(selectedDate); // Room 작업 비동기 실행
+                            List<Pair<WorkPlace, WorkDaily>> places = new ArrayList<>();
+                            WorkPlaceDatabase database = WorkPlaceDatabase.getDatabase(this);
+                            WorkPlaceDao workPlaceDao = database.workPlaceDao();
 
-                        List<Pair<WorkPlace, WorkDaily>> places = new ArrayList<>();
-                        WorkPlaceDatabase database = WorkPlaceDatabase.getDatabase(this);
-                        WorkPlaceDao workPlaceDao = database.workPlaceDao();
+                            for (WorkDaily todayWork : todayList) {
+                                int placeID = todayWork.placeId;
 
-                        //오늘의 workDaily만 가져옴
-                        for (WorkDaily todayWork : todayList) {
-                            int placeID = todayWork.placeId;
-                            WorkPlace place = workPlaceDao.getByID(placeID);
-
-                            if (place != null) {
-                                places.add(new Pair<>(place, todayWork));
+                                // Room 작업은 반드시 비동기로 실행
+                                WorkPlace place = workPlaceDao.getByID(placeID);
+                                if (place != null) {
+                                    places.add(new Pair<>(place, todayWork));
+                                }
                             }
-                        }
 
-                        // UI 업데이트
-                        runOnUiThread(() -> {
-                            ScheduleDayAdapter adapter = new ScheduleDayAdapter(places);
-                            rcv_schedule.setLayoutManager(new LinearLayoutManager(this));
-                            rcv_schedule.setAdapter(adapter);
-                        });
+                            // UI 업데이트
+                            runOnUiThread(() -> {
+                                ScheduleDayAdapter adapter = new ScheduleDayAdapter(places);
+                                adapter.setOnItemLongClickListener((item, position) -> {
+                                    Executors.newSingleThreadExecutor().execute(() -> {
+                                        workDailyDao.delete(item.second); // WorkDaily 삭제
+
+                                        runOnUiThread(() -> {
+                                            // 리스트에서 삭제하고 어댑터 갱신
+                                            places.remove(position);
+                                            adapter.notifyItemRemoved(position);
+                                            adapter.notifyItemRangeChanged(position, places.size());
+
+                                            mcv_month.removeDecorators(); // 기존 데코레이터 제거
+                                            mcv_month.addDecorator(new EventDecorator(Color.RED, days));
+
+                                            Toast.makeText(this, "일정이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                                        });
+                                    });
+                                });
+                                rcv_schedule.setLayoutManager(new LinearLayoutManager(this));
+                                rcv_schedule.setAdapter(adapter);
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     });
                 });
             });

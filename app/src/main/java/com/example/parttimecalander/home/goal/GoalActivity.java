@@ -63,6 +63,7 @@ public class GoalActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         loadDataFromDatabase();
+        binding.back.setOnClickListener(v->onBackPressed());
         // editGoal 클릭 이벤트
         binding.editGoal.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -22,4 +22,7 @@ public interface WorkDailyDao {
     List<WorkDaily> getDataAll();
     @Query("SELECT * FROM daily WHERE DATE(daily.startTime) = :selectedDate")
     List<WorkDaily> getSchedulesForDate(String selectedDate);
+    @Delete
+    void delete(WorkDaily workDaily);
 }
+
