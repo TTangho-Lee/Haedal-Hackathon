@@ -255,7 +255,7 @@ public class SummationActivity extends AppCompatActivity {
                             if(over_time>0){
                                 week_time_all+= (int) (over_time*0.5);
                             }
-                            week_money[i]=week_time_all*item.pay/3600;
+                            week_money[i]+=week_time_all*item.pay/3600;
                         }
                     }
                     // BarChart 초기화
