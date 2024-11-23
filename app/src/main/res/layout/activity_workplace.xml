@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:fitsSystemWindows="true"
     tools:context=".home.workplace.WorkPlaceActivity">
 
@@ -41,25 +42,30 @@
             app:layout_constraintStart_toEndOf="@id/back"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-   <androidx.recyclerview.widget.RecyclerView
-       android:id="@+id/workplace_recyclerView"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:padding="16dp"
-       android:scrollbars="vertical"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintTop_toBottomOf="@id/title_box"
-       app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <Button
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/workplace_recyclerView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="근무지 등록"
-        android:id="@+id/register_btn"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="16dp"
+        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/workplace_recyclerView"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_box" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/register_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="28dp"
+        android:background="@drawable/background_button_black"
+        android:text="근무지 등록"
+        android:textSize="18sp"
+        android:fontFamily="@font/font_main"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

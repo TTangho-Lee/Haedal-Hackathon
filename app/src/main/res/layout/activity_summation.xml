@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".home.SummationActivity">
+    tools:context=".home.ui.summationmonth.SummationActivity">
 
     <!-- ViewPager2 설정 -->
     <FrameLayout

@@ -1,6 +1,8 @@
 package com.example.parttimecalander.home.workplace;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parttimecalander.Database.WorkPlace;
@@ -23,9 +26,11 @@ import java.util.Objects;
 
 public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.ViewHolder> {
     private final List<WorkPlace> workPlaces;
+    private Context mContext;
 
-    public WorkPlaceAdapter(List<WorkPlace> workPlaces) {
+    public WorkPlaceAdapter(Context mContext, List<WorkPlace> workPlaces) {
         this.workPlaces = workPlaces;
+        this.mContext = mContext;
     }
 
     // ViewHolder 정의
@@ -108,8 +113,18 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
         holder.itemView.setOnClickListener(v -> {
                     workPlaces.get(position).isExpanded=!workPlaces.get(position).isExpanded;
         notifyItemChanged(holder.getAdapterPosition());});
-        holder.colorView.setBackgroundColor(Color.parseColor(workPlaces.get(position).ColorHex));
-        holder.constraintLayout.setBackgroundColor(Color.parseColor(workPlaces.get(position).ColorHex));
+        Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.background_round); // 원래 oval 리소스
+        if (drawable != null) {
+            // 새로운 색상으로 변경
+            drawable.setTint(Color.parseColor(workPlaces.get(position).ColorHex));
+            holder.colorView.setBackground(drawable); // colorView에 새 배경 설정
+        }
+        drawable = ContextCompat.getDrawable(mContext, R.drawable.background_white_border_10);
+        if (drawable != null) {
+            // 새로운 색상으로 변경
+            drawable.setTint(Color.parseColor(workPlaces.get(position).ColorHex));
+            holder.detailsLayout.setBackground(drawable); // colorView에 새 배경 설정
+        }
     }
 
     @Override
