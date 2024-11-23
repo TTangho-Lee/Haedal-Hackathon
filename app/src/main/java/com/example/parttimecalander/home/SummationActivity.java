@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -54,6 +55,7 @@ public class SummationActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     private SummationMonthAdapter adapter;  // 어댑터 선언
     public TextView time_text;
+    private ImageView back;
 
     public int first_start=0;
 
@@ -82,6 +84,9 @@ public class SummationActivity extends AppCompatActivity {
         placeDao = placeDatabase.workPlaceDao();
         Spinner spinnerYear = findViewById(R.id.spinner_year);
         Spinner spinnerMonth = findViewById(R.id.spinner_month);
+        
+        back = findViewById(R.id.back);
+        back.setOnClickListener(v->onBackPressed());
 
 
 

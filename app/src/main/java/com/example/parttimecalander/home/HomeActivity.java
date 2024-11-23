@@ -140,6 +140,8 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
 
     public void reset_layout(){
         //주별 캘린더
+        //materialCalendarView 세팅 -> 설정은 uithread밑으로
+        mcv = findViewById(R.id.calendarView);
         ConstraintLayout week_calendar = findViewById(R.id.week_calander);
         week_calendar.setOnClickListener(v->{
             Intent intent=new Intent(HomeActivity.this, CalendarActivity.class);
@@ -202,14 +204,13 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         TextView user_text=(TextView)findViewById(R.id.user_text);
         userDao.getDataChange().observe(this, users -> {
             if(users.size()==0||users.get(0).name==null){
-                user_text.setText("가입부터 해라 애송이");
+                user_text.setText("이력서 작성 탭에서\n이력서를 작성해주세요!");
             }else{
                 user_text.setText(users.get(0).name+"님, 열심히 땀 흘려\n"+users.get(0).money+"원이나 모았어요!");
             }
         });
         HashSet<CalendarDay> days = new HashSet<>();
         Executors.newSingleThreadExecutor().execute(() -> {
-
 
             double real_time=0;
             double real_money=0;
@@ -324,40 +325,28 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
                     worktime.setText(df.format((int)finalReal_time )+" 시간");
                     earnmoney.setText(df.format((int)finalReal_money) +" 원");
                     willmoney.setText(df.format((int)finalAll_money) +" 원");
+
+                    //오늘을 포함한 일주일의 날짜를 선택
+                    setWeekStartEnd();
+
+                    mcv.setTopbarVisible(false);
+                    mcv.state().edit().setMinimumDate(sunday).setMaximumDate(saturday).commit();
+
+                    mcv.addDecorator(new EventDecorator(Color.RED, days));
+                    mcv.setOnDateLongClickListener((widget, date) -> {
+                        int year = date.getYear();
+                        int month = date.getMonth();
+                        int day = date.getDay();
+
+                        String selectedDate = String.format("%04d-%02d-%02d", year, month, day);
+
+                        ScheduleDialogFragment dialog = ScheduleDialogFragment.newInstance(selectedDate);
+                        dialog.show(getSupportFragmentManager(), "ScheduleDialog");
+                    });
                 }
             });
         });
 
-        //오늘을 포함한 일주일의 날짜를 선택
-        setWeekStartEnd();
-        //materialCalendarView 세팅
-        mcv = findViewById(R.id.calendarView);
-        mcv.setTopbarVisible(false);
-        mcv.state().edit().setMinimumDate(sunday).setMaximumDate(saturday).commit();
-
-        mcv.addDecorator(new EventDecorator(Color.RED, days));
-        mcv.setOnDateLongClickListener((widget, date) -> {
-            int year = date.getYear();
-            int month = date.getMonth();
-            int day = date.getDay();
-
-            String selectedDate = String.format("%04d-%02d-%02d", year, month, day);
-
-            ScheduleDialogFragment dialog = ScheduleDialogFragment.newInstance(selectedDate);
-            dialog.show(getSupportFragmentManager(), "ScheduleDialog");
-        });
-
-
-    }
-    private void updateTimerUI(long timeLeftMillis) {
-        // 남은 시간을 시, 분, 초로 변환
-        long seconds = timeLeftMillis / 1000;
-        long minutes = (seconds / 60) % 60;
-        long hours = (seconds / 3600) % 24;
-        String timeLeft = String.format("%02d:%02d:%02d", hours, minutes, seconds % 60);
-
-        // TextView 업데이트
-        timer_content.setText(timeLeft);
     }
 
     public void set_time(int day, int worked_time) {
