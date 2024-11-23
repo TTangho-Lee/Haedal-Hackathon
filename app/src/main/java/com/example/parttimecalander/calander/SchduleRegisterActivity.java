@@ -185,7 +185,10 @@ public class SchduleRegisterActivity extends AppCompatActivity {
 
             new_workDaily = new WorkDaily(workDay + " " + startTime, workDay + " " + endTime, id);
             dailyDao.setInsertData(new_workDaily);
-            Toast.makeText(this, workDay + "날의 일정 추가", Toast.LENGTH_SHORT).show();
+            runOnUiThread(() -> {
+                Toast.makeText(this, workDay + "날의 일정 추가", Toast.LENGTH_SHORT).show();
+            });
+
         }));
     }
 }
