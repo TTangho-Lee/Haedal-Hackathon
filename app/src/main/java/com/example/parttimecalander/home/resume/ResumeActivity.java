@@ -41,7 +41,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
+import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
 import com.example.parttimecalander.Database.Database.UserDatabase;
+import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
 import com.example.parttimecalander.Database.User;
 import com.example.parttimecalander.Database.WorkDaily;
 import com.example.parttimecalander.Database.WorkPlace;
@@ -69,6 +71,7 @@ import java.util.concurrent.Executors;
 public class ResumeActivity extends AppCompatActivity {
     private ActivityResumeBinding binding;
     User user;
+    List<WorkPlace> workPlaces;
     private static final int PICK_IMAGE_REQUEST = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,8 @@ public class ResumeActivity extends AppCompatActivity {
     private void loadDataFromDatabase(){
         UserDatabase userDatabase=UserDatabase.getDatabase(this);
         UserDao userDao=userDatabase.userDao();
+        WorkPlaceDatabase wpDB = WorkPlaceDatabase.getDatabase(this);
+        WorkPlaceDao wpDAO = wpDB.workPlaceDao();
         // LiveData 관찰
         userDao.getDataChange().observe(this, users -> {
             if (users != null && !users.isEmpty()) {
@@ -91,7 +96,10 @@ public class ResumeActivity extends AppCompatActivity {
                 updateUI();
             }
         });
-
+        //근무지 읽어와서 자동으로 저장
+        Executors.newSingleThreadExecutor().execute(() -> {
+            workPlaces = wpDAO.getDataAll();
+        });
     }
     private void updateUI(){
         binding.back.setOnClickListener(v->onBackPressed());
@@ -104,6 +112,7 @@ public class ResumeActivity extends AppCompatActivity {
             if(user.image!=null){
                 binding.profileImg.setBackground(byteArrayToDrawable(this,user.image));
             }
+            //학력 리사이클러뷰
             if(user.schoolList!=null){
                 Log.d("qqqq",user.schoolList);
                 List<String> itemlist;
@@ -117,6 +126,7 @@ public class ResumeActivity extends AppCompatActivity {
                 binding.schoolEduRecyclerView.setLayoutManager(new LinearLayoutManager(this));
                 binding.schoolEduRecyclerView.setAdapter(adapter);
             }
+            //자격증 리사이클러뷰
             if(user.certList!=null){
                 List<String> itemlist;
                 if(user.certList.contains("\n")){
@@ -129,9 +139,20 @@ public class ResumeActivity extends AppCompatActivity {
                 binding.certRecyclerView.setLayoutManager(new LinearLayoutManager(this));
                 binding.certRecyclerView.setAdapter(adapter);
             }
+            //근무지 리사이클러뷰
+            if(workPlaces != null){
+                HistoryAdapter adapter = new HistoryAdapter(workPlaces);
+                binding.workplaceRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                binding.workplaceRecyclerView.setAdapter(adapter);
+            }
+            
+            //자기소개서 에딧텍스트
             if(user.selfIntroduce!=null){
                 binding.selfIntroductionEdit.setText(user.selfIntroduce);
             }
+
+            
+
         }
 
         binding.pdfConvert.setOnClickListener(v->convertToPdf());

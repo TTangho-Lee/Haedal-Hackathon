@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,7 +30,7 @@ public class CertAdapter extends RecyclerView.Adapter<CertAdapter.MyViewHolder>{
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView textView;
         public TextView textView2;
-        public ImageButton imageButton;
+        public ImageView imageButton;
         public MyViewHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.certName);
