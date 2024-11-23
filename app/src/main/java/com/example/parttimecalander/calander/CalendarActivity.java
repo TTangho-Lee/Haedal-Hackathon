@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ public class CalendarActivity extends AppCompatActivity {
     MaterialCalendarView mcv_month;
     RecyclerView rcv_schedule;
     TextView tv_date, add_schedule;
+    ImageView back;
     //자료형
     HashSet<CalendarDay> days = new HashSet<>(); //일정 있는 날짜들(CalendarDay자료형), 년월일로 구성
 
@@ -46,7 +48,10 @@ public class CalendarActivity extends AppCompatActivity {
         rcv_schedule = findViewById(R.id.recyclerView_schedule);
         mcv_month = findViewById(R.id.calendarView);
         add_schedule = findViewById(R.id.add_schedule);
+        back = findViewById(R.id.back);
 
+        back.setOnClickListener(v->onBackPressed());
+        
         add_schedule.setOnClickListener(v->{
             Intent intent = new Intent(CalendarActivity.this, SchduleRegisterActivity.class);
             startActivity(intent);
