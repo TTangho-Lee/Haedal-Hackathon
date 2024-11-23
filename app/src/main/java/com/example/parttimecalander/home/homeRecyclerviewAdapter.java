@@ -27,7 +27,7 @@ public class homeRecyclerviewAdapter extends RecyclerView.Adapter<homeRecyclervi
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // item_layout.xml 파일을 inflate
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.home_item_layout, parent, false);
+                .inflate(R.layout.item_parttime, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -36,9 +36,10 @@ public class homeRecyclerviewAdapter extends RecyclerView.Adapter<homeRecyclervi
         // 데이터 바인딩
         String data = dataList.get(position);
         String[] parts = data.split("///");
-        holder.textView.setText(parts[0]);
-        holder.textView2.setText((parts[1].substring(2,10)+"~"+parts[1].substring(22,30)).replace("-","."));
-        holder.linearLayout.setBackgroundColor(Color.parseColor(parts[2]));
+        holder.wp_title.setText(parts[0]);
+        holder.wp_start_date.setText(parts[1].substring(2,10).replace("-","."));
+        holder.wp_end_date.setText(parts[1].substring(22,30).replace("-","."));
+        holder.colorIndicator.setBackgroundColor(Color.parseColor(parts[2]));
     }
 
     @Override
@@ -48,14 +49,16 @@ public class homeRecyclerviewAdapter extends RecyclerView.Adapter<homeRecyclervi
 
     // ViewHolder 클래스 정의
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
-        TextView textView2;
-        LinearLayout linearLayout;
+        TextView wp_title;
+        TextView wp_start_date;
+        TextView wp_end_date;
+        View colorIndicator;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.place_name);
-            textView2=itemView.findViewById(R.id.work_time);
-            linearLayout=itemView.findViewById(R.id.home_background);
+            wp_title = itemView.findViewById(R.id.workplace_title);
+            wp_start_date = itemView.findViewById(R.id.workplace_start);
+            wp_end_date = itemView.findViewById(R.id.workplace_end);
+            colorIndicator = itemView.findViewById(R.id.workplace_color);
         }
     }
 }
