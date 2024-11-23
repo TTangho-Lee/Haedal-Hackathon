@@ -23,6 +23,7 @@ public class TimerService extends Service {
     private Handler handler;
     private Runnable updateTimerRunnable;
     private static final int NOTIFICATION_ID = 1;
+    public static final String TIMER_BROADCAST = "com.example.parttimecalander.timer.TIMER_UPDATE";
 
     @Override
     public void onCreate() {
@@ -78,9 +79,10 @@ public class TimerService extends Service {
             long minutes = (secondsRemaining % 3600) / 60;
             long seconds = secondsRemaining % 60;
 
-            // 남은 시간 출력
-            String remainingTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-            Toast.makeText(getApplicationContext(), "남은 시간: " + remainingTime, Toast.LENGTH_SHORT).show();
+            // 남은 시간을 브로드캐스트로 전달
+            Intent broadcastIntent = new Intent(TIMER_BROADCAST);
+            broadcastIntent.putExtra("remaining_time", String.format("%02d:%02d:%02d", hours, minutes, seconds));
+            sendBroadcast(broadcastIntent);
         }
     }
 

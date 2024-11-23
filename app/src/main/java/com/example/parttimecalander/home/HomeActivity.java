@@ -1,7 +1,9 @@
 package com.example.parttimecalander.home;
 
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -27,9 +29,11 @@ import com.example.parttimecalander.home.resume.ResumeActivity;
 import com.example.parttimecalander.home.scheduledialog.ScheduleDialogFragment;
 import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
 import com.example.parttimecalander.home.workplace.WorkPlaceActivity;
+import com.example.parttimecalander.timer.TimerService;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
+import java.text.BreakIterator;
 import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -51,8 +55,8 @@ public class HomeActivity extends AppCompatActivity {
     private WorkPlaceDatabase placeDatabase;
     private WorkDailyDao dailyDao;
     private WorkPlaceDao placeDao;
-    private BroadcastReceiver timerReceiver;
     TextView timer_content;
+    private BroadcastReceiver timerReceiver;
 
 
     @Override
@@ -61,17 +65,50 @@ public class HomeActivity extends AppCompatActivity {
         enableEdgeToEdge();
         setContentView(R.layout.activity_home);
         reset_layout();
+        setBroadcastReciver();
+
+        // 시작 시간과 끝 시간 설정 (예시)
+        String startTime = "2024-11-23T10:00:00";
+        String endTime = "2024-11-23T11:00:00";
+
+        // 서비스 시작
+        Intent serviceIntent = new Intent(this, TimerService.class);
+        serviceIntent.putExtra("start_time", startTime);
+        serviceIntent.putExtra("end_time", endTime);
+        startService(serviceIntent);
 
     }
     @Override
     protected void onResume(){
         super.onResume();
         reset_layout();
+        // 브로드캐스트 리시버 등록
+        IntentFilter filter = new IntentFilter(TimerService.TIMER_BROADCAST);
+        registerReceiver(timerReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
     }
     @Override
     protected void onStart(){
         super.onStart();
         reset_layout();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // 브로드캐스트 리시버 해제
+        unregisterReceiver(timerReceiver);
+    }
+    private void setBroadcastReciver(){
+        // 브로드캐스트 리시버 설정
+        timerReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(TimerService.TIMER_BROADCAST)) {
+                    String remainingTime = intent.getStringExtra("remaining_time");
+                    timer_content.setText(remainingTime);  // 텍스트뷰 업데이트
+                }
+            }
+        };
     }
     public void reset_layout(){
         //주별 캘린더
