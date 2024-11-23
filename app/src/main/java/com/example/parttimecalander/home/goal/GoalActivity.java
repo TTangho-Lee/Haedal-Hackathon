@@ -5,8 +5,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -21,6 +23,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
@@ -33,11 +36,13 @@ import com.example.parttimecalander.databinding.ActivityGoalBinding;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 
 import com.example.parttimecalander.R;
+import com.example.parttimecalander.home.resume.ResumeActivity;
 import com.example.parttimecalander.timer.TimerService;
 
 
@@ -137,17 +142,56 @@ public class GoalActivity extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                // 이미지 Bitmap 생성 및 회전 보정
+                Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                Bitmap rotatedBitmap = rotateImageIfRequired(this, originalBitmap, imageUri);
+
+                // 최대 크기 제한 (1024 유지)
+                int maxSize = 1024;
+                int width = rotatedBitmap.getWidth();
+                int height = rotatedBitmap.getHeight();
+                float scale = Math.min((float) maxSize / width, (float) maxSize / height);
+
+                // 크기 조정
+                int targetWidth = Math.round(scale * width);
+                int targetHeight = Math.round(scale * height);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(rotatedBitmap, targetWidth, targetHeight, true);
+
+                // Bitmap을 ByteArray로 변환
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
                 imageData = outputStream.toByteArray();
-                binding.goalImg.setBackground(byteArrayToDrawable(this,imageData));
-                // bitmap에 사진 정보는 담겨있다 하지만 아직 저장은 하지 말고 화면에만 먼저 띄어주자
+
+                // 화면에 표시
+                binding.goalImg.setBackground(byteArrayToDrawable(this, imageData));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
+    private Bitmap rotateImageIfRequired(Context context, Bitmap img, Uri selectedImage) throws IOException {
+        InputStream input = context.getContentResolver().openInputStream(selectedImage);
+        ExifInterface exif = new ExifInterface(input);
+        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return rotateImage(img, 90);
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return rotateImage(img, 180);
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return rotateImage(img, 270);
+            default:
+                return img;
+        }
+    }
+
+    private Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
 
     private void saveImageToDatabase() {
 //        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -169,6 +213,9 @@ public class GoalActivity extends AppCompatActivity {
             }else{
                 UserDatabase.getDatabase(this).userDao().setUpdateData(user);
             }
+            runOnUiThread(() ->
+                    Toast.makeText(GoalActivity.this, "저장되었습니다", Toast.LENGTH_SHORT).show()
+            );
         }).start();
     }
 
