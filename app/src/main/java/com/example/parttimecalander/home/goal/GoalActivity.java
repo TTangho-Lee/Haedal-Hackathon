@@ -82,12 +82,12 @@ public class GoalActivity extends AppCompatActivity {
                 saveGoal();
             }
         });
+        Log.d("abcde","체크포인트");
     }
 
     private void loadDataFromDatabase(){
         UserDatabase userDatabase=UserDatabase.getDatabase(this);
         UserDao userDao=userDatabase.userDao();
-
         Executors.newSingleThreadScheduledExecutor().execute(()->{
             if(userDao.getDataAll().size() == 1){
                 user = userDao.getDataAll().get(0);
@@ -95,26 +95,35 @@ public class GoalActivity extends AppCompatActivity {
             else{
                 user = new User();
             }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    updateUI();
+                }
+            });
         });
-        updateUI();
+
     }
 
     private void updateUI(){
+        Log.d("abcde","aefwefasefsaef");
         if(user != null){
             String formattedAmount = NumberFormat.getNumberInstance(Locale.getDefault()).format(user.goal);
+            Log.d("abcde",formattedAmount);
             String formattedAmount2 = NumberFormat.getNumberInstance(Locale.getDefault()).format(user.goal - user.goalSaveMoney);
             if (user.goalImage != null) {
                 binding.goalImg.setBackground(byteArrayToDrawable(this, user.goalImage));
             } else {
                 binding.goalImg.setBackgroundResource(R.drawable.pencil_edit_button_svgrepo_com); // 기본 이미지 설정
             }
+            binding.titleGoal.setText(user.goalName);
             binding.goalPrice.setText(formattedAmount + '원');
             binding.contentPrice.setText(formattedAmount2 + '원');
         }
     }
     // 현제 여기 하는중 저장버튼 눌렀을떄 이미지 말고 돈도 저장해주자
     private void saveGoal(){
-        saveImageToDatabase(bitmap);
+        saveImageToDatabase();
     }
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -139,15 +148,21 @@ public class GoalActivity extends AppCompatActivity {
         }
     }
 
-    private void saveImageToDatabase(Bitmap bitmap) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-        byte[] imageData = outputStream.toByteArray();
+    private void saveImageToDatabase() {
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+//        byte[] imageData = outputStream.toByteArray();
 
         new Thread(() -> {
-            user.goalImage=imageData;
-            user.goal = (int) amountValue;
-            user.goalName = newNickname;
+            if(imageData != null) {
+                user.goalImage = imageData;
+            }
+            if((int) amountValue != 0) {
+                user.goal = (int) amountValue;
+            }
+            if(newNickname != null) {
+                user.goalName = newNickname;
+            }
             if(UserDatabase.getDatabase(this).userDao().getDataAll().isEmpty()){
                 UserDatabase.getDatabase(this).userDao().setInsertData(user);
             }else{

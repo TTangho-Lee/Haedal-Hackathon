@@ -73,8 +73,7 @@ public class SummationActivity extends AppCompatActivity {
         month = sharedPreferences.getInt("selectedMonth", currentMonth+1);  // 기본값 11월
         previousYear = year;
         previousMonth = month;
-        currentYear=year;
-        currentMonth=month-1;
+
         LocalDate firstDay = LocalDate.of(year, month, 1);
         dayOfWeekNumber = firstDay.getDayOfWeek().getValue() - 1;
         time_text=(TextView)findViewById(R.id.time_text);
