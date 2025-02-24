@@ -1,32 +1,20 @@
 package com.example.parttimecalander.home.workplace;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.room.Room;
 
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
-import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
-import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
-import com.example.parttimecalander.Database.User;
-import com.example.parttimecalander.Database.WorkDaily;
-import com.example.parttimecalander.Database.WorkPlace;
-import com.example.parttimecalander.R;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.WorkDaily;
+import com.example.parttimecalander.Database.data.WorkPlace;
 import com.example.parttimecalander.databinding.ActivityWorkplaceRegisterBinding;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
@@ -35,16 +23,13 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 
 public class WorkPlaceRegisterActivity extends AppCompatActivity {
     private ActivityWorkplaceRegisterBinding binding;
-    private WorkPlaceDatabase placeDatabase;
+    private PartTimeDatabase partTimeDatabase;
     private WorkPlaceDao placeDao;
-
-    private WorkDailyDatabase dailyDatabase;
     private WorkDailyDao dailyDao;
 
     private String[] startTimes = new String[7]; // 시작 시간 저장 (월~일)
@@ -70,10 +55,9 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         // Database 초기화
-        placeDatabase = WorkPlaceDatabase.getDatabase(this);
-        placeDao = placeDatabase.workPlaceDao();
-        dailyDatabase = WorkDailyDatabase.getDatabase(this);
-        dailyDao = dailyDatabase.workDailyDao();
+        partTimeDatabase = PartTimeDatabase.getDatabase(this);
+        placeDao = partTimeDatabase.workPlaceDao();
+        dailyDao = partTimeDatabase.workDailyDao();
 
         // setupDay 호출
         setupDay(binding.checkboxMonday, binding.timeMonday, binding.startTimeMonday, binding.endTimeMonday);

@@ -21,16 +21,13 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
-import com.example.parttimecalander.Database.Database.UserDatabase;
-import com.example.parttimecalander.Database.User;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.User;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.databinding.ActivityGoalBinding;
 
@@ -40,10 +37,6 @@ import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.concurrent.Executors;
-
-import com.example.parttimecalander.R;
-import com.example.parttimecalander.home.resume.ResumeActivity;
-import com.example.parttimecalander.timer.TimerService;
 
 
 public class GoalActivity extends AppCompatActivity {
@@ -92,7 +85,7 @@ public class GoalActivity extends AppCompatActivity {
     }
 
     private void loadDataFromDatabase(){
-        UserDatabase userDatabase=UserDatabase.getDatabase(this);
+        PartTimeDatabase userDatabase=PartTimeDatabase.getDatabase(this);
         UserDao userDao=userDatabase.userDao();
         Executors.newSingleThreadScheduledExecutor().execute(()->{
             if(userDao.getDataAll().size() == 1){
@@ -208,10 +201,10 @@ public class GoalActivity extends AppCompatActivity {
             if(newNickname != null){
             user.goalName = newNickname;
             }
-            if(UserDatabase.getDatabase(this).userDao().getDataAll().isEmpty()){
-                UserDatabase.getDatabase(this).userDao().setInsertData(user);
+            if(PartTimeDatabase.getDatabase(this).userDao().getDataAll().isEmpty()){
+                PartTimeDatabase.getDatabase(this).userDao().setInsertData(user);
             }else{
-                UserDatabase.getDatabase(this).userDao().setUpdateData(user);
+                PartTimeDatabase.getDatabase(this).userDao().setUpdateData(user);
             }
             runOnUiThread(() ->
                     Toast.makeText(GoalActivity.this, "저장되었습니다", Toast.LENGTH_SHORT).show()

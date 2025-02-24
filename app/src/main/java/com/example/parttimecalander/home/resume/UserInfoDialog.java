@@ -5,30 +5,24 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Telephony;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.SpinnerAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
-import com.example.parttimecalander.Database.Database.UserDatabase;
-import com.example.parttimecalander.Database.User;
-import com.example.parttimecalander.R;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.User;
 import com.example.parttimecalander.databinding.DialogUserInfoBinding;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.concurrent.Executors;
 
 public class UserInfoDialog extends Dialog {
@@ -52,8 +46,8 @@ public class UserInfoDialog extends Dialog {
         setContentView(binding.getRoot());
         Calendar calendar = Calendar.getInstance();
         Executors.newSingleThreadExecutor().execute(() -> {
-            UserDatabase userDatabase=UserDatabase.getDatabase(context);
-            UserDao userDao= userDatabase.userDao();
+            PartTimeDatabase partTimeDatabase = PartTimeDatabase.getDatabase(context);
+            UserDao userDao= partTimeDatabase.userDao();
 
             if(!userDao.getDataAll().isEmpty()){
                 binding.contentName.setText(userDao.getDataAll().get(0).name);
@@ -108,8 +102,8 @@ public class UserInfoDialog extends Dialog {
 
     private void changeData(){
         Executors.newSingleThreadExecutor().execute(() -> {
-            UserDatabase userDatabase=UserDatabase.getDatabase(context);
-            UserDao userDao= userDatabase.userDao();
+            PartTimeDatabase partTimeDatabase = PartTimeDatabase.getDatabase(context);
+            UserDao userDao= partTimeDatabase.userDao();
             if(!userDao.getDataAll().isEmpty()){
                 User user=userDao.getDataAll().get(0);
                 user.name=binding.contentName.getText().toString();

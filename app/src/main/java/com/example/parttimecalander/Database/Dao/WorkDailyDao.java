@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.parttimecalander.Database.WorkDaily;
+import com.example.parttimecalander.Database.data.WorkDaily;
 
 import java.util.List;
 
@@ -22,6 +22,8 @@ public interface WorkDailyDao {
     List<WorkDaily> getDataAll();
     @Query("SELECT * FROM daily WHERE DATE(daily.startTime) = :selectedDate")
     List<WorkDaily> getSchedulesForDate(String selectedDate);
+    @Query("SELECT * FROM daily WHERE startTime BETWEEN :firstDay AND :lastDay")
+    List<WorkDaily> getSchedulesBetweenDays(String firstDay, String lastDay);
     @Delete
     void delete(WorkDaily workDaily);
 }

@@ -1,9 +1,7 @@
-package com.example.parttimecalander.Database;
+package com.example.parttimecalander.Database.data;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
-import java.time.LocalDateTime;
 
 @Entity(tableName = "user")
 public class User {

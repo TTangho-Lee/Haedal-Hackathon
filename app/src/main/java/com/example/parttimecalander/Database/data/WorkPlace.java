@@ -1,10 +1,9 @@
-package com.example.parttimecalander.Database;
+package com.example.parttimecalander.Database.data;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 
 @Entity(tableName = "place")
 public class WorkPlace implements Serializable {

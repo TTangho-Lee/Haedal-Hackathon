@@ -4,22 +4,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
-import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
-import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
-import com.example.parttimecalander.Database.WorkDaily;
-import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.WorkDaily;
+import com.example.parttimecalander.Database.data.WorkPlace;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.databinding.ActivitySchduleRegisterBinding;
 import com.google.android.material.timepicker.MaterialTimePicker;
@@ -32,9 +26,8 @@ import java.util.concurrent.Executors;
 
 public class SchduleRegisterActivity extends AppCompatActivity {
     private ActivitySchduleRegisterBinding binding;
-    private WorkPlaceDatabase placeDatabase;
+    PartTimeDatabase partTimeDatabase;
     private WorkPlaceDao placeDao;
-    private WorkDailyDatabase dailyDatabase;
     private WorkDailyDao dailyDao;
     private ArrayList<Integer> years;
     private ArrayList<Integer> months;
@@ -49,10 +42,9 @@ public class SchduleRegisterActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         // Database 초기화
-        placeDatabase = WorkPlaceDatabase.getDatabase(this);
-        placeDao = placeDatabase.workPlaceDao();
-        dailyDatabase = WorkDailyDatabase.getDatabase(this);
-        dailyDao = dailyDatabase.workDailyDao();
+        partTimeDatabase = PartTimeDatabase.getDatabase(this);
+        placeDao = partTimeDatabase.workPlaceDao();
+        dailyDao = partTimeDatabase.workDailyDao();
     }
 
     @Override

@@ -13,11 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
-import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
-import com.example.parttimecalander.Database.WorkDaily;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.WorkDaily;
 import com.example.parttimecalander.R;
 
 import java.util.List;
@@ -80,7 +79,8 @@ public class ScheduleDialogFragment extends DialogFragment {
 
         // Fetch schedules for the selected date
         Executors.newSingleThreadExecutor().execute(() -> {
-            WorkDailyDatabase database = WorkDailyDatabase.getDatabase(requireContext());
+
+            PartTimeDatabase database = PartTimeDatabase.getDatabase(requireContext());
             WorkDailyDao dailyDao = database.workDailyDao();
             List<WorkDaily> schedules = dailyDao.getSchedulesForDate(selectedDate);
 

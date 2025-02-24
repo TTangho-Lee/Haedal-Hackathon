@@ -1,70 +1,41 @@
 package com.example.parttimecalander.home.resume;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.print.PrintAttributes;
-import android.print.pdf.PrintedPdfDocument;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
-import com.example.parttimecalander.Database.Database.UserDatabase;
-import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
-import com.example.parttimecalander.Database.User;
-import com.example.parttimecalander.Database.WorkDaily;
-import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.User;
+import com.example.parttimecalander.Database.data.WorkPlace;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.databinding.ActivityResumeBinding;
-import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
-import com.example.parttimecalander.home.ui.summationmonth.SummationActivity;
-import com.example.parttimecalander.home.ui.summationmonth.SummationMonthAdapter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.DecimalFormat;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,6 +44,7 @@ import java.util.concurrent.Executors;
 
 public class ResumeActivity extends AppCompatActivity {
     private ActivityResumeBinding binding;
+    PartTimeDatabase partTimeDatabase;
     User user;
     List<WorkPlace> workPlaces;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -88,10 +60,9 @@ public class ResumeActivity extends AppCompatActivity {
     }
 
     private void loadDataFromDatabase(){
-        UserDatabase userDatabase=UserDatabase.getDatabase(this);
-        UserDao userDao=userDatabase.userDao();
-        WorkPlaceDatabase wpDB = WorkPlaceDatabase.getDatabase(this);
-        WorkPlaceDao wpDAO = wpDB.workPlaceDao();
+        partTimeDatabase = PartTimeDatabase.getDatabase(this);
+        UserDao userDao = partTimeDatabase.userDao();
+        WorkPlaceDao workPlaceDao = partTimeDatabase.workPlaceDao();
         // LiveData 관찰
         userDao.getDataChange().observe(this, users -> {
             if (users != null && !users.isEmpty()) {
@@ -101,7 +72,7 @@ public class ResumeActivity extends AppCompatActivity {
         });
         //근무지 읽어와서 자동으로 저장
         Executors.newSingleThreadExecutor().execute(() -> {
-            workPlaces = wpDAO.getDataAll();
+            workPlaces = workPlaceDao.getDataAll();
         });
     }
     private void updateUI(){
@@ -179,8 +150,7 @@ public class ResumeActivity extends AppCompatActivity {
     public void saveintroduce(){
         new Thread(() -> {
             String myintroduce=binding.selfIntroductionEdit.getText().toString();
-            UserDatabase userDatabase=UserDatabase.getDatabase(this);
-            UserDao userDao=userDatabase.userDao();
+            UserDao userDao=partTimeDatabase.userDao();
             User user1;
             if(userDao.getDataAll().size()==0){
                 user1=new User();
@@ -365,14 +335,14 @@ public class ResumeActivity extends AppCompatActivity {
         byte[] imageData = outputStream.toByteArray();
 
         new Thread(() -> {
-            if(UserDatabase.getDatabase(this).userDao().getDataAll().isEmpty()){
+            if(PartTimeDatabase.getDatabase(this).userDao().getDataAll().isEmpty()){
                 User user=new User();
                 user.image=imageData;
-                UserDatabase.getDatabase(this).userDao().setInsertData(user);
+                PartTimeDatabase.getDatabase(this).userDao().setInsertData(user);
             }else{
-                User user=UserDatabase.getDatabase(this).userDao().getDataAll().get(0);
+                User user=PartTimeDatabase.getDatabase(this).userDao().getDataAll().get(0);
                 user.image=imageData;
-                UserDatabase.getDatabase(this).userDao().setUpdateData(user);
+                PartTimeDatabase.getDatabase(this).userDao().setUpdateData(user);
             }
         }).start();
     }

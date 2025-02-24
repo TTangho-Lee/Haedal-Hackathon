@@ -1,18 +1,16 @@
 package com.example.parttimecalander.home.resume;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
-import com.example.parttimecalander.Database.Database.UserDatabase;
-import com.example.parttimecalander.Database.User;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.User;
 import com.example.parttimecalander.R;
 
 import java.util.List;
@@ -53,23 +51,15 @@ public class SchoolEduAdapter extends RecyclerView.Adapter<SchoolEduAdapter.MyVi
         if(items.length==2){
             holder.textView.setText(items[0]);
             holder.textView2.setText(items[1]);
-            holder.imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    executorService.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            UserDatabase userDatabase=UserDatabase.getDatabase(v.getContext());
-                            UserDao userDao=userDatabase.userDao();
-                            String current=userDao.getDataAll().get(0).schoolList;
-                            current=current.replace(itemList.get(position)+"\n","");
-                            User user=userDao.getDataAll().get(0);
-                            user.schoolList=current;
-                            userDao.setUpdateData(user);
-                        }
-                    });
-                }
-            });
+            holder.imageView.setOnClickListener(v -> executorService.execute(() -> {
+                PartTimeDatabase partTimeDatabase=PartTimeDatabase.getDatabase(v.getContext());
+                UserDao userDao=partTimeDatabase.userDao();
+                String current=userDao.getDataAll().get(0).schoolList;
+                current=current.replace(itemList.get(position)+"\n","");
+                User user=userDao.getDataAll().get(0);
+                user.schoolList=current;
+                userDao.setUpdateData(user);
+            }));
         }
 
     }

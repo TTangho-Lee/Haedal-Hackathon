@@ -1,5 +1,6 @@
 package com.example.parttimecalander.home;
 
+import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -17,63 +18,55 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
-import com.example.parttimecalander.Database.Database.UserDatabase;
-import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
-import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
-import com.example.parttimecalander.Database.User;
-import com.example.parttimecalander.Database.WorkDaily;
-import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.User;
+import com.example.parttimecalander.Database.data.WorkDaily;
+import com.example.parttimecalander.Database.data.WorkPlace;
 import com.example.parttimecalander.calander.EventDecorator;
+import com.example.parttimecalander.databinding.ActivityHomeBinding;
 import com.example.parttimecalander.home.goal.GoalActivity;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.calander.CalendarActivity;
 import com.example.parttimecalander.home.resume.ResumeActivity;
 import com.example.parttimecalander.home.scheduledialog.ScheduleDialogFragment;
-import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
 import com.example.parttimecalander.home.ui.summationmonth.SummationActivity;
 import com.example.parttimecalander.home.workplace.WorkPlaceActivity;
 import com.example.parttimecalander.timer.TimerService;
 import com.example.parttimecalander.widget.TimerWidget;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
-import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 
 public class HomeActivity extends AppCompatActivity implements ScheduleDialogFragment.TimerDialogListener {
+
+    ActivityHomeBinding binding;
     CalendarDay today, sunday, saturday;
-    MaterialCalendarView mcv;
     int dayOfWeekNumber;
-    public int[][] time_calander = new int[6][7];
-    public int[][] real_calander=new int[6][7];
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private WorkDailyDatabase dailyDatabase;
-    private WorkPlaceDatabase placeDatabase;
+    PartTimeDatabase partTimeDatabase;
     private WorkDailyDao dailyDao;
     private WorkPlaceDao placeDao;
-    TextView timer_content;
+    private UserDao userDao;
     private BroadcastReceiver timerReceiver;
     private static final int REQUEST_CODE_NOTIFICATION_PERMISSION = 1;
 
@@ -81,8 +74,10 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         enableEdgeToEdge();
-        setContentView(R.layout.activity_home);
+        binding = ActivityHomeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
+        resetForIntent();
         reset_layout();
         setBroadcastReciver();
 
@@ -168,41 +163,34 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         timerReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(TimerService.TIMER_BROADCAST)) {
+                if (Objects.requireNonNull(intent.getAction()).equals(TimerService.TIMER_BROADCAST)) {
                     String remainingTime = intent.getStringExtra("remaining_time");
-
-                    timer_content.setText(remainingTime);  // 텍스트뷰 업데이트
+                    binding.timerContent.setText(remainingTime);  // 텍스트뷰 업데이트
                 }
             }
         };
     }
-    public void reset_layout(){
-        //주별 캘린더
-        //materialCalendarView 세팅 -> 설정은 uithread밑으로
-        mcv = findViewById(R.id.calendarView);
-        ConstraintLayout week_calendar = findViewById(R.id.week_calander);
-        week_calendar.setOnClickListener(v->{
+    private void resetForIntent(){
+
+        binding.weekCalander.setOnClickListener(v->{
             Intent intent=new Intent(HomeActivity.this, CalendarActivity.class);
             startActivity(intent);
         });
 
         //월별&주별 요약
-        ConstraintLayout monthly_summation = findViewById(R.id.monthly_summation);
-        monthly_summation.setOnClickListener(v->{
+        binding.monthlySummation.setOnClickListener(v->{
             Intent intent=new Intent(HomeActivity.this, SummationActivity.class);
             startActivity(intent);
         });
 
         //나의 근무지
-        ConstraintLayout my_workplace = findViewById(R.id.my_workplace);
-        my_workplace.setOnClickListener(v->{
+        binding.myWorkplace.setOnClickListener(v->{
             Intent intent = new Intent(HomeActivity.this, WorkPlaceActivity.class);
             startActivity(intent);
         });
 
         //나의 목표
-        ConstraintLayout my_goal = findViewById(R.id.my_goal);
-        my_goal.setOnClickListener(new View.OnClickListener() {
+        binding.myGoal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, GoalActivity.class);
@@ -211,200 +199,181 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         });
 
         //나의 이력서
-        ConstraintLayout my_resume = findViewById(R.id.my_resume);
-        my_resume.setOnClickListener(v->{
+        binding.myResume.setOnClickListener(v->{
             Intent intent=new Intent(HomeActivity.this,ResumeActivity.class);
             startActivity(intent);
         });
+    }
+    @SuppressLint("DefaultLocale")
+    public void reset_layout(){
 
-        TextView summation_title=(TextView)findViewById(R.id.summation_title);
-        Calendar calendar = Calendar.getInstance(); // 현재 날짜와 시간 가져오기
-        int currentMonth = calendar.get(Calendar.MONTH); // 0 = 1월, 11 = 12월
-        int currentYear = calendar.get(Calendar.YEAR);
-        int currentDay=calendar.get(Calendar.DAY_OF_MONTH);
-        summation_title.setText(currentMonth+1+"월 요약");
+        // 오늘 날짜 구하기
+        ZonedDateTime today = ZonedDateTime.now(ZoneId.systemDefault());
+        int currentYear = today.getYear();
+        int currentMonth = today.getMonthValue();
+        int currentDay = today.getDayOfMonth();
 
-        //타이머
-        timer_content = (TextView)findViewById(R.id.timer_content);
+        // 유저가 없으면 빈 깡통 유저 인스턴스 생성(오류방지)
+        User user;
+        if(userDao.getDataAll().isEmpty()){
+            user=new User();
+            // 첫 어플 적석 시 오류를 위해 오늘 날짜로 초기화
+            // 원래는 나중에 업데이트날짜 초기화
+            user.recentUpdate = today.toString();
+        }else{
+            user=userDao.getDataAll().get(0);
+        }
 
-        TextView worktime=(TextView)findViewById(R.id.worktime);
-        TextView earnmoney=(TextView)findViewById(R.id.earnmoney);
-        TextView willmoney=(TextView)findViewById(R.id.willmoney);
-        LocalDate firstDay = LocalDate.of(currentYear, currentMonth+1, 1);
-        dayOfWeekNumber = firstDay.getDayOfWeek().getValue() - 1;
-        dailyDatabase = WorkDailyDatabase.getDatabase(this);
-        dailyDao = dailyDatabase.workDailyDao();
-        placeDatabase = WorkPlaceDatabase.getDatabase(this);
-        placeDao = placeDatabase.workPlaceDao();
+        // 요약 타이틀
+        binding.summationTitle.setText(String.format("%d월 요약", currentMonth));
+        partTimeDatabase = PartTimeDatabase.getDatabase(this);
 
-        UserDatabase userDatabase= UserDatabase.getDatabase(this);
-        UserDao userDao=userDatabase.userDao();
-        TextView user_text=(TextView)findViewById(R.id.user_text);
+        dailyDao = partTimeDatabase.workDailyDao();
+        placeDao = partTimeDatabase.workPlaceDao();
+        userDao  = partTimeDatabase.userDao();
+
+
+        // 이번달 1일을 선언 -> 이번달 수익과 예상수익 계산에 활용
+        ZonedDateTime firstDay = today.withDayOfMonth(1);
+        ZonedDateTime lastDay = today.withDayOfMonth(today.getDayOfMonth());
+
+        // 유저 생성을 아직 안함 or 유저 이름이 기록이 안됨 -> 이력서 작성 텍스트
+        // 위에 해당이 안되면 유저 이름을 사용해 텍스트 출력
         userDao.getDataChange().observe(this, users -> {
-            if(users.size()==0||users.get(0).name==null){
-                user_text.setText("이력서 작성 탭에서\n이력서를 작성해주세요!");
+            if(users.isEmpty() || users.get(0).name==null){
+                binding.userText.setText("이력서 작성 탭에서\n이력서를 작성해주세요!");
             }else{
-                user_text.setText(users.get(0).name+"님, 열심히 땀 흘려\n"+users.get(0).money+"원이나 모았어요!");
+                binding.userText.setText(String.format("%s님, 열심히 땀 흘려\n%d원이나 모았어요!", users.get(0).name, users.get(0).money));
             }
         });
+
+        // 스케줄이 있는 날을 기록하기 위한 Set(중복금지) Hash(검색가능)
         HashSet<CalendarDay> days = new HashSet<>();
+
+        // 비동기실행 -> 데이터베이스 사용
         Executors.newSingleThreadExecutor().execute(() -> {
 
-            double real_time=0;
-            double real_money=0;
-            double all_money=0;
-            List<WorkPlace> placeList = placeDao.getDataAll();
-            List<WorkDaily> dailyList = dailyDao.getDataAll();
-            User user;
-            if(userDao.getDataAll().size()==0){
-                user=new User();
-            }else{
-                user=userDao.getDataAll().get(0);
-            }
+            double monthWorkingTime=0; // 이번달 일한 시간
+            double monthWorkingMoney=0; // 벌어들인 돈
+            double monthWorkingAllMoney=0; // 이번달 총 벌어들일 액수
+
+            List<WorkPlace> placeList = placeDao.getDataAll(); // 일하는 모든 장소
+            // 최근 업데이트 이전내용은 당연히 그떄 전부 처리됐기 때문에 그 이후 내용만 가져온다.
+            List<WorkDaily> dailyList = dailyDao.getSchedulesBetweenDays(user.recentUpdate,
+                                                                         lastDay.toString());
+
+            // 스케쥴 순회
             for (WorkDaily workDaily : dailyList) {
-                String dateString = workDaily.startTime;
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
 
-                CalendarDay calendarDay = CalendarDay.from(
-                        localDateTime.getYear(),
-                        localDateTime.getMonthValue(),
-                        localDateTime.getDayOfMonth()
-                );
-                days.add(calendarDay);
-            }
-            for (int i = 0; i < placeList.size(); i++) {
-                //근무지 리스트의 각 근무지마다
-                WorkPlace place = placeList.get(i);
+                double cTime=0; // 이번 스케쥴에서 시간
+                double cMoney=0; //이번 스케쥴에서 벌어들인 돈
 
-                for (int ii = 0; ii < 6; ii++) {
-                    for (int j = 0; j < 7; j++) {
-                        time_calander[ii][j] = 0;
-                        real_calander[ii][j]=0;
-                    }
-                }
-                //일정을 담고 있는 리스트에서 하나씩 읽기
-                for (int j = 0; j < dailyList.size(); j++) {
-                    WorkDaily dailyWork = dailyList.get(j);
-                    if (dailyWork.placeId == place.ID) {
-                        //현재 보고 있는 근무지와 같은 일정일 경우 시작과 끝시간
-                        LocalDateTime startTime = LocalDateTime.parse(dailyWork.startTime, formatter);
-                        LocalDateTime endTime = LocalDateTime.parse(dailyWork.endTime, formatter);
+                // 문자열 시간으로 변환
+                ZonedDateTime startTime = ZonedDateTime.parse(workDaily.startTime);
+                ZonedDateTime endTime = ZonedDateTime.parse(workDaily.endTime);
 
-                        if (startTime.getYear() == currentYear && startTime.getMonthValue() == currentMonth+1) {
-                            set_time(startTime.getDayOfMonth(), (int) Duration.between(startTime, endTime).getSeconds());
-                            if(startTime.getDayOfMonth()<currentDay){
-                                set_real_time(startTime.getDayOfMonth(), (int) Duration.between(startTime, endTime).getSeconds());
-                            }
-                        }
-                    }
-                }
-                int[][] new_calander = new int[6][7];
-                for (int ii = 0; ii < 6; ii++) {
-                    System.arraycopy(time_calander[ii], 0, new_calander[ii], 0, 7);
-                }
-                RecyclerItem new_item = new RecyclerItem(currentYear,currentMonth+1,place.placeName, new_calander, place.isJuhyu, place.usualPay,place.ColorHex);
-                double normal_hour=0;
-                double over_hour=0;
-                for(int ii=0;ii<6;ii++){
-                    double second=0;
-                    for(int j=0;j<7;j++){
-                        second+=new_item.worked_time[ii][j];
-                    }
-                    second/=3600;
-                    if(second>=15&&new_item.juhyu){
-                        normal_hour+=15;
-                        over_hour+=second-15;
-                    }
-                    else{
-                        normal_hour+=second;
-                    }
-                }
-                all_money+=normal_hour*new_item.pay+over_hour*new_item.pay*1.5;
+                // 두 시간 사이의 간격
+                Duration duration = Duration.between(startTime, endTime);
 
-                int[][] new_calander1 = new int[6][7];
-                for (int ii = 0; ii < 6; ii++) {
-                    System.arraycopy(real_calander[ii], 0, new_calander1[ii], 0, 7);
-                }
-                RecyclerItem new_item1 = new RecyclerItem(currentYear,currentMonth+1,place.placeName, new_calander1, place.isJuhyu, place.usualPay,place.ColorHex);
-                double normal_hour1=0;
-                double over_hour1=0;
-                for(int ii=0;ii<6;ii++){
-                    double second=0;
-                    for(int j=0;j<7;j++){
-                        second+=new_item1.worked_time[ii][j];
-                    }
-                    second/=3600;
-                    if(second>=15&&new_item1.juhyu){
-                        normal_hour1+=15;
-                        over_hour1+=second-15;
-                    }
-                    else{
-                        normal_hour1+=second;
-                    }
-                }
-                real_time=normal_hour1+over_hour1;
-                real_money=normal_hour1* new_item1.pay+over_hour1* new_item1.pay*1.5;
+                // 몇시간 몇분 일했냐
+                long hours = duration.toHours();
+                double hoursWithFraction = duration.toMinutes() / 60.0;
+                cTime = hours + hoursWithFraction;
 
+                // 일하는 곳이 어딘지 찾기
+                for(WorkPlace place : placeList) {
+
+                    // 일하는 곳 찾았으면
+                    if(place.ID==workDaily.placeId) {
+
+                        // 일한 시간에 시급 곱해준다.
+                        cMoney = cTime * place.usualPay;
+
+                        // 주휴수당 있으면 0.2 만큼 더하므로 1.2곱해준다.
+                        if(place.isJuhyu) cMoney *= 1.2;
+
+                        break;
+                    }
+                }
+
+                // 만약 이미 했던 스케쥴이면
+                if(endTime.isBefore(today)) {
+
+                    if(user.goal != 0) user.goalSaveMoney += (int)cMoney;
+
+                    user.money += (int)cMoney;
+
+                    // 만약 이번달 스케줄이면
+                    if(startTime.isAfter(firstDay)){
+                        // 예상 수익에 더해줌
+                        monthWorkingTime += cTime;
+                        monthWorkingMoney += cMoney;
+                        // 총수익에도 더해줌 -> 이미 했던 스케줄도 이번달 총수익에 포함
+                        monthWorkingAllMoney += cMoney;
+
+                    }
+                    continue;
+                } else {
+                    // 아직 안한 스케줄들은 이번달 총 예상수익에만 더해줌
+                    monthWorkingAllMoney += cMoney;
+                }
+
+                // 일하는 날을 기록하기 위해 시작 시간 기준으로 CalendarDay 저장
+                CalendarDay localDateTime = CalendarDay.from(
+                                                            startTime.getYear(),
+                                                            startTime.getMonthValue(),
+                                                            startTime.getDayOfMonth()
+                                                            );
+                days.add(localDateTime);
             }
 
-            double finalReal_time = real_time;
-            double finalAll_money = all_money;
-            double finalReal_money = real_money;
-            DecimalFormat df = new DecimalFormat("###,###");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+            // monthWorkingTime, monthWorkingMoney, monthWorkingAllMoney 모두 선언된 이후 변경이 있는 값이다.
+            // runOnUiThread에서는 해당 람다식 밖에서 선언되고 변경이 있었던 값은 사용할 수 없으므로 새롭게 다시 선언.
+            double finalMonthWorkingTime = monthWorkingTime;
+            double finalMonthWorkingMoney = monthWorkingMoney;
+            double finalMonthWorkingAllMoney = monthWorkingAllMoney;
 
-                    View view=(View)findViewById(R.id.profileImage);
-                    if(user.goalImage!=null){
-                        view.setBackground(byteArrayToDrawable(HomeActivity.this,user.goalImage));
+            runOnUiThread(() -> {
 
-                    }
-
-                    List<String> dataList = new ArrayList<>();
-                    for (int i = 0; i < placeList.size(); i++) {
-                        dataList.add(placeList.get(i).placeName+"///"+placeList.get(i).startDate+"~"+placeList.get(i).endDate+"///"+placeList.get(i).ColorHex);
-                    }
-                    homeRecyclerviewAdapter adapter = new homeRecyclerviewAdapter(dataList);
-                    RecyclerView recyclerView=(RecyclerView)findViewById(R.id.home_recyclerView);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
-                    recyclerView.setAdapter(adapter);
-
-
-                    worktime.setText(df.format((int)finalReal_time )+" 시간");
-                    earnmoney.setText(df.format((int)finalReal_money) +" 원");
-                    willmoney.setText(df.format((int)finalAll_money) +" 원");
-
-                    //오늘을 포함한 일주일의 날짜를 선택
-                    setWeekStartEnd();
-
-                    mcv.setTopbarVisible(false);
-                    mcv.state().edit().setMinimumDate(sunday).setMaximumDate(saturday).commit();
-
-                    mcv.addDecorator(new EventDecorator(Color.RED, days));
-                    mcv.setOnDateLongClickListener((widget, date) -> {
-                        int year = date.getYear();
-                        int month = date.getMonth();
-                        int day = date.getDay();
-
-                        String selectedDate = String.format("%04d-%02d-%02d", year, month, day);
-
-                        ScheduleDialogFragment dialog = ScheduleDialogFragment.newInstance(selectedDate);
-                        dialog.show(getSupportFragmentManager(), "ScheduleDialog");
-                    });
+                if(user.goalImage!=null){
+                    binding.profileImage.setBackground(byteArrayToDrawable(HomeActivity.this,user.goalImage));
                 }
+
+                List<String> dataList = new ArrayList<>();
+
+                for (int i = 0; i < placeList.size(); i++) {
+                    dataList.add(placeList.get(i).placeName+"///"+placeList.get(i).startDate+"~"+placeList.get(i).endDate+"///"+placeList.get(i).ColorHex);
+                }
+
+                homeRecyclerviewAdapter adapter = new homeRecyclerviewAdapter(dataList);
+
+                binding.homeRecyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
+                binding.homeRecyclerView.setAdapter(adapter);
+
+                binding.worktime.setText(String.format("%.2f 시간", finalMonthWorkingTime));
+                binding.earnmoney.setText(String.format("%.0f 원", finalMonthWorkingMoney));
+                binding.willmoney.setText(String.format("%.0f 원", finalMonthWorkingAllMoney));
+
+                //오늘을 포함한 일주일의 날짜를 선택
+                setWeekStartEnd();
+
+                binding.calendarView.setTopbarVisible(false);
+                binding.calendarView.state().edit().setMinimumDate(sunday).setMaximumDate(saturday).commit();
+
+                binding.calendarView.addDecorator(new EventDecorator(Color.RED, days));
+                binding.calendarView.setOnDateLongClickListener((widget, date) -> {
+                    int year = date.getYear();
+                    int month = date.getMonth();
+                    int day = date.getDay();
+
+                    String selectedDate = String.format("%04d-%02d-%02d", year, month, day);
+
+                    ScheduleDialogFragment dialog = ScheduleDialogFragment.newInstance(selectedDate);
+                    dialog.show(getSupportFragmentManager(), "ScheduleDialog");
+                });
             });
         });
 
-    }
-    public void set_time(int day, int worked_time) {
-        int d = day + dayOfWeekNumber - 1;
-        time_calander[d / 7][d % 7] += worked_time;
-    }
-    public void set_real_time(int day, int worked_time) {
-        int d = day + dayOfWeekNumber - 1;
-        real_calander[d / 7][d % 7] += worked_time;
     }
     private void enableEdgeToEdge() {
         // Edge-to-edge 모드를 활성화하는 코드

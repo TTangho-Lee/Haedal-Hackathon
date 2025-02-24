@@ -3,21 +3,18 @@ package com.example.parttimecalander.home.workplace;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
-import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
-import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.WorkPlace;
 import com.example.parttimecalander.R;
 
 import java.util.List;
@@ -41,7 +38,7 @@ public class WorkPlaceActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Room 데이터베이스 초기화
-        WorkPlaceDatabase database=WorkPlaceDatabase.getDatabase(this);
+        PartTimeDatabase database = PartTimeDatabase.getDatabase(this);
 
         WorkPlaceDao workPlaceDao = database.workPlaceDao();
 

@@ -7,13 +7,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.parttimecalander.Database.Dao.UserDao;
-import com.example.parttimecalander.Database.Database.UserDatabase;
-import com.example.parttimecalander.Database.User;
-import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.Database.data.WorkPlace;
 import com.example.parttimecalander.R;
 
 import java.util.List;

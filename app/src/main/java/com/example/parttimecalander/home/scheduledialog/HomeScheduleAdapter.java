@@ -10,9 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
-import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
-import com.example.parttimecalander.Database.WorkDaily;
-import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.WorkDaily;
+import com.example.parttimecalander.Database.data.WorkPlace;
 import com.example.parttimecalander.R;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 public class HomeScheduleAdapter extends RecyclerView.Adapter<HomeScheduleAdapter.ViewHolder> {
 
     private List<WorkDaily> schedules;
-    private WorkPlaceDatabase placeDatabase;
+    private PartTimeDatabase partTimeDatabase;
     private WorkPlaceDao placeDao;
     private Context context;
     private OnItemClickListener listener;
@@ -33,8 +33,8 @@ public class HomeScheduleAdapter extends RecyclerView.Adapter<HomeScheduleAdapte
         this.listener = listener;
 
         // Initialize the database and DAO
-        placeDatabase = WorkPlaceDatabase.getDatabase(context);
-        placeDao = placeDatabase.workPlaceDao();
+        partTimeDatabase = PartTimeDatabase.getDatabase(context);
+        placeDao = partTimeDatabase.workPlaceDao();
     }
 
 

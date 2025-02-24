@@ -3,7 +3,6 @@ package com.example.parttimecalander.calander;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,10 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
-import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
-import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
-import com.example.parttimecalander.Database.WorkDaily;
-import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.WorkDaily;
+import com.example.parttimecalander.Database.data.WorkPlace;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -62,7 +60,7 @@ public class CalendarActivity extends AppCompatActivity {
 
         // 데이터베이스 작업: 백그라운드 스레드 실행
         Executors.newSingleThreadExecutor().execute(() -> {
-            WorkDailyDatabase workDailyDatabase = WorkDailyDatabase.getDatabase(this);
+            PartTimeDatabase workDailyDatabase = PartTimeDatabase.getDatabase(this);
             WorkDailyDao workDailyDao = workDailyDatabase.workDailyDao();
             List<WorkDaily> list = workDailyDao.getDataAll();
 
@@ -95,7 +93,7 @@ public class CalendarActivity extends AppCompatActivity {
                         try {
                             todayList = workDailyDao.getSchedulesForDate(selectedDate); // Room 작업 비동기 실행
                             List<Pair<WorkPlace, WorkDaily>> places = new ArrayList<>();
-                            WorkPlaceDatabase database = WorkPlaceDatabase.getDatabase(this);
+                            PartTimeDatabase database = PartTimeDatabase.getDatabase(this);
                             WorkPlaceDao workPlaceDao = database.workPlaceDao();
 
                             for (WorkDaily todayWork : todayList) {
