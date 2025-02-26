@@ -5,7 +5,9 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
+import com.example.parttimecalander.Database.Converters;
 import com.example.parttimecalander.Database.Dao.UserDao;
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
@@ -14,6 +16,7 @@ import com.example.parttimecalander.Database.data.WorkDaily;
 import com.example.parttimecalander.Database.data.WorkPlace;
 
 @Database(entities = {User.class, WorkDaily.class, WorkPlace.class},version=1)
+@TypeConverters({Converters.class})
 public abstract class PartTimeDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract WorkDailyDao workDailyDao();

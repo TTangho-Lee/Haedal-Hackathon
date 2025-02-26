@@ -77,6 +77,9 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        partTimeDatabase = PartTimeDatabase.getDatabase(this);
+        userDao = partTimeDatabase.userDao();
+
         resetForIntent();
         reset_layout();
         setBroadcastReciver();
@@ -116,6 +119,7 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         registerReceiver(timerReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
     }
     @Override
+
     protected void onStart(){
         super.onStart();
         reset_layout();
@@ -130,13 +134,11 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
     // 인터페이스 메서드 구현
     @Override
     public void onTimeSet(String startTime, String endTime) {
-        // 전달받은 데이터를 처리
-        Log.d("MainActivity", "Start Time: " + startTime + ", End Time: " + endTime);
 
-        LocalDateTime currentTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime startDateTime = LocalDateTime.parse(startTime, formatter);
-        LocalDateTime endDateTime = LocalDateTime.parse(endTime, formatter);
+        ZonedDateTime startDateTime = ZonedDateTime.parse(startTime);
+        ZonedDateTime endDateTime = ZonedDateTime.parse(endTime);
+        ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.systemDefault());
+
         // 현재 시간 < 시작 시간 < 끝 시간 인지 확인
         if (currentTime.isAfter(startDateTime) && currentTime.isBefore(endDateTime)) {
 
@@ -213,31 +215,7 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         int currentMonth = today.getMonthValue();
         int currentDay = today.getDayOfMonth();
 
-        // 유저가 없으면 빈 깡통 유저 인스턴스 생성(오류방지)
-        User user;
-        if(userDao.getDataAll().isEmpty()){
-            user=new User();
-            // 첫 어플 적석 시 오류를 위해 오늘 날짜로 초기화
-            // 원래는 나중에 업데이트날짜 초기화
-            user.recentUpdate = today.toString();
-        }else{
-            user=userDao.getDataAll().get(0);
-        }
 
-        // 요약 타이틀
-        binding.summationTitle.setText(String.format("%d월 요약", currentMonth));
-        partTimeDatabase = PartTimeDatabase.getDatabase(this);
-
-        dailyDao = partTimeDatabase.workDailyDao();
-        placeDao = partTimeDatabase.workPlaceDao();
-        userDao  = partTimeDatabase.userDao();
-
-
-        // 이번달 1일을 선언 -> 이번달 수익과 예상수익 계산에 활용
-        ZonedDateTime firstDay = today.withDayOfMonth(1);
-        ZonedDateTime lastDay = today.withDayOfMonth(today.getDayOfMonth());
-
-        // 유저 생성을 아직 안함 or 유저 이름이 기록이 안됨 -> 이력서 작성 텍스트
         // 위에 해당이 안되면 유저 이름을 사용해 텍스트 출력
         userDao.getDataChange().observe(this, users -> {
             if(users.isEmpty() || users.get(0).name==null){
@@ -247,11 +225,37 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
             }
         });
 
-        // 스케줄이 있는 날을 기록하기 위한 Set(중복금지) Hash(검색가능)
-        HashSet<CalendarDay> days = new HashSet<>();
-
         // 비동기실행 -> 데이터베이스 사용
         Executors.newSingleThreadExecutor().execute(() -> {
+
+            // 유저가 없으면 빈 깡통 유저 인스턴스 생성(오류방지)
+            User user;
+            if(userDao.getDataAll().isEmpty()){
+                user=new User();
+                // 첫 어플 적석 시 오류를 위해 오늘 날짜로 초기화
+                // 원래는 나중에 업데이트날짜 초기화
+                user.recentUpdate = today.toString();
+            }else{
+                user=userDao.getDataAll().get(0);
+            }
+
+            // 요약 타이틀
+            binding.summationTitle.setText(String.format("%d월 요약", currentMonth));
+            partTimeDatabase = PartTimeDatabase.getDatabase(this);
+
+            dailyDao = partTimeDatabase.workDailyDao();
+            placeDao = partTimeDatabase.workPlaceDao();
+            userDao  = partTimeDatabase.userDao();
+
+
+            // 이번달 1일을 선언 -> 이번달 수익과 예상수익 계산에 활용
+            ZonedDateTime firstDay = today.withDayOfMonth(1);
+            ZonedDateTime lastDay = today.withDayOfMonth(today.getDayOfMonth());
+
+            // 유저 생성을 아직 안함 or 유저 이름이 기록이 안됨 -> 이력서 작성 텍스트
+
+            // 스케줄이 있는 날을 기록하기 위한 Set(중복금지) Hash(검색가능)
+            HashSet<CalendarDay> days = new HashSet<>();
 
             double monthWorkingTime=0; // 이번달 일한 시간
             double monthWorkingMoney=0; // 벌어들인 돈

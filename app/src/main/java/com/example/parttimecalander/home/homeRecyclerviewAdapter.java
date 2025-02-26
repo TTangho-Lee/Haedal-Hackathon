@@ -37,8 +37,8 @@ public class homeRecyclerviewAdapter extends RecyclerView.Adapter<homeRecyclervi
         String data = dataList.get(position);
         String[] parts = data.split("///");
         holder.wp_title.setText(parts[0]);
-        holder.wp_start_date.setText(parts[1].substring(2,10).replace("-","."));
-        holder.wp_end_date.setText(parts[1].substring(22,30).replace("-","."));
+        holder.wp_start_date.setText(parts[1].substring(0,10));
+        holder.wp_end_date.setText(parts[1].substring(23,33));
         holder.colorIndicator.setBackgroundColor(Color.parseColor(parts[2]));
     }
 

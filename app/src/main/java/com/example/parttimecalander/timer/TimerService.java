@@ -21,11 +21,12 @@ import com.example.parttimecalander.widget.TimerWidget;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class TimerService extends Service {
 
-    private LocalDateTime startTime, endTime;
+    private ZonedDateTime startTime, endTime;
     private Handler handler;
     private Runnable updateTimerRunnable;
     private static final int NOTIFICATION_ID = 1;
@@ -47,11 +48,9 @@ public class TimerService extends Service {
             String startTimeStr = intent.getStringExtra("start_time");
             String endTimeStr = intent.getStringExtra("end_time");
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
             // 날짜 형식 파싱
-            startTime = LocalDateTime.parse(startTimeStr,formatter);
-            endTime = LocalDateTime.parse(endTimeStr,formatter);
+            startTime = ZonedDateTime.parse(startTimeStr);
+            endTime = ZonedDateTime.parse(endTimeStr);
         } catch (Exception e) {
             Log.d("exception", "nullptrException");
         }
@@ -77,7 +76,7 @@ public class TimerService extends Service {
     }
 
     private void updateRemainingTime() {
-        LocalDateTime now = LocalDateTime.now();
+        ZonedDateTime now = ZonedDateTime.now();
 
         // 남은 시간 계산
         Duration duration = Duration.between(now, endTime);
