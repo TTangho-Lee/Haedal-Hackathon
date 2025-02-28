@@ -30,6 +30,7 @@ public class TimerService extends Service {
     private Handler handler;
     private Runnable updateTimerRunnable;
     private static final int NOTIFICATION_ID = 1;
+    private static final String CHANNEL_ID = "timer_service_channel";
     public static final String TIMER_BROADCAST = "com.example.parttimecalander.timer.TIMER_UPDATE";
     public static final String TIMER_WIDGET_BROADCAST = "com.example.parttimecalander.timer.TIMER_WIDGET_BROADCAST";
 
@@ -37,42 +38,63 @@ public class TimerService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
+        createNotificationChannel();
+
+        startForeground(NOTIFICATION_ID, createNotification());
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // 알림 설정 (포그라운드 서비스로 실행)
-        startForeground(NOTIFICATION_ID, createNotification());
-        // 시작 시간과 끝 시간 받기
-        try{
+        try {
+            if (intent == null) {
+                Log.e("TimerService", "Intent is null, stopping service");
+                stopSelf();
+                return START_NOT_STICKY;
+            }
+
             String startTimeStr = intent.getStringExtra("start_time");
             String endTimeStr = intent.getStringExtra("end_time");
+
+            if (startTimeStr == null || endTimeStr == null) {
+                Log.e("TimerService", "Received null startTime or endTime, stopping service");
+                stopSelf();
+                return START_NOT_STICKY;
+            }
 
             // 날짜 형식 파싱
             startTime = ZonedDateTime.parse(startTimeStr);
             endTime = ZonedDateTime.parse(endTimeStr);
+
+            // 서비스가 정상적으로 시작될 경우 startForeground 실행
+            startForeground(NOTIFICATION_ID, createNotification());
+
+            // 타이머 업데이트 시작
+            startTimer();
+
         } catch (Exception e) {
-            Log.d("exception", "nullptrException");
+            Log.e("TimerService", "Exception in onStartCommand: ", e);
+            stopSelf();
         }
 
-        // 타이머 업데이트 시작
-        startTimer();
-
-        return START_STICKY;  // 서비스가 종료될 때 자동으로 재시작하도록 설정
+        return START_NOT_STICKY;
     }
 
     private void startTimer() {
-        // 주기적으로 타이머를 갱신할 Runnable 정의
-        updateTimerRunnable = new Runnable() {
-            @Override
-            public void run() {
-                updateRemainingTime();
-                handler.postDelayed(this, 1000);  // 1초마다 타이머 갱신
-            }
-        };
+        try {
+            // 주기적으로 타이머를 갱신할 Runnable 정의
+            updateTimerRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    updateRemainingTime();
+                    handler.postDelayed(this, 1000);  // 1초마다 타이머 갱신
+                }
+            };
 
-        // 타이머 시작
-        handler.post(updateTimerRunnable);
+            // 타이머 시작
+            handler.post(updateTimerRunnable);
+        } catch (Exception e) {
+            Log.e("TimerService", "Exception in startTimer: ", e);
+        }
     }
 
     private void updateRemainingTime() {
@@ -96,7 +118,6 @@ public class TimerService extends Service {
             Intent broadcastIntent = new Intent(TIMER_BROADCAST);
             broadcastIntent.putExtra("remaining_time", left_time );
             sendBroadcast(broadcastIntent);
-
 
             updateWidgetDirectly(getApplicationContext(), left_time);
 
@@ -128,18 +149,21 @@ public class TimerService extends Service {
         appWidgetManager.updateAppWidget(widget, views);
     }
 
-    private Notification createNotification() {
+    private void createNotificationChannel() {
         NotificationChannel channel = new NotificationChannel(
-                "timer_channel", "타이머 채널", NotificationManager.IMPORTANCE_LOW);
+                CHANNEL_ID, "타이머 채널", NotificationManager.IMPORTANCE_LOW);
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (manager != null) {
             manager.createNotificationChannel(channel);
         }
+    }
 
-        return new NotificationCompat.Builder(this, "timer_channel")
+    private Notification createNotification() {
+        return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("타이머")
                 .setContentText("타이머가 실행 중입니다.")
                 .setSmallIcon(R.drawable.arrow_back)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build();
     }
 }

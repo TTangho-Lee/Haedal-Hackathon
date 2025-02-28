@@ -34,7 +34,7 @@ public class TimerWidget extends AppWidgetProvider {
         //FATAL!!: broadCAST를 수신하지 않고 TimerService에서 직접 업데이트함
 
         if (intent.getAction().equals(TimerService.TIMER_WIDGET_BROADCAST)) {
-            timer_content_string = intent.getStringExtra("remaining_timer");
+            timer_content_string = intent.getStringExtra("remaining_time");
             Log.d("TimerWidget", "Remaining time: " + timer_content_string);
             // 모든 위젯 업데이트
             updateAllWidgets(context);

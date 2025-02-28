@@ -49,6 +49,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -62,7 +63,6 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
 
     ActivityHomeBinding binding;
     CalendarDay today, sunday, saturday;
-    int dayOfWeekNumber;
     PartTimeDatabase partTimeDatabase;
     private WorkDailyDao dailyDao;
     private WorkPlaceDao placeDao;
@@ -153,12 +153,7 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
             serviceIntent.putExtra("start_time", startTime);
             serviceIntent.putExtra("end_time", endTime);
             ContextCompat.startForegroundService(this, serviceIntent);
-        } else {
-            // 그렇지 않을 때
-            Toast.makeText(this, "근무 시간이 아닙니다.",Toast.LENGTH_SHORT).show();
         }
-
-
     }
     private void setBroadcastReciver(){
         // 브로드캐스트 리시버 설정
@@ -247,10 +242,9 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
             placeDao = partTimeDatabase.workPlaceDao();
             userDao  = partTimeDatabase.userDao();
 
-
             // 이번달 1일을 선언 -> 이번달 수익과 예상수익 계산에 활용
             ZonedDateTime firstDay = today.withDayOfMonth(1);
-            ZonedDateTime lastDay = today.withDayOfMonth(today.getDayOfMonth());
+            ZonedDateTime lastDay = today.withDayOfMonth(1).plusMonths(1).minusDays(1);
 
             // 유저 생성을 아직 안함 or 유저 이름이 기록이 안됨 -> 이력서 작성 텍스트
 
@@ -263,11 +257,11 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
 
             List<WorkPlace> placeList = placeDao.getDataAll(); // 일하는 모든 장소
             // 최근 업데이트 이전내용은 당연히 그떄 전부 처리됐기 때문에 그 이후 내용만 가져온다.
-            List<WorkDaily> dailyList = dailyDao.getSchedulesBetweenDays(user.recentUpdate,
-                                                                         lastDay.toString());
+            List<WorkDaily> monthDailyList = dailyDao.getSchedulesBetweenDays(firstDay.toString(), lastDay.toString());
 
-            // 스케쥴 순회
-            for (WorkDaily workDaily : dailyList) {
+            List<WorkDaily> updateDailyList = dailyDao.getSchedulesBetweenDays(user.recentUpdate, today.toString());
+            // 업데이트 할 스케쥴 순회
+            for(WorkDaily workDaily : updateDailyList){
 
                 double cTime=0; // 이번 스케쥴에서 시간
                 double cMoney=0; //이번 스케쥴에서 벌어들인 돈
@@ -279,48 +273,55 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
                 // 두 시간 사이의 간격
                 Duration duration = Duration.between(startTime, endTime);
 
+                long hours = duration.toHours();
+                double hoursWithFraction = duration.toMinutes() / 60.0;
+                cTime = hours + hoursWithFraction;
+
+                WorkPlace place = findWorkPlace(placeList,workDaily);
+
+                assert place != null;
+                cMoney = cTime * place.usualPay;
+
+                if(place.isJuhyu) cMoney *= 1.2;
+
+                user.money += (int)cMoney;
+                user.goalSaveMoney += (int)cMoney;
+            }
+
+            // 이번달 스케쥴 순회
+            for (WorkDaily workDaily : monthDailyList) {
+
+                double cTime=0; // 이번 스케쥴에서 시간
+                double cMoney=0; //이번 스케쥴에서 벌어들인 돈
+
+                // 문자열 시간으로 변환
+                ZonedDateTime startTime = ZonedDateTime.parse(workDaily.startTime);
+                ZonedDateTime endTime = ZonedDateTime.parse(workDaily.endTime);
+
+
+                runOnUiThread(() ->{
+                    onTimeSet(workDaily.startTime,workDaily.endTime);
+                });
+
+                // 두 시간 사이의 간격
+                Duration duration = Duration.between(startTime, endTime);
+
                 // 몇시간 몇분 일했냐
                 long hours = duration.toHours();
                 double hoursWithFraction = duration.toMinutes() / 60.0;
                 cTime = hours + hoursWithFraction;
 
-                // 일하는 곳이 어딘지 찾기
-                for(WorkPlace place : placeList) {
+                WorkPlace place = findWorkPlace(placeList,workDaily);
+                assert place != null;
+                cMoney = cTime * place.usualPay;
+                if(place.isJuhyu) cMoney *= 1.2;
 
-                    // 일하는 곳 찾았으면
-                    if(place.ID==workDaily.placeId) {
-
-                        // 일한 시간에 시급 곱해준다.
-                        cMoney = cTime * place.usualPay;
-
-                        // 주휴수당 있으면 0.2 만큼 더하므로 1.2곱해준다.
-                        if(place.isJuhyu) cMoney *= 1.2;
-
-                        break;
-                    }
-                }
-
-                // 만약 이미 했던 스케쥴이면
                 if(endTime.isBefore(today)) {
-
-                    if(user.goal != 0) user.goalSaveMoney += (int)cMoney;
-
-                    user.money += (int)cMoney;
-
-                    // 만약 이번달 스케줄이면
-                    if(startTime.isAfter(firstDay)){
-                        // 예상 수익에 더해줌
-                        monthWorkingTime += cTime;
-                        monthWorkingMoney += cMoney;
-                        // 총수익에도 더해줌 -> 이미 했던 스케줄도 이번달 총수익에 포함
-                        monthWorkingAllMoney += cMoney;
-
-                    }
-                    continue;
-                } else {
-                    // 아직 안한 스케줄들은 이번달 총 예상수익에만 더해줌
-                    monthWorkingAllMoney += cMoney;
+                    monthWorkingTime += cTime;
+                    monthWorkingMoney += cMoney;
                 }
+                // 총수익에도 더해줌 -> 이미 했던 스케줄도 이번달 총수익에 포함
+                monthWorkingAllMoney += cMoney;
 
                 // 일하는 날을 기록하기 위해 시작 시간 기준으로 CalendarDay 저장
                 CalendarDay localDateTime = CalendarDay.from(
@@ -330,6 +331,11 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
                                                             );
                 days.add(localDateTime);
             }
+
+            // 업데이트처리가 끝났기때문에 마지막 업데이트를 현재로 바꾼다.
+            user.recentUpdate = today.toString();
+            // 저장해준다.
+            userDao.setUpdateData(user);
 
             // monthWorkingTime, monthWorkingMoney, monthWorkingAllMoney 모두 선언된 이후 변경이 있는 값이다.
             // runOnUiThread에서는 해당 람다식 밖에서 선언되고 변경이 있었던 값은 사용할 수 없으므로 새롭게 다시 선언.
@@ -378,6 +384,15 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
             });
         });
 
+    }
+    private WorkPlace findWorkPlace(List<WorkPlace> placeList,WorkDaily workDaily){
+        for(WorkPlace place : placeList) {
+            // 일하는 곳 찾았으면
+            if(place.ID==workDaily.placeId) {
+                return place;
+            }
+        }
+        return null;
     }
     private void enableEdgeToEdge() {
         // Edge-to-edge 모드를 활성화하는 코드
