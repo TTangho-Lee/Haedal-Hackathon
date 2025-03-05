@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -43,16 +44,13 @@ import com.example.parttimecalander.home.scheduledialog.ScheduleDialogFragment;
 import com.example.parttimecalander.home.ui.summationmonth.SummationActivity;
 import com.example.parttimecalander.home.workplace.WorkPlaceActivity;
 import com.example.parttimecalander.timer.TimerService;
-import com.example.parttimecalander.widget.TimerWidget;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -67,9 +65,11 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
     private WorkDailyDao dailyDao;
     private WorkPlaceDao placeDao;
     private UserDao userDao;
-    private BroadcastReceiver timerReceiver;
+    private TimerReceiver timerReceiver;
+
     private static final int REQUEST_CODE_NOTIFICATION_PERMISSION = 1;
 
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,16 +77,14 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        //알림 권한 요청
+        request_noti();
+
         partTimeDatabase = PartTimeDatabase.getDatabase(this);
         userDao = partTimeDatabase.userDao();
 
         resetForIntent();
         reset_layout();
-        setBroadcastReciver();
-
-        //알림 권한 요청
-        request_noti();
-        updateWidgetDirectly(this, "00:00:00");
     }
     private void request_noti(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -99,24 +97,11 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
             }
         }
     }
-    private void updateWidgetDirectly(Context context, String timeText) {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        ComponentName widget = new ComponentName(context, TimerWidget.class);
-
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.timer_widget);
-        views.setTextViewText(R.id.timer_title, "퇴근까지 남은 시간");
-        views.setTextViewText(R.id.timer_content, timeText);
-
-        appWidgetManager.updateAppWidget(widget, views);
-    }
 
     @Override
     protected void onResume(){
         super.onResume();
         reset_layout();
-        // 브로드캐스트 리시버 등록
-        IntentFilter filter = new IntentFilter(TimerService.TIMER_BROADCAST);
-        registerReceiver(timerReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
     }
     @Override
 
@@ -128,44 +113,27 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
     @Override
     protected void onPause() {
         super.onPause();
-        // 브로드캐스트 리시버 해제
-        unregisterReceiver(timerReceiver);
     }
     // 인터페이스 메서드 구현
     @Override
     public void onTimeSet(String startTime, String endTime) {
 
-        ZonedDateTime startDateTime = ZonedDateTime.parse(startTime);
-        ZonedDateTime endDateTime = ZonedDateTime.parse(endTime);
-        ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.systemDefault());
+        LocalDateTime startDateTime = LocalDateTime.parse(startTime);
+        LocalDateTime endDateTime = LocalDateTime.parse(endTime);
+        LocalDateTime currentTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         // 현재 시간 < 시작 시간 < 끝 시간 인지 확인
         if (currentTime.isAfter(startDateTime) && currentTime.isBefore(endDateTime)) {
 
-            //혹시 실행중인 타이머 서비스가 있다면 종료
-            Intent stopIntent = new Intent(this, TimerService.class);
-            stopService(stopIntent);
+            timerReceiver = new TimerReceiver();
+            IntentFilter filter = new IntentFilter(TimerService.TIMER_UPDATE_ACTION);
+            registerReceiver(timerReceiver, filter,Context.RECEIVER_EXPORTED);
 
-            // 현재 시간이 시작 시간과 끝 시간 사이에 있을 때
-            Toast.makeText(this, "근무를 시작합니다.",Toast.LENGTH_SHORT).show();
-
+            // 📢 서비스 시작
             Intent serviceIntent = new Intent(this, TimerService.class);
-            serviceIntent.putExtra("start_time", startTime);
-            serviceIntent.putExtra("end_time", endTime);
-            ContextCompat.startForegroundService(this, serviceIntent);
+            serviceIntent.putExtra("endTime", endTime);
+            startService(serviceIntent);
         }
-    }
-    private void setBroadcastReciver(){
-        // 브로드캐스트 리시버 설정
-        timerReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (Objects.requireNonNull(intent.getAction()).equals(TimerService.TIMER_BROADCAST)) {
-                    String remainingTime = intent.getStringExtra("remaining_time");
-                    binding.timerContent.setText(remainingTime);  // 텍스트뷰 업데이트
-                }
-            }
-        };
     }
     private void resetForIntent(){
 
@@ -205,11 +173,13 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
     public void reset_layout(){
 
         // 오늘 날짜 구하기
-        ZonedDateTime today = ZonedDateTime.now(ZoneId.systemDefault());
+        LocalDateTime today = LocalDateTime.now();
         int currentYear = today.getYear();
         int currentMonth = today.getMonthValue();
         int currentDay = today.getDayOfMonth();
 
+        LocalDateTime startOfWeek = today.with(DayOfWeek.MONDAY);
+        LocalDateTime endOfWeek = today.with(DayOfWeek.SUNDAY);
 
         // 위에 해당이 안되면 유저 이름을 사용해 텍스트 출력
         userDao.getDataChange().observe(this, users -> {
@@ -243,8 +213,8 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
             userDao  = partTimeDatabase.userDao();
 
             // 이번달 1일을 선언 -> 이번달 수익과 예상수익 계산에 활용
-            ZonedDateTime firstDay = today.withDayOfMonth(1);
-            ZonedDateTime lastDay = today.withDayOfMonth(1).plusMonths(1).minusDays(1);
+            LocalDateTime firstDay = today.withDayOfMonth(1);
+            LocalDateTime lastDay = today.withDayOfMonth(1).plusMonths(1).minusDays(1);
 
             // 유저 생성을 아직 안함 or 유저 이름이 기록이 안됨 -> 이력서 작성 텍스트
 
@@ -258,8 +228,8 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
             List<WorkPlace> placeList = placeDao.getDataAll(); // 일하는 모든 장소
             // 최근 업데이트 이전내용은 당연히 그떄 전부 처리됐기 때문에 그 이후 내용만 가져온다.
             List<WorkDaily> monthDailyList = dailyDao.getSchedulesBetweenDays(firstDay.toString(), lastDay.toString());
-
             List<WorkDaily> updateDailyList = dailyDao.getSchedulesBetweenDays(user.recentUpdate, today.toString());
+            List<WorkDaily> weekDailyList = dailyDao.getSchedulesBetweenDays(startOfWeek.toString(), endOfWeek.toString());
             // 업데이트 할 스케쥴 순회
             for(WorkDaily workDaily : updateDailyList){
 
@@ -267,8 +237,8 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
                 double cMoney=0; //이번 스케쥴에서 벌어들인 돈
 
                 // 문자열 시간으로 변환
-                ZonedDateTime startTime = ZonedDateTime.parse(workDaily.startTime);
-                ZonedDateTime endTime = ZonedDateTime.parse(workDaily.endTime);
+                LocalDateTime startTime = LocalDateTime.parse(workDaily.startTime);
+                LocalDateTime endTime = LocalDateTime.parse(workDaily.endTime);
 
                 // 두 시간 사이의 간격
                 Duration duration = Duration.between(startTime, endTime);
@@ -295,8 +265,8 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
                 double cMoney=0; //이번 스케쥴에서 벌어들인 돈
 
                 // 문자열 시간으로 변환
-                ZonedDateTime startTime = ZonedDateTime.parse(workDaily.startTime);
-                ZonedDateTime endTime = ZonedDateTime.parse(workDaily.endTime);
+                LocalDateTime startTime = LocalDateTime.parse(workDaily.startTime);
+                LocalDateTime endTime = LocalDateTime.parse(workDaily.endTime);
 
 
                 runOnUiThread(() ->{
@@ -307,9 +277,7 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
                 Duration duration = Duration.between(startTime, endTime);
 
                 // 몇시간 몇분 일했냐
-                long hours = duration.toHours();
-                double hoursWithFraction = duration.toMinutes() / 60.0;
-                cTime = hours + hoursWithFraction;
+                cTime = duration.toMinutes() / 60.0;
 
                 WorkPlace place = findWorkPlace(placeList,workDaily);
                 assert place != null;
@@ -322,13 +290,13 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
                 }
                 // 총수익에도 더해줌 -> 이미 했던 스케줄도 이번달 총수익에 포함
                 monthWorkingAllMoney += cMoney;
-
-                // 일하는 날을 기록하기 위해 시작 시간 기준으로 CalendarDay 저장
+            }
+            for(WorkDaily workDaily : weekDailyList){
                 CalendarDay localDateTime = CalendarDay.from(
-                                                            startTime.getYear(),
-                                                            startTime.getMonthValue(),
-                                                            startTime.getDayOfMonth()
-                                                            );
+                        LocalDateTime.parse(workDaily.startTime).getYear(),
+                        LocalDateTime.parse(workDaily.startTime).getMonthValue(),
+                        LocalDateTime.parse(workDaily.startTime).getDayOfMonth()
+                );
                 days.add(localDateTime);
             }
 
@@ -360,7 +328,7 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
                 binding.homeRecyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
                 binding.homeRecyclerView.setAdapter(adapter);
 
-                binding.worktime.setText(String.format("%.2f 시간", finalMonthWorkingTime));
+                binding.worktime.setText(String.format("%.1f 시간", finalMonthWorkingTime));
                 binding.earnmoney.setText(String.format("%.0f 원", finalMonthWorkingMoney));
                 binding.willmoney.setText(String.format("%.0f 원", finalMonthWorkingAllMoney));
 
@@ -426,11 +394,18 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        // 리시버 해제
-        Intent stopIntent = new Intent(this, TimerService.class);
-        stopService(stopIntent);
-
         unregisterReceiver(timerReceiver);
+    }
+
+    // 📢 서비스에서 남은 시간을 수신하는 BroadcastReceiver 정의
+    private class TimerReceiver extends BroadcastReceiver {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Objects.equals(intent.getAction(), TimerService.TIMER_UPDATE_ACTION)) {
+                int remainingTime = intent.getIntExtra("remaining_time", 0);
+                binding.timerContent.setText("남은 시간: " + remainingTime); // 📢 UI 업데이트
+            }
+        }
     }
 }

@@ -20,15 +20,12 @@ import com.example.parttimecalander.databinding.ActivityWorkplaceRegisterBinding
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -95,23 +92,15 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                 String endMonth = binding.contentWorkendmonth.getSelectedItem().toString();
                 String endDay = binding.contentWorkendday.getSelectedItem().toString();
 
-                // 날짜와 시간을 ZonedDateTime으로 변환
-                // 왜 zonedDateTime으로 하냐??? -> 하나로 통합하기 위해
-                ZoneId zoneId = ZoneId.systemDefault(); // 시스템 기본 시간대 사용
+                LocalDateTime startDateTime = LocalDateTime.of(Integer.parseInt(startYear),
+                                                                Integer.parseInt(startMonth),
+                                                                Integer.parseInt(startDay),
+                                                                0,0,0);
 
-                // 시작 날짜와 시간 결합
-                ZonedDateTime startDateTime = ZonedDateTime.of(
-                        LocalDate.of(Integer.parseInt(startYear), Integer.parseInt(startMonth), Integer.parseInt(startDay)),
-                        LocalTime.MIN, // 시간 정보가 없을 경우 자정으로 설정
-                        zoneId
-                );
-
-                // 끝 날짜와 시간 결합
-                ZonedDateTime endDateTime = ZonedDateTime.of(
-                        LocalDate.of(Integer.parseInt(endYear), Integer.parseInt(endMonth), Integer.parseInt(endDay)),
-                        LocalTime.MAX, // 시간 정보가 없을 경우 하루의 마지막 시간으로 설정
-                        zoneId
-                );
+                LocalDateTime endDateTime = LocalDateTime.of(Integer.parseInt(endYear),
+                                                                Integer.parseInt(endMonth),
+                                                                Integer.parseInt(endDay),
+                                                                0,0,0);
 
                 // 아르바이트 시작 날짜
                 new_workplace.startDate = startDateTime.toString();
@@ -141,26 +130,22 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                 int id = placeDao.findId(new_workplace.placeName);
 
                 // 현제날짜 새롭게 선언 -> 끝날짜까지 순회돌면서 선택한 날짜에 해당되면 스케쥴 넣어줄거
-                ZonedDateTime currentDateTime = startDateTime;
+                LocalDateTime currentDateTime = startDateTime;
 
                 while (!currentDateTime.isAfter(endDateTime)) {
                     int dayOfWeek = currentDateTime.getDayOfWeek().getValue() % 7;
                     // Monday=1 ~ Sunday=7 -> %7로 Sunday=0으로 조정 (day 배열과 일치)
 
                     if (day[dayOfWeek] == '1' && startTimes[dayOfWeek] != null && endTimes[dayOfWeek] != null) {
-                        // 선택된 요일이면 해당 요일의 시작/끝 시간을 ZonedDateTime으로 생성
-                        ZonedDateTime startZonedDateTime = currentDateTime.withHour(startTimes[dayOfWeek].getHour())
-                                .withMinute(startTimes[dayOfWeek].getMinute())
-                                .withSecond(0)
-                                .withNano(0);
+                        // 선택된 요일이면 해당 요일의 시작/끝 시간을 LocalDateTime으로 생성
+                        LocalDateTime startLocalDateTime = LocalDateTime.of(currentDateTime.getYear(), currentDateTime.getMonthValue(), currentDateTime.getDayOfMonth(),
+                                                                            startTimes[dayOfWeek].getHour(), startTimes[dayOfWeek].getMinute());
 
-                        ZonedDateTime endZonedDateTime = currentDateTime.withHour(endTimes[dayOfWeek].getHour())
-                                .withMinute(endTimes[dayOfWeek].getMinute())
-                                .withSecond(0)
-                                .withNano(0);
+                        LocalDateTime endLocalDateTime = LocalDateTime.of(currentDateTime.getYear(), currentDateTime.getMonthValue(), currentDateTime.getDayOfMonth(),
+                                                                            endTimes[dayOfWeek].getHour(), endTimes[dayOfWeek].getMinute());
 
-                        WorkDaily workDaily = new WorkDaily(startZonedDateTime.toString(),
-                                                            endZonedDateTime.toString(),
+                        WorkDaily workDaily = new WorkDaily(startLocalDateTime.toString(),
+                                                            endLocalDateTime.toString(),
                                                             id);
                         dailyDao.setInsertData(workDaily);
                     }

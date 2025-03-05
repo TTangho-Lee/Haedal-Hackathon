@@ -19,7 +19,7 @@ import com.example.parttimecalander.R;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.ViewHolder> {
@@ -75,14 +75,14 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
         if(workPlaces.get(position).startDate==null || workPlaces.get(position).startDate.trim().isEmpty()){
             holder.startDateTextView.setText("0000-00-00");
         }else{
-            ZonedDateTime startDate = ZonedDateTime.parse(workPlaces.get(position).startDate);
+            LocalDateTime startDate = LocalDateTime.parse(workPlaces.get(position).startDate);
             LocalDate localDate = startDate.toLocalDate();
             holder.startDateTextView.setText(localDate.toString());
         }
         if(workPlaces.get(position).endDate==null || workPlaces.get(position).endDate.trim().isEmpty()){
             holder.endDateTextView.setText("0000-00-00");
         }else{
-            ZonedDateTime endDate = ZonedDateTime.parse(workPlaces.get(position).endDate);
+            LocalDateTime endDate = LocalDateTime.parse(workPlaces.get(position).endDate);
             LocalDate localDate = endDate.toLocalDate();
             holder.endDateTextView.setText(localDate.toString());
         }
