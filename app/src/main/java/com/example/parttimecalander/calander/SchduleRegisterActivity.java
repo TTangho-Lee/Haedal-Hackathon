@@ -1,5 +1,6 @@
 package com.example.parttimecalander.calander;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +20,8 @@ import com.example.parttimecalander.databinding.ActivitySchduleRegisterBinding;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -34,7 +37,8 @@ public class SchduleRegisterActivity extends AppCompatActivity {
     private ArrayList<Integer> daysInMonth;
     private List<WorkPlace> workPlaces;
     private WorkDaily new_workDaily;
-    private String startTime, endTime;
+    private LocalTime startTime, endTime;
+
 
     private void init(){
         //binding 초기화
@@ -151,9 +155,9 @@ public class SchduleRegisterActivity extends AppCompatActivity {
             String time = String.format("%02d:%02d", hour, minute);
             targetButton.setText(time);
             if(isStartTime){
-                startTime = time + ":00";
+                startTime = LocalTime.of(hour,minute);
             }else{
-                endTime = time + ":00";
+                endTime = LocalTime.of(hour,minute);
             }
 
         });
@@ -168,19 +172,24 @@ public class SchduleRegisterActivity extends AppCompatActivity {
             String placeName = binding.contentWorkplace.getSelectedItem().toString();
             int id = placeDao.findId(placeName);
 
-            String year = binding.contentYear.getSelectedItem().toString();
-            String month = binding.contentMonth.getSelectedItem().toString();
-            String day = binding.contentDay.getSelectedItem().toString();
-            if(month.length() == 1){month = '0' + month;}
-            if(day.length() == 1){day = '0' + day;}
-            String workDay = year + '-' + month + '-' + day;
+            int year = Integer.parseInt(binding.contentYear.getSelectedItem().toString());
+            int month = Integer.parseInt(binding.contentMonth.getSelectedItem().toString());
+            int day = Integer.parseInt(binding.contentDay.getSelectedItem().toString());
 
-            new_workDaily = new WorkDaily(workDay + " " + startTime, workDay + " " + endTime, id);
+            LocalDateTime startDateTime = LocalDateTime.of(year, month, day, startTime.getHour(), startTime.getMinute());
+            LocalDateTime endDateTime = LocalDateTime.of(year, month, day, endTime.getHour(), endTime.getMinute());
+
+            new_workDaily = new WorkDaily(startDateTime.toString(), endDateTime.toString(), id);
             dailyDao.setInsertData(new_workDaily);
             runOnUiThread(() -> {
-                Toast.makeText(this, workDay + "날의 일정 추가", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "일정 추가", Toast.LENGTH_SHORT).show();
             });
-
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("year", year);
+            resultIntent.putExtra("month", month);
+            resultIntent.putExtra("day", day);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         }));
     }
 }

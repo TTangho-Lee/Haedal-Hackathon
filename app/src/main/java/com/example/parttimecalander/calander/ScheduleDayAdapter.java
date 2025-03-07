@@ -52,20 +52,22 @@ public class ScheduleDayAdapter extends RecyclerView.Adapter<ScheduleDayAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Pair<WorkPlace, WorkDaily> currentItem = workPlaces.get(position);
         String placeName = currentItem.first.placeName;
-        String startTime = currentItem.second.startTime.split(" ")[1];
-        String endTime = currentItem.second.endTime.split(" ")[1];
-        if(startTime == null || startTime.trim().isEmpty()) startTime = "00:00:00";
-        if(endTime == null || endTime.trim().isEmpty()) endTime = "23:59:59";
+
+        String startTime = currentItem.second.startTime;
+        String startTimeString = startTime.substring(11, 16);
+
+        String endTime = currentItem.second.endTime;
+        String endTimeString = endTime.substring(11, 16);
 
         holder.titleTextView.setText(placeName);
         holder.titleTextView.setTextSize(20.0f);
 
-        holder.startDateTextView.setText(startTime);
+        holder.startDateTextView.setText(startTimeString);
         holder.startDateTextView.setTextSize(16.f);
 
         holder.middleTextView.setTextSize(16.f);
 
-        holder.endDateTextView.setText(endTime);
+        holder.endDateTextView.setText(endTimeString);
         holder.endDateTextView.setTextSize(16.f);
 
         // 롱 클릭 이벤트 연결

@@ -55,10 +55,8 @@ public class SummationActivity extends AppCompatActivity {
     private SummationMonthAdapter adapter;  // 어댑터 선언
     public TextView time_text;
     private ImageView back;
-
     public int first_start=0;
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,8 +83,6 @@ public class SummationActivity extends AppCompatActivity {
 
         back = findViewById(R.id.back);
         back.setOnClickListener(v->onBackPressed());
-
-
 
         // 연도 리스트 생성 (-10년 ~ +10년)
         List<String> yearList = new ArrayList<>();
@@ -187,8 +183,8 @@ public class SummationActivity extends AppCompatActivity {
                 for (int j = 0; j < dailyList.size(); j++) {
                     WorkDaily dailyWork = dailyList.get(j);
                     if (dailyWork.placeId == place.ID) {
-                        LocalDateTime startTime = LocalDateTime.parse(dailyWork.startTime, formatter);
-                        LocalDateTime endTime = LocalDateTime.parse(dailyWork.endTime, formatter);
+                        LocalDateTime startTime = LocalDateTime.parse(dailyWork.startTime);
+                        LocalDateTime endTime = LocalDateTime.parse(dailyWork.endTime);
                         if (startTime.getYear() == year && startTime.getMonthValue() == month) {
                             set_time(startTime.getDayOfMonth(), (int) Duration.between(startTime, endTime).getSeconds());
                         }

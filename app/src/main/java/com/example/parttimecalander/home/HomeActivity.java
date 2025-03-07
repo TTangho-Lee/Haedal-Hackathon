@@ -173,7 +173,7 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
     public void reset_layout(){
 
         // 오늘 날짜 구하기
-        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime today = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         int currentYear = today.getYear();
         int currentMonth = today.getMonthValue();
         int currentDay = today.getDayOfMonth();
@@ -403,7 +403,7 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Objects.equals(intent.getAction(), TimerService.TIMER_UPDATE_ACTION)) {
-                int remainingTime = intent.getIntExtra("remaining_time", 0);
+                String remainingTime = intent.getStringExtra("remaining_time");
                 binding.timerContent.setText("남은 시간: " + remainingTime); // 📢 UI 업데이트
             }
         }
