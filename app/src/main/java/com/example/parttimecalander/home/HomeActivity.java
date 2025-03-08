@@ -180,8 +180,8 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         int currentMonth = today.getMonthValue();
         int currentDay = today.getDayOfMonth();
 
-        LocalDateTime startOfWeek = today.with(DayOfWeek.MONDAY);
-        LocalDateTime endOfWeek = today.with(DayOfWeek.SUNDAY);
+        LocalDateTime startOfWeek = today.with(DayOfWeek.MONDAY).minusDays(30);
+        LocalDateTime endOfWeek = today.with(DayOfWeek.SUNDAY).plusDays(30);
 
         // 위에 해당이 안되면 유저 이름을 사용해 텍스트 출력
         userDao.getDataChange().observe(this, users -> {
@@ -409,7 +409,7 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         public void onReceive(Context context, Intent intent) {
             if (Objects.equals(intent.getAction(), TimerService.TIMER_UPDATE_ACTION)) {
                 String remainingTime = intent.getStringExtra("remaining_time");
-                binding.timerContent.setText("남은 시간: " + remainingTime); // 📢 UI 업데이트
+                binding.timerContent.setText("" + remainingTime); // 📢 UI 업데이트
             }
         }
     }
