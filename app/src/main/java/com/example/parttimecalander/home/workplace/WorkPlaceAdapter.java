@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,14 +14,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.Database.data.WorkPlace;
 import com.example.parttimecalander.R;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.ViewHolder> {
     private final List<WorkPlace> workPlaces;
@@ -77,12 +75,16 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
         if(workPlaces.get(position).startDate==null || workPlaces.get(position).startDate.trim().isEmpty()){
             holder.startDateTextView.setText("0000-00-00");
         }else{
-            holder.startDateTextView.setText(workPlaces.get(position).startDate.replace("00:00:00",""));
+            LocalDateTime startDate = LocalDateTime.parse(workPlaces.get(position).startDate);
+            LocalDate localDate = startDate.toLocalDate();
+            holder.startDateTextView.setText(localDate.toString());
         }
         if(workPlaces.get(position).endDate==null || workPlaces.get(position).endDate.trim().isEmpty()){
             holder.endDateTextView.setText("0000-00-00");
         }else{
-            holder.endDateTextView.setText(workPlaces.get(position).endDate.replace("00:00:00",""));
+            LocalDateTime endDate = LocalDateTime.parse(workPlaces.get(position).endDate);
+            LocalDate localDate = endDate.toLocalDate();
+            holder.endDateTextView.setText(localDate.toString());
         }
 
         holder.industryTextView.setText(workPlaces.get(position).type);
@@ -93,16 +95,15 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
         Log.d("qqq", String.valueOf(workPlaces.get(position).day.charAt(1) == '1'));
         String[] array={"일","월","화","수","목","금","토"};
         String answer="";
-        String[] start_times=workPlaces.get(position).startTime.split(",");
-        String[] end_times=workPlaces.get(position).endTime.split(",");
-        int sssss=0;
-        int eeeee=0;
+        List<String> start_times=workPlaces.get(position).startTime;
+        List<String> end_times=workPlaces.get(position).endTime;
+
         for(int i=0;i<7;i++){
             if(workPlaces.get(position).day.charAt(i) == '1'){
                 answer=answer.concat(array[i]+" ");
-                answer=answer.concat(start_times[sssss++]);
+                answer=answer.concat(start_times.get(i));
                 answer=answer.concat("~");
-                answer=answer.concat(end_times[eeeee++]);
+                answer=answer.concat(end_times.get(i));
                 answer=answer.concat("\n");
             }
         }

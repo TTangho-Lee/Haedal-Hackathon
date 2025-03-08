@@ -1,10 +1,10 @@
-package com.example.parttimecalander.Database;
+package com.example.parttimecalander.Database.data;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.List;
 
 @Entity(tableName = "place")
 public class WorkPlace implements Serializable {
@@ -18,7 +18,7 @@ public class WorkPlace implements Serializable {
     public String endDate;              //근무종료일자
     public boolean isExpanded;             //확장 여부 저장
     public String ColorHex;                //색상 값
-    public String day;
-    public String startTime;
-    public String endTime;
+    public String day;                  // 근무하는 요일
+    public List<String> startTime;            // 요일별 시작시간
+    public List<String> endTime;              // 요일별 끝나는시간
 }

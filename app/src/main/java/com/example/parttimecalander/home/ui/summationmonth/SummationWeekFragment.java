@@ -14,30 +14,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.room.Room;
 
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
-import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
-import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
-import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
-import com.example.parttimecalander.Database.WorkDaily;
-import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.WorkDaily;
 import com.example.parttimecalander.R;
-import com.example.parttimecalander.databinding.FragmentSummationWeekBinding;
-
-import org.w3c.dom.Text;
 
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.WeekFields;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -57,10 +43,8 @@ public class SummationWeekFragment extends Fragment {
     private String param2;
 
     private List<WorkDaily> workDailyList = new ArrayList<>();
-
-    WorkDailyDatabase workDailyDatabase;
     WorkDailyDao workDailyDao;
-
+    private PartTimeDatabase partTimeDatabase;
     private int sumMoney;
     private int sumTime;
 
@@ -97,8 +81,8 @@ public class SummationWeekFragment extends Fragment {
             item = (RecyclerItem) getArguments().getSerializable("item");
         }
 
-        workDailyDatabase = WorkDailyDatabase.getDatabase(getContext());
-        workDailyDao = workDailyDatabase.workDailyDao();
+        partTimeDatabase = PartTimeDatabase.getDatabase(getContext());
+        workDailyDao = partTimeDatabase.workDailyDao();
 
         // 레이아웃 설정
         View view = inflater.inflate(R.layout.fragment_summation_week, container, false);

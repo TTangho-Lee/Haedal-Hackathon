@@ -2,38 +2,19 @@ package com.example.parttimecalander.home.resume;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.parttimecalander.Database.Dao.UserDao;
-import com.example.parttimecalander.Database.Database.UserDatabase;
-import com.example.parttimecalander.Database.User;
-import com.example.parttimecalander.Database.WorkDaily;
-import com.example.parttimecalander.Database.WorkPlace;
-import com.example.parttimecalander.R;
-import com.example.parttimecalander.calander.EventDecorator;
-import com.example.parttimecalander.databinding.DialogCertBinding;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.User;
 import com.example.parttimecalander.databinding.DialogEduBinding;
-import com.example.parttimecalander.home.HomeActivity;
-import com.example.parttimecalander.home.homeRecyclerviewAdapter;
-import com.example.parttimecalander.home.scheduledialog.ScheduleDialogFragment;
-import com.example.parttimecalander.home.ui.summationmonth.RecyclerItem;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
 
-import java.text.DecimalFormat;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.concurrent.Executors;
 
 public class EduDialog  extends Dialog {
@@ -82,8 +63,8 @@ public class EduDialog  extends Dialog {
         data=data.concat(")\n");
         String finalData = data;
         Executors.newSingleThreadExecutor().execute(() -> {
-            UserDatabase userDatabase=UserDatabase.getDatabase(context);
-            UserDao userDao= userDatabase.userDao();
+            PartTimeDatabase partTimeDatabase=PartTimeDatabase.getDatabase(context);
+            UserDao userDao= partTimeDatabase.userDao();
             if(userDao.getDataAll().isEmpty()){
                 User user=new User();
                 user.schoolList="";

@@ -1,5 +1,6 @@
 package com.example.parttimecalander.home.goal;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,16 +22,13 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
-import com.example.parttimecalander.Database.Database.UserDatabase;
-import com.example.parttimecalander.Database.User;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.User;
 import com.example.parttimecalander.R;
 import com.example.parttimecalander.databinding.ActivityGoalBinding;
 
@@ -40,10 +38,6 @@ import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.concurrent.Executors;
-
-import com.example.parttimecalander.R;
-import com.example.parttimecalander.home.resume.ResumeActivity;
-import com.example.parttimecalander.timer.TimerService;
 
 
 public class GoalActivity extends AppCompatActivity {
@@ -70,66 +64,35 @@ public class GoalActivity extends AppCompatActivity {
         loadDataFromDatabase();
         binding.back.setOnClickListener(v->onBackPressed());
         // editGoal 클릭 이벤트
-        binding.editGoal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showEditGoalDialog();
-            }
-        });
-        binding.goalImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openGallery();
-            }
-        });
-        binding.buttonSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveGoal();
-            }
-        });
+        binding.editGoal.setOnClickListener(view -> showEditGoalDialog());
+        binding.goalImg.setOnClickListener(view -> openGallery());
+        binding.buttonSave.setOnClickListener(view -> saveGoalToDatabase());
         Log.d("abcde","체크포인트");
     }
 
     private void loadDataFromDatabase(){
-        UserDatabase userDatabase=UserDatabase.getDatabase(this);
+        PartTimeDatabase userDatabase=PartTimeDatabase.getDatabase(this);
         UserDao userDao=userDatabase.userDao();
         Executors.newSingleThreadScheduledExecutor().execute(()->{
-            if(userDao.getDataAll().size() == 1){
-                user = userDao.getDataAll().get(0);
-            }
-            else{
-                user = new User();
-            }
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    updateUI();
-                }
-            });
+            user = userDao.getDataAll().get(0);
+            runOnUiThread(this::updateUI);
         });
-
     }
 
+    @SuppressLint("SetTextI18n")
     private void updateUI(){
-        Log.d("abcde","aefwefasefsaef");
         if(user != null){
-            String formattedAmount = NumberFormat.getNumberInstance(Locale.getDefault()).format(user.goal);
-            Log.d("abcde",formattedAmount);
-            String formattedAmount2 = NumberFormat.getNumberInstance(Locale.getDefault()).format(user.goal - user.goalSaveMoney);
+            String goalMoney = NumberFormat.getNumberInstance(Locale.getDefault()).format(user.goal);
+            String curMoney = NumberFormat.getNumberInstance(Locale.getDefault()).format(user.goal - user.goalSaveMoney);
             if (user.goalImage != null) {
                 binding.goalImg.setBackground(byteArrayToDrawable(this, user.goalImage));
             } else {
                 binding.goalImg.setBackgroundResource(R.drawable.pencil_edit_button_svgrepo_com); // 기본 이미지 설정
             }
             binding.titleGoal.setText(user.goalName);
-            binding.goalPrice.setText(formattedAmount + '원');
-            binding.contentPrice.setText(formattedAmount2 + '원');
+            binding.goalPrice.setText(goalMoney + '원');
+            binding.contentPrice.setText(curMoney + '원');
         }
-    }
-    // 현제 여기 하는중 저장버튼 눌렀을떄 이미지 말고 돈도 저장해주자
-    private void saveGoal(){
-        saveImageToDatabase();
     }
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -192,12 +155,7 @@ public class GoalActivity extends AppCompatActivity {
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
-
-    private void saveImageToDatabase() {
-//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-//        byte[] imageData = outputStream.toByteArray();
-
+    private void saveGoalToDatabase() {
         new Thread(() -> {
             if(imageData != null) {
                 user.goalImage = imageData;
@@ -208,10 +166,10 @@ public class GoalActivity extends AppCompatActivity {
             if(newNickname != null){
             user.goalName = newNickname;
             }
-            if(UserDatabase.getDatabase(this).userDao().getDataAll().isEmpty()){
-                UserDatabase.getDatabase(this).userDao().setInsertData(user);
+            if(PartTimeDatabase.getDatabase(this).userDao().getDataAll().isEmpty()){
+                PartTimeDatabase.getDatabase(this).userDao().setInsertData(user);
             }else{
-                UserDatabase.getDatabase(this).userDao().setUpdateData(user);
+                PartTimeDatabase.getDatabase(this).userDao().setUpdateData(user);
             }
             runOnUiThread(() ->
                     Toast.makeText(GoalActivity.this, "저장되었습니다", Toast.LENGTH_SHORT).show()
@@ -222,7 +180,6 @@ public class GoalActivity extends AppCompatActivity {
     public static Drawable byteArrayToDrawable(Context context, byte[] imageData) {
         // byte[]를 Bitmap으로 변환
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
-
         // Bitmap을 Drawable로 변환
         return new BitmapDrawable(context.getResources(), bitmap);
     }
@@ -234,35 +191,29 @@ public class GoalActivity extends AppCompatActivity {
         EditText editAmount = dialogView.findViewById(R.id.edit_amount);
 
         // 다이얼로그 생성
-        AlertDialog dialog = new AlertDialog.Builder(this)
+        @SuppressLint("SetTextI18n") AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("목표 설정")
                 .setView(dialogView)
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        newNickname = editNickname.getText().toString().trim();
-                        newAmount = editAmount.getText().toString().trim();
+                .setPositiveButton("확인", (dialogInterface, i) -> {
+                    newNickname = editNickname.getText().toString().trim();
+                    newAmount = editAmount.getText().toString().trim();
 
-                        // 입력값 검증
-                        if (!TextUtils.isEmpty(newNickname)) {
-                            binding.titleGoal.setText(newNickname);
-                        }
-                        try {
-                            // 숫자 형식으로 변환
-                            amountValue = Long.parseLong(newAmount);
-                            String formattedAmount = NumberFormat.getNumberInstance(Locale.getDefault()).format(amountValue);
-
-                            binding.goalPrice.setText(formattedAmount + "원");
-                        } catch (NumberFormatException e) {
-                            binding.goalPrice.setText("Invalid amount");
-                        }
-                        //Todo 여기다가 목표금액 바꿔주는거 써주자 데베에서 유저 확인
-
+                    // 입력값 검증
+                    if (!TextUtils.isEmpty(newNickname)) {
+                        binding.titleGoal.setText(newNickname);
                     }
+                    try {
+                        // 숫자 형식으로 변환
+                        amountValue = Long.parseLong(newAmount);
+                        String formattedAmount = NumberFormat.getNumberInstance(Locale.getDefault()).format(amountValue);
+                        binding.goalPrice.setText(formattedAmount + "원");
+                    } catch (NumberFormatException e) {
+                        binding.goalPrice.setText("Invalid amount");
+                    }
+                    //Todo 여기다가 목표금액 바꿔주는거 써주자 데베에서 유저 확인
                 })
                 .setNegativeButton("취소", null)
                 .create();
-
         dialog.show();
     }
 

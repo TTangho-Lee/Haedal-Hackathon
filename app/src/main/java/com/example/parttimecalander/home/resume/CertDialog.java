@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.example.parttimecalander.Database.Dao.UserDao;
-import com.example.parttimecalander.Database.Database.UserDatabase;
-import com.example.parttimecalander.Database.User;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.User;
 import com.example.parttimecalander.databinding.DialogCertBinding;
 
 import java.util.ArrayList;
@@ -59,8 +59,8 @@ public class CertDialog  extends Dialog {
         data=data.concat(")\n");
         String finalData = data;
         Executors.newSingleThreadExecutor().execute(() -> {
-            UserDatabase userDatabase=UserDatabase.getDatabase(context);
-            UserDao userDao= userDatabase.userDao();
+            PartTimeDatabase partTimeDatabase=PartTimeDatabase.getDatabase(context);
+            UserDao userDao= partTimeDatabase.userDao();
             if(userDao.getDataAll().isEmpty()){
                 User user=new User();
                 user.certList="";

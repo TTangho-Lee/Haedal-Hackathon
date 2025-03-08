@@ -18,10 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parttimecalander.Database.Dao.WorkDailyDao;
 import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
-import com.example.parttimecalander.Database.Database.WorkDailyDatabase;
-import com.example.parttimecalander.Database.Database.WorkPlaceDatabase;
-import com.example.parttimecalander.Database.WorkDaily;
-import com.example.parttimecalander.Database.WorkPlace;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
+import com.example.parttimecalander.Database.data.WorkDaily;
+import com.example.parttimecalander.Database.data.WorkPlace;
 import com.example.parttimecalander.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Description;
@@ -41,10 +40,7 @@ import java.util.concurrent.Executors;
 
 
 public class SummationActivity extends AppCompatActivity {
-
-
-    private WorkDailyDatabase dailyDatabase;
-    private WorkPlaceDatabase placeDatabase;
+    private PartTimeDatabase partTimeDatabase;
     private WorkDailyDao dailyDao;
     private WorkPlaceDao placeDao;
     private int year;
@@ -59,10 +55,8 @@ public class SummationActivity extends AppCompatActivity {
     private SummationMonthAdapter adapter;  // 어댑터 선언
     public TextView time_text;
     private ImageView back;
-
     public int first_start=0;
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,17 +74,15 @@ public class SummationActivity extends AppCompatActivity {
         LocalDate firstDay = LocalDate.of(year, month, 1);
         dayOfWeekNumber = firstDay.getDayOfWeek().getValue() - 1;
         time_text=(TextView)findViewById(R.id.time_text);
-        dailyDatabase = WorkDailyDatabase.getDatabase(this);
-        dailyDao = dailyDatabase.workDailyDao();
-        placeDatabase = WorkPlaceDatabase.getDatabase(this);
-        placeDao = placeDatabase.workPlaceDao();
+
+        partTimeDatabase = PartTimeDatabase.getDatabase(this);
+        dailyDao = partTimeDatabase.workDailyDao();
+        placeDao = partTimeDatabase.workPlaceDao();
         Spinner spinnerYear = findViewById(R.id.spinner_year);
         Spinner spinnerMonth = findViewById(R.id.spinner_month);
 
         back = findViewById(R.id.back);
         back.setOnClickListener(v->onBackPressed());
-
-
 
         // 연도 리스트 생성 (-10년 ~ +10년)
         List<String> yearList = new ArrayList<>();
@@ -191,8 +183,8 @@ public class SummationActivity extends AppCompatActivity {
                 for (int j = 0; j < dailyList.size(); j++) {
                     WorkDaily dailyWork = dailyList.get(j);
                     if (dailyWork.placeId == place.ID) {
-                        LocalDateTime startTime = LocalDateTime.parse(dailyWork.startTime, formatter);
-                        LocalDateTime endTime = LocalDateTime.parse(dailyWork.endTime, formatter);
+                        LocalDateTime startTime = LocalDateTime.parse(dailyWork.startTime);
+                        LocalDateTime endTime = LocalDateTime.parse(dailyWork.endTime);
                         if (startTime.getYear() == year && startTime.getMonthValue() == month) {
                             set_time(startTime.getDayOfMonth(), (int) Duration.between(startTime, endTime).getSeconds());
                         }

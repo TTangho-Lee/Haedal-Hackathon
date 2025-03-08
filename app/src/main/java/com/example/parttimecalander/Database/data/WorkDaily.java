@@ -1,11 +1,7 @@
-package com.example.parttimecalander.Database;
+package com.example.parttimecalander.Database.data;
 
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
-
-import java.time.LocalDate;
-import java.util.Map;
 
 @Entity(tableName = "daily")
 public class WorkDaily {                   //일일근무
