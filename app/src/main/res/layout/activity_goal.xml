@@ -64,14 +64,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <View
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/goal_img"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:background="@drawable/background_round"
+                android:background="@drawable/circle"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:shapeAppearanceOverlay="@style/CircleImage"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/container_goal"
@@ -160,29 +161,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/title_price" />
 
-                <TextView
-                    android:id="@+id/title_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:paddingStart="3dp"
-                    android:text="목표 달성까지 남은 시간"
-                    android:textSize="15sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/content_price" />
-
-                <TextView
-                    android:id="@+id/content_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="3dp"
-                    android:text="25일"
-                    android:fontFamily="@font/font_bold"
-                    android:textSize="20sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/title_time" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
             <Button

@@ -207,6 +207,7 @@ public class GoalActivity extends AppCompatActivity {
                         amountValue = Long.parseLong(newAmount);
                         String formattedAmount = NumberFormat.getNumberInstance(Locale.getDefault()).format(amountValue);
                         binding.goalPrice.setText(formattedAmount + "원");
+                        binding.contentPrice.setText(formattedAmount + "원");
                     } catch (NumberFormatException e) {
                         binding.goalPrice.setText("Invalid amount");
                     }

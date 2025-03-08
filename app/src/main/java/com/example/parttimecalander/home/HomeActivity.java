@@ -46,6 +46,7 @@ import com.example.parttimecalander.home.workplace.WorkPlaceActivity;
 import com.example.parttimecalander.timer.TimerService;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+import java.text.NumberFormat;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -54,6 +55,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
@@ -169,7 +171,7 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
             startActivity(intent);
         });
     }
-    @SuppressLint("DefaultLocale")
+    @SuppressLint({"DefaultLocale", "SetTextI18n"})
     public void reset_layout(){
 
         // 오늘 날짜 구하기
@@ -316,6 +318,9 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
                 if(user.goalImage!=null){
                     binding.profileImage.setBackground(byteArrayToDrawable(HomeActivity.this,user.goalImage));
                 }
+
+                String formattedAmount = NumberFormat.getNumberInstance(Locale.getDefault()).format(user.goal);
+                binding.goalMoney.setText("목표 달성까지" + "\n" + formattedAmount + "원");
 
                 List<String> dataList = new ArrayList<>();
 
