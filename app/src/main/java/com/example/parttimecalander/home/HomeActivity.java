@@ -86,7 +86,6 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         userDao = partTimeDatabase.userDao();
 
         resetForIntent();
-        reset_layout();
     }
     private void request_noti(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -109,7 +108,6 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
 
     protected void onStart(){
         super.onStart();
-        reset_layout();
     }
 
     @Override
@@ -183,15 +181,6 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
         LocalDateTime startOfWeek = today.with(DayOfWeek.MONDAY).minusDays(30);
         LocalDateTime endOfWeek = today.with(DayOfWeek.SUNDAY).plusDays(30);
 
-        // 위에 해당이 안되면 유저 이름을 사용해 텍스트 출력
-        userDao.getDataChange().observe(this, users -> {
-            if(users.isEmpty() || users.get(0).name==null){
-                binding.userText.setText("이력서 작성 탭에서\n이력서를 작성해주세요!");
-            }else{
-                binding.userText.setText(String.format("%s님, 열심히 땀 흘려\n%d원이나 모았어요!", users.get(0).name, users.get(0).money));
-            }
-        });
-
         // 비동기실행 -> 데이터베이스 사용
         Executors.newSingleThreadExecutor().execute(() -> {
 
@@ -202,6 +191,8 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
                 // 첫 어플 적석 시 오류를 위해 오늘 날짜로 초기화
                 // 원래는 나중에 업데이트날짜 초기화
                 user.recentUpdate = today.toString();
+                userDao.setInsertData(user);
+                return;
             }else{
                 user=userDao.getDataAll().get(0);
             }
@@ -315,6 +306,12 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
 
             runOnUiThread(() -> {
 
+                if(user.name == null){
+                    binding.userText.setText("이력서 작성 탭에서\n이력서를 작성해주세요!");
+                } else{
+                    binding.userText.setText(String.format("%s님, 열심히 땀 흘려\n%d원이나 모았어요!", user.name, user.money));
+                }
+
                 if(user.goalImage!=null){
                     binding.profileImage.setBackground(byteArrayToDrawable(HomeActivity.this,user.goalImage));
                 }
@@ -375,7 +372,7 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
     private void setWeekStartEnd(){
         today = CalendarDay.today();
 
-        LocalDate td_local = LocalDate.now();
+        LocalDate td_local = LocalDate.now(ZoneId.of("Asia/Seoul"));
         LocalDate sun, sat;
 
         // 0 일요일, 1 월요일, ..., 6 토요일
