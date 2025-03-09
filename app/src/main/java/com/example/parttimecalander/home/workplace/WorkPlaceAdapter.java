@@ -4,10 +4,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -114,6 +116,17 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
         holder.itemView.setOnClickListener(v -> {
                     workPlaces.get(position).isExpanded=!workPlaces.get(position).isExpanded;
         notifyItemChanged(holder.getAdapterPosition());});
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // 'Context'를 'v.getContext()'로 설정하여 현재 view의 Context를 가져옵니다.
+                Toast toast = Toast.makeText(v.getContext(), "중간에 뜨는 알림", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);  // 화면 중간에 표시
+                toast.show();
+                return true;  // 'true' 반환하여 클릭 이벤트가 처리되었음을 표시
+            }
+        });
+ 
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.background_round); // 원래 oval 리소스
         if (drawable != null) {
             // 새로운 색상으로 변경
