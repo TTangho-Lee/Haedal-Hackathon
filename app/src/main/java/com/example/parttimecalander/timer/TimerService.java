@@ -3,7 +3,10 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
@@ -31,13 +34,29 @@ public class TimerService extends Service {
     private String endTime;
     private Duration duration;
 
+    private NotificationCompat.Builder notificationBuilder;
+    private NotificationManager notificationManager;
+
     @Override
     public void onCreate() {
         super.onCreate();
         handler = new Handler(Looper.getMainLooper());
         createNotificationChannel();
 
-        startForeground(NOTIFICATION_ID, createNotification("남은 시간: " + remainingTime));
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        Intent dismissIntent = new Intent(this, NotificationDismissReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        // 🔹 기본 알림 생성 (NotificationBuilder를 멤버 변수로 저장)
+        notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("타이머 실행 중")
+                .setContentText("남은 시간: " + remainingTime)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setDeleteIntent(pendingIntent);
+
+        startForeground(NOTIFICATION_ID, notificationBuilder.build());
     }
 
     @Override
@@ -74,12 +93,8 @@ public class TimerService extends Service {
                 intent.putExtra("remaining_time", remainingTime);
                 sendBroadcast(intent);
 
-                // 알림 업데이트
-                Notification notification = createNotification("남은 시간: " + remainingTime);
-                NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                if (manager != null) {
-                    manager.notify(NOTIFICATION_ID, notification);
-                }
+                notificationBuilder.setContentText("남은 시간: " + remainingTime);
+                notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
 
                 handler.postDelayed(this, 1000); // 1초마다 실행
             }
@@ -91,19 +106,10 @@ public class TimerService extends Service {
     private void createNotificationChannel() {
         NotificationChannel channel = new NotificationChannel(
                 CHANNEL_ID, "타이머 채널", NotificationManager.IMPORTANCE_LOW);
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if (manager != null) {
-            manager.createNotificationChannel(channel);
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(channel);
         }
-    }
-
-    private Notification createNotification(String contentText) {
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("타이머 실행 중")
-                .setContentText(contentText)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .build();
     }
 
     @Override
