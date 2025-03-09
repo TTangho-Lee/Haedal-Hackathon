@@ -109,7 +109,7 @@
 
         <Spinner
             android:id="@+id/content_admission_year"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/background_spinner"
@@ -122,7 +122,7 @@
 
         <Spinner
             android:id="@+id/content_admission_month"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_marginTop="12dp"
             android:layout_marginStart="8dp"
@@ -157,7 +157,7 @@
 
         <Spinner
             android:id="@+id/content_graduate_year"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/background_spinner"
@@ -170,7 +170,7 @@
 
         <Spinner
             android:id="@+id/content_graduate_month"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_marginTop="12dp"
             android:layout_marginStart="8dp"
