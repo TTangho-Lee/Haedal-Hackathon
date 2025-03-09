@@ -62,13 +62,8 @@ public class ScheduleDayAdapter extends RecyclerView.Adapter<ScheduleDayAdapter.
         holder.titleTextView.setText(placeName);
         holder.titleTextView.setTextSize(20.0f);
 
-        holder.startDateTextView.setText(startTimeString);
+        holder.startDateTextView.setText(startTimeString+" ~ "+endTimeString);
         holder.startDateTextView.setTextSize(16.f);
-
-        holder.middleTextView.setTextSize(16.f);
-
-        holder.endDateTextView.setText(endTimeString);
-        holder.endDateTextView.setTextSize(16.f);
 
         // 롱 클릭 이벤트 연결
         // 롱 클릭 이벤트 연결
