@@ -51,7 +51,7 @@ public class HistoryAdapter  extends RecyclerView.Adapter<HistoryAdapter.MyViewH
         String placename = itemList.get(position).placeName;
         String start = itemList.get(position).startDate;
         String end = itemList.get(position).endDate;
-        String duration  = start.split(" ")[0] + " ~ " + end.split(" ")[0];
+        String duration  = start.split(" ")[0].split("T")[0] + " ~ " + end.split(" ")[0].split("T")[0];
         holder.textView.setText(placename);
         holder.textView2.setText(duration);
 
