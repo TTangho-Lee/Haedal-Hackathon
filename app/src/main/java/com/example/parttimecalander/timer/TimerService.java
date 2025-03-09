@@ -54,8 +54,8 @@ public class TimerService extends Service {
                 .setContentText("남은 시간: " + remainingTime)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setDeleteIntent(pendingIntent);
-
+                .setDeleteIntent(pendingIntent)
+                        .setColorized(false);
         startForeground(NOTIFICATION_ID, notificationBuilder.build());
     }
 
