@@ -60,9 +60,6 @@ public class WorkPlaceActivity extends AppCompatActivity {
             WorkPlaceAdapter adapter = new WorkPlaceAdapter(this, places);
             recyclerView.setAdapter(adapter);
         });
-
-
-
     }
 
     private void enableEdgeToEdge() {
