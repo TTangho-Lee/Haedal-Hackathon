@@ -120,7 +120,7 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-
+                //꾹 누르면 작동
                 //TODO: 수정 로직 추가
                 WorkPlace selectedWorkPlace = workPlaces.get(position);
                 Intent intent = new Intent(mContext, WorkPlaceRegisterActivity.class);
