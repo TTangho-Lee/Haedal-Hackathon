@@ -323,18 +323,52 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         newWP.placeName = placeName;
         newWP.usualPay = usualPay;
         newWP.isJuhyu = isJuhyu;
-
+        setSpinner();
+        setCheckBox();
         //기존 UI 변경(일부만)
         binding.title.setText("  근무지 수정");
         binding.contentWorkplaceName.setText(placeName);
         binding.contentSalary.setText(""+usualPay);
+
+        List<String> circleColor = List.of("#FFB3B3","#FFCC99","#FFFF99","#B3E6B3","#99CCFF","#99B3FF","#D9B3FF");
+        int defaultIndex = circleColor.indexOf(ColorHex);
+        if (defaultIndex != -1) {
+            binding.contentColor.setSelection(defaultIndex);
+        }
+
+        List<String> typee = List.of("음식점", "카페", "판매", "문화", "서비스", "사무", "교육", "기타");
+        int defaultIndexx = typee.indexOf(type);
+        if (defaultIndexx != -1) {
+            binding.contentType.setSelection(defaultIndexx);
+        }
+
+        int baseYear = 2025;
+
+        // 2014년부터 2034년까지 연도 리스트 생성
+        List<String> years = new ArrayList<>();
+        for (int i = baseYear - 10; i <= baseYear + 10; i++) {
+            years.add(String.valueOf(i));
+        }
+        int defaultStartYearIndex = years.indexOf(startDate.substring(0,4));
+        int defaultStartMonthIndex = Integer.parseInt(startDate.substring(5,7))-1;
+        int defaultStartDateIndex = Integer.parseInt(startDate.substring(8,10))-1;
+        int defaultEndYearIndex = years.indexOf(endDate.substring(0,4));
+        int defaultEndMonthIndex = Integer.parseInt(endDate.substring(5,7))-1;
+        int defaultEndDateIndex = Integer.parseInt(endDate.substring(8,10))-1;
+        binding.contentWorkstartyear.setSelection(defaultStartYearIndex);
+        binding.contentWorkstartmonth.setSelection(defaultStartMonthIndex);
+        binding.contentWorkstartday.setSelection(defaultStartDateIndex);
+        binding.contentWorkendyear.setSelection(defaultEndYearIndex);
+        binding.contentWorkendmonth.setSelection(defaultEndMonthIndex);
+        binding.contentWorkendday.setSelection(defaultEndDateIndex);
+
+
         if (isJuhyu){binding.radioButtonYes.setChecked(true);}
         else {binding.radioButtonNo.setChecked(true);}
         newWP.type = null;
         newWP.startDate = newWP.endDate = newWP.ColorHex = newWP.day = null;
         newWP.startTime = newWP.endTime = null;
-        setSpinner();
-        setCheckBox();
+
 
         //버튼 세팅
         binding.registerButton.setText("근무지 수정하기");
