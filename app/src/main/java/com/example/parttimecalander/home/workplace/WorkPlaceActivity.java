@@ -47,6 +47,7 @@ public class WorkPlaceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WorkPlaceActivity.this, WorkPlaceRegisterActivity.class);
+                intent.putExtra("isRegister", true);
                 startActivity(intent);
                 finish();
             }

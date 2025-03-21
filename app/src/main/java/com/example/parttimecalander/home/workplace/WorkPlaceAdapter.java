@@ -1,6 +1,7 @@
 package com.example.parttimecalander.home.workplace;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -119,10 +120,19 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                // 'Context'를 'v.getContext()'로 설정하여 현재 view의 Context를 가져옵니다.
-                Toast toast = Toast.makeText(v.getContext(), "중간에 뜨는 알림", Toast.LENGTH_SHORT);
+                //클릭되었음을 나타내는 Toast
+                Toast toast = Toast.makeText(mContext, "중간에 뜨는 알림", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);  // 화면 중간에 표시
                 toast.show();
+
+                //TODO: 수정 로직 추가
+                WorkPlace selectedWorkPlace = workPlaces.get(position);
+                Intent intent = new Intent(mContext, WorkPlaceRegisterActivity.class);
+                intent.putExtra("isRegister",false);
+                intent.putExtra("workPlace", selectedWorkPlace);
+                mContext.startActivity(intent);
+
+
                 return true;  // 'true' 반환하여 클릭 이벤트가 처리되었음을 표시
             }
         });
