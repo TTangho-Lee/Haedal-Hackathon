@@ -120,10 +120,6 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                //클릭되었음을 나타내는 Toast
-                Toast toast = Toast.makeText(mContext, "중간에 뜨는 알림", Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);  // 화면 중간에 표시
-                toast.show();
 
                 //TODO: 수정 로직 추가
                 WorkPlace selectedWorkPlace = workPlaces.get(position);

@@ -327,7 +327,7 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         //기존 UI 변경(일부만)
         binding.title.setText("  근무지 수정");
         binding.contentWorkplaceName.setText(placeName);
-        binding.contentSalary.setText(usualPay);
+        binding.contentSalary.setText(""+usualPay);
         if (isJuhyu){binding.radioButtonYes.setChecked(true);}
         else {binding.radioButtonNo.setChecked(true);}
         newWP.type = null;
