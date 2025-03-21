@@ -16,6 +16,7 @@ import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
 import com.example.parttimecalander.Database.Database.PartTimeDatabase;
 import com.example.parttimecalander.Database.data.WorkPlace;
 import com.example.parttimecalander.R;
+import com.example.parttimecalander.home.HomeActivity;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -31,7 +32,13 @@ public class WorkPlaceActivity extends AppCompatActivity {
 
         //뒤로가기 버튼 초기화
         back = findViewById(R.id.back);
-        back.setOnClickListener(v->onBackPressed());
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(WorkPlaceActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // RecyclerView 초기화
         RecyclerView recyclerView = findViewById(R.id.workplace_recyclerView);

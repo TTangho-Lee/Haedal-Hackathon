@@ -18,6 +18,7 @@ import com.example.parttimecalander.Database.Database.PartTimeDatabase;
 import com.example.parttimecalander.Database.data.WorkDaily;
 import com.example.parttimecalander.Database.data.WorkPlace;
 import com.example.parttimecalander.databinding.ActivityWorkplaceRegisterBinding;
+import com.example.parttimecalander.home.HomeActivity;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
@@ -174,6 +175,15 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         });
     }
     private void setSpinner(){
+        //뒤로가기 버튼
+        binding.titleBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(WorkPlaceRegisterActivity.this, WorkPlaceActivity.class);
+                startActivity(intent);
+            }
+        });
+
         // 직장 구분 색 선택
         List<String> circleColor = List.of("#FFB3B3","#FFCC99","#FFFF99","#B3E6B3","#99CCFF","#99B3FF","#D9B3FF");
         SpinnerColorAdapter colorAdapter = new SpinnerColorAdapter(this, circleColor);
@@ -329,22 +339,20 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         binding.title.setText("  근무지 수정");
         binding.contentWorkplaceName.setText(placeName);
         binding.contentSalary.setText(""+usualPay);
-
+        //색상
         List<String> circleColor = List.of("#FFB3B3","#FFCC99","#FFFF99","#B3E6B3","#99CCFF","#99B3FF","#D9B3FF");
         int defaultIndex = circleColor.indexOf(ColorHex);
         if (defaultIndex != -1) {
             binding.contentColor.setSelection(defaultIndex);
         }
-
+        //업종
         List<String> typee = List.of("음식점", "카페", "판매", "문화", "서비스", "사무", "교육", "기타");
         int defaultIndexx = typee.indexOf(type);
         if (defaultIndexx != -1) {
             binding.contentType.setSelection(defaultIndexx);
         }
-
+        //시작일, 종료일
         int baseYear = 2025;
-
-        // 2014년부터 2034년까지 연도 리스트 생성
         List<String> years = new ArrayList<>();
         for (int i = baseYear - 10; i <= baseYear + 10; i++) {
             years.add(String.valueOf(i));
@@ -361,7 +369,50 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         binding.contentWorkendyear.setSelection(defaultEndYearIndex);
         binding.contentWorkendmonth.setSelection(defaultEndMonthIndex);
         binding.contentWorkendday.setSelection(defaultEndDateIndex);
+        if(startTime.get(1)!=null){
+            binding.checkboxMonday.setChecked(true);
+            binding.startTimeMonday.setText(startTime.get(1));
+            binding.endTimeMonday.setText(endTime.get(1));
+        }
+        if(startTime.get(2)!=null){
+            binding.checkboxTuesday.setChecked(true);
+            binding.startTimeTuesday.setText(startTime.get(2));
+            binding.endTimeTuesday.setText(endTime.get(2));
+        }
+        if(startTime.get(3)!=null){
+            binding.checkboxWednesday.setChecked(true);
+            binding.startTimeWednesday.setText(startTime.get(3));
+            binding.endTimeWednesday.setText(endTime.get(3));
+        }
+        if(startTime.get(4)!=null){
+            binding.checkboxThursday.setChecked(true);
+            binding.startTimeThursday.setText(startTime.get(4));
+            binding.endTimeThursday.setText(endTime.get(4));
+        }
+        if(startTime.get(5)!=null){
+            binding.checkboxFriday.setChecked(true);
+            binding.startTimeFriday.setText(startTime.get(5));
+            binding.endTimeFriday.setText(endTime.get(5));
+        }
+        if(startTime.get(6)!=null){
+            binding.checkboxSaturday.setChecked(true);
+            binding.startTimeSaturday.setText(startTime.get(6));
+            binding.endTimeSaturday.setText(endTime.get(6));
+        }
+        if(startTime.get(0)!=null){
+            binding.checkboxSunday.setChecked(true);
+            binding.startTimeSunday.setText(startTime.get(0));
+            binding.endTimeSunday.setText(endTime.get(0));
+        }
 
+        //뒤로가기 버튼
+        binding.titleBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(WorkPlaceRegisterActivity.this, WorkPlaceActivity.class);
+                startActivity(intent);
+            }
+        });
 
         if (isJuhyu){binding.radioButtonYes.setChecked(true);}
         else {binding.radioButtonNo.setChecked(true);}
