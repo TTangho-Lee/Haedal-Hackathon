@@ -369,40 +369,55 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         binding.contentWorkendyear.setSelection(defaultEndYearIndex);
         binding.contentWorkendmonth.setSelection(defaultEndMonthIndex);
         binding.contentWorkendday.setSelection(defaultEndDateIndex);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         if(startTime.get(1)!=null){
             binding.checkboxMonday.setChecked(true);
             binding.startTimeMonday.setText(startTime.get(1));
             binding.endTimeMonday.setText(endTime.get(1));
+            startTimes[1]=LocalTime.parse(startTime.get(1), formatter);
+            endTimes[1]=LocalTime.parse(endTime.get(1), formatter);
         }
         if(startTime.get(2)!=null){
             binding.checkboxTuesday.setChecked(true);
             binding.startTimeTuesday.setText(startTime.get(2));
             binding.endTimeTuesday.setText(endTime.get(2));
+            startTimes[2]=LocalTime.parse(startTime.get(2), formatter);
+            endTimes[2]=LocalTime.parse(endTime.get(2), formatter);
         }
         if(startTime.get(3)!=null){
             binding.checkboxWednesday.setChecked(true);
             binding.startTimeWednesday.setText(startTime.get(3));
             binding.endTimeWednesday.setText(endTime.get(3));
+            startTimes[3]=LocalTime.parse(startTime.get(3), formatter);
+            endTimes[3]=LocalTime.parse(endTime.get(3), formatter);
         }
         if(startTime.get(4)!=null){
             binding.checkboxThursday.setChecked(true);
             binding.startTimeThursday.setText(startTime.get(4));
             binding.endTimeThursday.setText(endTime.get(4));
+            startTimes[4]=LocalTime.parse(startTime.get(4), formatter);
+            endTimes[4]=LocalTime.parse(endTime.get(4), formatter);
         }
         if(startTime.get(5)!=null){
             binding.checkboxFriday.setChecked(true);
             binding.startTimeFriday.setText(startTime.get(5));
             binding.endTimeFriday.setText(endTime.get(5));
+            startTimes[5]=LocalTime.parse(startTime.get(5), formatter);
+            endTimes[5]=LocalTime.parse(endTime.get(5), formatter);
         }
         if(startTime.get(6)!=null){
             binding.checkboxSaturday.setChecked(true);
             binding.startTimeSaturday.setText(startTime.get(6));
             binding.endTimeSaturday.setText(endTime.get(6));
+            startTimes[6]=LocalTime.parse(startTime.get(6), formatter);
+            endTimes[6]=LocalTime.parse(endTime.get(6), formatter);
         }
         if(startTime.get(0)!=null){
             binding.checkboxSunday.setChecked(true);
             binding.startTimeSunday.setText(startTime.get(0));
             binding.endTimeSunday.setText(endTime.get(0));
+            startTimes[0]=LocalTime.parse(startTime.get(0), formatter);
+            endTimes[0]=LocalTime.parse(endTime.get(0), formatter);
         }
 
         //뒤로가기 버튼
