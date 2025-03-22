@@ -196,7 +196,30 @@ public class SummationActivity extends AppCompatActivity {
                     System.arraycopy(time_calander[ii], 0, new_calander[ii], 0, 7);
                 }
                 RecyclerItem new_item = new RecyclerItem(year,month,place.placeName, new_calander, place.isJuhyu, place.usualPay,place.ColorHex);
-                items.add(new_item);
+                double normal_hour1=0;
+                double over_hour1=0;
+                for(int r=0;r<6;r++){
+                    double second=0;
+                    for(int j=0;j<7;j++){
+                        second+=new_item.worked_time[r][j];
+                    }
+                    second/=3600;
+                    if(second>=15&&new_item.juhyu){
+                        normal_hour1+=15;
+                        over_hour1+=second-15;
+                    }
+                    else{
+                        normal_hour1+=second;
+                    }
+                }
+                DecimalFormat df = new DecimalFormat("###,###");
+                if(!String.format(df.format((int) normal_hour1 * new_item.pay + over_hour1 * new_item.pay * 1.5)).equals("0")){
+                    items.add(new_item);
+                }
+
+
+
+
                 double normal_hour=0;
                 double over_hour=0;
                 for(int ii=0;ii<6;ii++){
