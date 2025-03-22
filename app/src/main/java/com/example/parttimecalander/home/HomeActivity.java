@@ -318,8 +318,8 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
                     binding.userText.setText(String.format("%s님, 열심히 땀 흘려\n%d원이나 모았어요!", user.name, user.money));
                 }
 
-                if(user.goalImage!=null){
-                    binding.profileImage.setBackground(byteArrayToDrawable(HomeActivity.this,user.goalImage));
+                if (user.goalImage != null) {
+                    binding.profileImage.setImageDrawable(byteArrayToDrawable(HomeActivity.this, user.goalImage));
                 }
 
                 String formattedAmount = NumberFormat.getNumberInstance(Locale.getDefault()).format(user.goal);
