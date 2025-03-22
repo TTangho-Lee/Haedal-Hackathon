@@ -15,7 +15,7 @@ import com.example.parttimecalander.Database.data.User;
 import com.example.parttimecalander.Database.data.WorkDaily;
 import com.example.parttimecalander.Database.data.WorkPlace;
 
-@Database(entities = {User.class, WorkDaily.class, WorkPlace.class},version=1)
+@Database(entities = {User.class, WorkDaily.class, WorkPlace.class},version=2)
 @TypeConverters({Converters.class})
 public abstract class PartTimeDatabase extends RoomDatabase {
     public abstract UserDao userDao();

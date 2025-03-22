@@ -22,6 +22,8 @@ public interface WorkDailyDao {
     List<WorkDaily> getDataAll();
     @Query("SELECT * FROM daily WHERE daily.startTime = :selectedDate")
     List<WorkDaily> getSchedulesForDate(String selectedDate);
+    @Query("DELETE FROM daily WHERE startTime > :selectedDate AND placeId = :placeId")
+    void deleteSchedulesAfterDateForPlace(String selectedDate, int placeId);
     @Query("SELECT * FROM daily WHERE startTime BETWEEN :firstDay AND :lastDay")
     List<WorkDaily> getSchedulesBetweenDays(String firstDay, String lastDay);
     @Query("SELECT * FROM daily WHERE startTime < :selectedDate AND endTime > :selectedDate")

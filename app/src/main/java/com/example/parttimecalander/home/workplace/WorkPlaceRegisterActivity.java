@@ -168,9 +168,6 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
                     currentDateTime = currentDateTime.plusDays(1);
                 }
             });
-            // 다음 액티비티로 이동
-            Intent intent = new Intent(WorkPlaceRegisterActivity.this, WorkPlaceActivity.class);
-            startActivity(intent);
             finish();
         });
     }
@@ -179,8 +176,7 @@ public class WorkPlaceRegisterActivity extends AppCompatActivity {
         binding.titleBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(WorkPlaceRegisterActivity.this, WorkPlaceActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
 

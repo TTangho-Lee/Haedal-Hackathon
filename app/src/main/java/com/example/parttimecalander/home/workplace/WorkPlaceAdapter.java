@@ -1,6 +1,8 @@
 package com.example.parttimecalander.home.workplace;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -13,21 +15,31 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Database;
 
+import com.example.parttimecalander.Database.Dao.WorkDailyDao;
+import com.example.parttimecalander.Database.Dao.WorkPlaceDao;
+import com.example.parttimecalander.Database.Database.PartTimeDatabase;
 import com.example.parttimecalander.Database.data.WorkPlace;
 import com.example.parttimecalander.R;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.ViewHolder> {
     private final List<WorkPlace> workPlaces;
     private Context mContext;
+    private WorkDailyDao workDailyDao;
+    private WorkPlaceDao workPlaceDao;
 
     public WorkPlaceAdapter(Context mContext, List<WorkPlace> workPlaces) {
         this.workPlaces = workPlaces;
@@ -67,6 +79,10 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_workplace, parent, false);
+
+        PartTimeDatabase partTimeDatabase = PartTimeDatabase.getDatabase(parent.getContext());
+        workDailyDao = partTimeDatabase.workDailyDao();
+        workPlaceDao = partTimeDatabase.workPlaceDao();
         return new ViewHolder(view);
     }
 
@@ -120,16 +136,46 @@ public class WorkPlaceAdapter extends RecyclerView.Adapter<WorkPlaceAdapter.View
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                //꾹 누르면 작동
-                //TODO: 수정 로직 추가
-                WorkPlace selectedWorkPlace = workPlaces.get(position);
-                Intent intent = new Intent(mContext, WorkPlaceRegisterActivity.class);
-                intent.putExtra("isRegister",false);
-                intent.putExtra("workPlace", selectedWorkPlace);
-                mContext.startActivity(intent);
+                // 꾹 누르면 다이얼로그 표시
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("작업 선택");
+                builder.setItems(new CharSequence[]{"수정", "삭제"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        WorkPlace selectedWorkPlace = workPlaces.get(position);
+                        switch (which) {
+                            case 0: // 수정
+                                Intent intent = new Intent(mContext, WorkPlaceRegisterActivity.class);
+                                intent.putExtra("isRegister", false);
+                                intent.putExtra("workPlace", selectedWorkPlace);
+                                mContext.startActivity(intent);
+                                break;
+
+                            case 1: // 삭제
+                                selectedWorkPlace.erase = true;
+                                String today = LocalDate.now(ZoneId.of("Asia/Seoul")).toString();
+                                ExecutorService executor = Executors.newSingleThreadExecutor();
+                                executor.execute(() -> {
+                                    // 백그라운드 작업
+                                    workPlaceDao.setUpdateData(selectedWorkPlace);
+                                    workDailyDao.deleteSchedulesAfterDateForPlace(today,selectedWorkPlace.ID);
+
+                                    // UI 스레드에서 어댑터 설정
+                                    ((Activity) mContext).runOnUiThread(() -> {
+                                        workPlaces.remove(position);
+                                        notifyItemRemoved(position);
+                                        Toast.makeText(mContext, "삭제되었습니다", Toast.LENGTH_SHORT).show();
+                                    });
+                                });
 
 
-                return true;  // 'true' 반환하여 클릭 이벤트가 처리되었음을 표시
+                                break;
+                        }
+                    }
+                });
+
+                builder.show();
+                return true;
             }
         });
  

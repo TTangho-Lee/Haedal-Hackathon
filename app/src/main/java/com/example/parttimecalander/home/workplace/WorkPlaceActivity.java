@@ -62,7 +62,7 @@ public class WorkPlaceActivity extends AppCompatActivity {
 
         Executors.newSingleThreadExecutor().execute(() -> {
             // 데이터 조회 및 어댑터 설정을 위한 스레드 시작
-            List<WorkPlace> places = workPlaceDao.getDataAll();
+            List<WorkPlace> places = workPlaceDao.activeWorkingPlace();
             // 어댑터 설정
             WorkPlaceAdapter adapter = new WorkPlaceAdapter(this, places);
             recyclerView.setAdapter(adapter);

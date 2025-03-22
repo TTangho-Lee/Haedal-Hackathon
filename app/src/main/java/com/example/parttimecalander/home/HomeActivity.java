@@ -219,6 +219,12 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
             double monthWorkingAllMoney=0; // 이번달 총 벌어들일 액수
 
             List<WorkPlace> placeList = placeDao.getDataAll(); // 일하는 모든 장소
+            List<WorkPlace> activPlaceList = new ArrayList<>();
+            for(WorkPlace place : placeList){
+                if(!place.erase){
+                    activPlaceList.add(place);
+                }
+            }
             // 최근 업데이트 이전내용은 당연히 그떄 전부 처리됐기 때문에 그 이후 내용만 가져온다.
             List<WorkDaily> monthDailyList = dailyDao.getSchedulesBetweenDays(firstDay.toString(), lastDay.toString());
             List<WorkDaily> updateDailyList = dailyDao.getSchedulesBetweenDays(user.recentUpdate, today.toString());
@@ -321,8 +327,8 @@ public class HomeActivity extends AppCompatActivity implements ScheduleDialogFra
 
                 List<String> dataList = new ArrayList<>();
 
-                for (int i = 0; i < placeList.size(); i++) {
-                    dataList.add(placeList.get(i).placeName+"///"+placeList.get(i).startDate+"~"+placeList.get(i).endDate+"///"+placeList.get(i).ColorHex);
+                for (int i = 0; i < activPlaceList.size(); i++) {
+                    dataList.add(activPlaceList.get(i).placeName+"///"+activPlaceList.get(i).startDate+"~"+activPlaceList.get(i).endDate+"///"+activPlaceList.get(i).ColorHex);
                 }
 
                 homeRecyclerviewAdapter adapter = new homeRecyclerviewAdapter(dataList);

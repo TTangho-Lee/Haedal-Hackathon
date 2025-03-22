@@ -22,4 +22,5 @@ public class WorkPlace implements Serializable {
     public String day;                  // 근무하는 요일
     public List<String> startTime;            // 요일별 시작시간
     public List<String> endTime;              // 요일별 끝나는시간
+    public boolean erase = false;
 }

@@ -24,4 +24,6 @@ public interface WorkPlaceDao {
     WorkPlace getByID(int h);
     @Query("SELECT place.ID FROM place WHERE place.placeName ==:name")
     Integer findId(String name);
+    @Query("SELECT * FROM place WHERE place.erase != 1")
+    List<WorkPlace> activeWorkingPlace();
 }
